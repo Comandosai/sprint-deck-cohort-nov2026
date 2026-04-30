@@ -1,0 +1,285 @@
+{
+  "// ==================================================================": "",
+  "// OpenClaw configuration — итоговый конфиг для VPS": "",
+  "// Скопируется на VPS как ~/.openclaw/openclaw.json через scripts/deploy.sh": "",
+  "// Плейсхолдеры ${VAR} автоматически заменяются из .env": "",
+  "// ==================================================================": "",
+
+  "auth": {
+    "profiles": {
+      "minimax": {
+        "endpoint": "https://api.minimax.io/v1",
+        "apiKey": "${MINIMAX_API_KEY}"
+      },
+      "deepseek": {
+        "endpoint": "https://api.deepseek.com/v1",
+        "apiKey": "${DEEPSEEK_API_KEY}"
+      },
+      "openrouter": {
+        "endpoint": "https://openrouter.ai/api/v1",
+        "apiKey": "${OPENROUTER_API_KEY}"
+      },
+      "groq": {
+        "endpoint": "https://api.groq.com/openai/v1",
+        "apiKey": "${GROQ_API_KEY}"
+      },
+      "openai": {
+        "endpoint": "https://api.openai.com/v1",
+        "apiKey": "${OPENAI_API_KEY}"
+      }
+    }
+  },
+
+  "agents": {
+    "defaults": {
+      "workspace": "~/.openclaw/workspace",
+      "userTimezone": "Europe/Moscow",
+      "timeFormat": "24",
+      "contextInjection": "continuation-skip",
+      "model": {
+        "// PRIMARY: 90% диалогов через MiniMax Coding $10/мес фикс": "блок-03",
+        "primary": "minimax/minimax-m2.7",
+        "// FALLBACK: только дешевле primary! (V4-Flash cache hit ~ $0.0028)": "АУДИТ",
+        "fallbacks": ["deepseek/deepseek-v4-flash"]
+      },
+      "heartbeat": {
+        "// Дешёвая модель для 24/7 фоновых проверок": "блок-12",
+        "model": "openrouter/google/gemini-2.5-flash-lite",
+        "fallbacks": ["deepseek/deepseek-v4-flash"],
+        "lightContext": true,
+        "every": "60m",
+        "isolatedSession": true,
+        "skipWhenBusy": true,
+        "activeHours": {
+          "start": "08:00",
+          "end": "22:00",
+          "timezone": "Europe/Moscow"
+        },
+        "rateLimit": {
+          "perMinute": 1,
+          "perHour": 5,
+          "perDay": 50
+        }
+      },
+      "subagents": {
+        "// Kimi специально создана для sub-agent parallelism": "блок-03",
+        "model": "openrouter/moonshotai/kimi-k2.6",
+        "fallbacks": ["deepseek/deepseek-v4-flash"]
+      },
+      "compaction": {
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": 4000,
+          "reserveTokensFloor": 20000,
+          "model": "deepseek/deepseek-v4-flash",
+          "systemPrompt": "Сохрани durable факты в memory/YYYY-MM-DD.md. Если ничего важного — ответь NO_REPLY."
+        }
+      }
+    }
+  },
+
+  "modelAliases": {
+    "// /model premium → DeepSeek V4-Pro (НЕ Sonnet — дорого без причины)": "блок-03",
+    "premium": "deepseek/deepseek-v4-pro",
+    "// /model think → V4-Pro в reasoning mode": "блок-03",
+    "think": "deepseek/deepseek-v4-pro:thinking",
+    "// /utility — V4-Flash для router/eval/compaction": "PRO-01",
+    "utility": "deepseek/deepseek-v4-flash"
+  },
+
+  "premiumGuard": {
+    "// Защита от «забыл выключить /model premium»": "PRO-04",
+    "expireAfterMessages": 5,
+    "confirmIfBudgetUsed": 0.5
+  },
+
+  "spending": {
+    "// 4-уровневая защита от runaway. Уровень 1: config cap.": "блок-11 + PRO-04",
+    "dailyCapUsd": 2,
+    "monthlyCapUsd": 30,
+    "killSwitchAt": 5,
+    "alertAt": 1
+  },
+
+  "channels": {
+    "telegram": {
+      "accounts": {
+        "main": {
+          "tokenFile": "~/.openclaw/secrets/telegram.token",
+          "// dmPolicy allowlist + числовой user ID = только владелец пишет в DM": "блок-04",
+          "dmPolicy": "allowlist",
+          "allowFrom": ["${TELEGRAM_USER_ID}"],
+          "groupPolicy": "manual",
+          "pollingStallThresholdMs": 30000,
+          "mediaMaxMb": 50,
+          "transcribeVoiceMessages": true,
+          "audioMaxDurationSec": 300,
+          "voiceReplies": "auto"
+        }
+      }
+    }
+  },
+
+  "voice": {
+    "transcription": {
+      "// Whisper Large v3 Turbo через Groq — БЕСПЛАТНО (30k мин/мес)": "блок-03",
+      "provider": "groq",
+      "model": "whisper-large-v3-turbo",
+      "language": "ru",
+      "initialPrompt": "OpenClaw, OpenRouter, MiniMax, DeepSeek, Telegram, Antigravity"
+    },
+    "tts": {
+      "// tts-1 (НЕ tts-1-hd — в 2x дороже без явного выигрыша)": "PRO-01",
+      "provider": "openai",
+      "model": "tts-1",
+      "voice": "alloy",
+      "language": "ru",
+      "briefMode": {
+        "enabled": true,
+        "maxCharsForVoice": 200,
+        "alwaysVoiceCommands": ["/voice", "/sing", "/say"]
+      }
+    }
+  },
+
+  "image": {
+    "default": {
+      "// Gemini 2.5 Flash Image через OpenRouter — баланс цены и качества": "блок-03",
+      "provider": "openrouter",
+      "model": "google/gemini-2.5-flash-image",
+      "size": "1024x1024",
+      "quality": "standard"
+    },
+    "fast": {
+      "// Flux Schnell — в ~13x дешевле, для черновых картинок": "PRO-01",
+      "provider": "openrouter",
+      "model": "black-forest-labs/flux-schnell",
+      "size": "1024x1024"
+    }
+  },
+
+  "tools": {
+    "// КРИТИЧНО: profile=full включает browser. profile=messaging его отключает!": "блок-07 + Browser troubleshoot",
+    "profile": "full",
+    "exec": {
+      "ask": "on",
+      "allowlist": ["ls", "cat", "git status", "git diff", "openclaw audit", "openclaw doctor", "free", "df", "uptime", "uname"],
+      "blocklist": ["rm -rf", "dd if=", "mkfs", "shutdown", "reboot", "init 0", "init 6"],
+      "security": "ask"
+    },
+    "browser": {
+      "enabled": true,
+      "headless": true,
+      "args": [
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-blink-features=AutomationControlled"
+      ],
+      "userDataDir": "~/.openclaw/browser-profiles/main",
+      "ssrfPolicy": {
+        "dangerouslyAllowPrivateNetwork": false
+      }
+    }
+  },
+
+  "memory": {
+    "search": {
+      "type": "hybrid",
+      "temporalDecay": {
+        "halfLifeDays": 30
+      },
+      "mmr": {
+        "lambda": 0.5
+      }
+    },
+    "dailyLogs": {
+      "enabled": true,
+      "path": "memory/{YYYY-MM-DD}.md"
+    },
+    "privacy": {
+      "redactPatterns": [
+        "sk-[A-Za-z0-9]+",
+        "Bearer\\s+[A-Za-z0-9]+",
+        "ghp_[A-Za-z0-9]+",
+        "AIza[A-Za-z0-9_-]+"
+      ]
+    }
+  },
+
+  "mcp": {
+    "// Подтверждённые npm-пакеты по АУДИТу. НЕ @microsoft/mcp-server-playwright (его нет!)": "АУДИТ",
+    "servers": {
+      "tavily": {
+        "command": "npx",
+        "args": ["-y", "tavily-mcp"],
+        "env": {
+          "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+        }
+      },
+      "playwright": {
+        "command": "npx",
+        "args": ["-y", "@playwright/mcp@latest"]
+      }
+    }
+  },
+
+  "skills": {
+    "entries": {}
+  },
+
+  "sandbox": {
+    "// non-main, не \"all\" — иначе self-improvement не работает": "блок-11",
+    "mode": "non-main",
+    "scope": "session",
+    "workspaceAccess": "rw"
+  },
+
+  "selfImprovement": {
+    "enabled": true,
+    "autoCommitToGit": true,
+    "rollbackOnError": true,
+    "approvalRequired": true
+  },
+
+  "ui": {
+    "// Control UI на 127.0.0.1 — не 0.0.0.0! Удалённый доступ через SSH-туннель": "блок-13",
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 4000,
+    "auth": {
+      "type": "token",
+      "tokenFile": "~/.openclaw/secrets/ui.token"
+    }
+  },
+
+  "gateway": {
+    "configReload": "hybrid"
+  },
+
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": { "enabled": true }
+      }
+    }
+  },
+
+  "commands": {
+    "debug": true
+  },
+
+  "logging": {
+    "level": "info",
+    "redactSensitive": true,
+    "redactPatterns": [
+      "sk-[A-Za-z0-9]+",
+      "Bearer\\s+[A-Za-z0-9]+",
+      "ghp_[A-Za-z0-9]+"
+    ],
+    "rotate": {
+      "maxSizeMb": 100,
+      "maxFiles": 7
+    }
+  }
+}

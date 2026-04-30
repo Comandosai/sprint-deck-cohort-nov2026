@@ -1,0 +1,70 @@
+# OpenClaw — user-level systemd unit
+# Источник: блок-02-установка-openclaw.md, PRO-04-production-hardening.md.
+#
+# Установка:
+#   1. mkdir -p ~/.config/systemd/user/
+#   2. cp openclaw.service ~/.config/systemd/user/
+#   3. systemctl --user daemon-reload
+#   4. systemctl --user enable --now openclaw
+#   5. loginctl enable-linger clawd      # юнит работает даже когда юзер не залогинен
+#
+# Управление:
+#   systemctl --user status openclaw
+#   systemctl --user restart openclaw
+#   journalctl --user -u openclaw -f
+
+[Unit]
+Description=OpenClaw daemon — личный AI-агент
+Documentation=https://docs.openclaw.ai
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/openclaw gateway
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=5
+
+# Memory limits — защита от OOM на 4GB VPS (см. issue #41778)
+MemoryMax=2G
+MemoryHigh=1500M
+
+# CPU limits — не выжирать сервер
+CPUQuota=200%
+
+# Node.js heap — соответствует MemoryMax
+Environment="NODE_OPTIONS=--max-old-space-size=2048"
+
+# Системный путь — node 22 LTS через nodesource
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin"
+
+# Workspace
+Environment="OPENCLAW_HOME=%h/.openclaw"
+WorkingDirectory=%h/.openclaw
+
+# Optional: trajectory recording для дебага (раскомментировать при необходимости)
+# Environment="OPENCLAW_TRAJECTORY=%h/.openclaw/traces"
+
+# Security hardening (см. PRO-04)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.openclaw
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+
+# Логи в journald
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=openclaw
+
+[Install]
+WantedBy=default.target

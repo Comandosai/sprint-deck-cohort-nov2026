@@ -1,0 +1,42 @@
+# Секреты — НИКОГДА не коммитить
+.env
+.env.local
+.env.*.local
+secrets/
+*.token
+*.key
+*.pem
+id_*
+!id_*.example
+
+# Память и логи бота (живут на VPS, локально только ради debug)
+workspace/memory/*
+!workspace/memory/.gitkeep
+*.log
+*.jsonl
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*~
+
+# Backup
+*.bak
+*.orig
+
+# Antigravity локальные файлы
+.antigravity/
+.antigravity.local.json
+
+# Node / Python (если что-то ставится локально)
+node_modules/
+__pycache__/
+.venv/
+venv/
+*.pyc

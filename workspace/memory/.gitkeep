@@ -1,0 +1,3 @@
+# Папка memory/ — для daily logs бота (memory/YYYY-MM-DD.md)
+# Содержимое игнорируется git (см. .gitignore), но сама папка должна существовать
+# чтобы deploy.sh мог зеркалить её на VPS.
