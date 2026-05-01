@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMANDOS AI · Цифровой сотрудник за 21 день</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,700;1,800;1,900&family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000; --bg2:#0a0b0c; --card:#0f1011; --card2:#161718;
+    --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.12);
+    --lime:#c8ff00; --lime-glow:rgba(200,255,0,0.4);
+    --text:#fff; --text2:rgba(255,255,255,0.8); --muted:rgba(255,255,255,0.45); --subtle:rgba(255,255,255,0.22);
+    --green:#22c55e; --red:#ef4444; --orange:#f97316; --blue:#60a5fa;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.5;}
+
+  /* Scanline overlay */
+  body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);pointer-events:none;z-index:9999;}
+
+  /* Слайды */
+  .slide{min-height:100vh;width:100%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:60px 24px;}
+
+  /* Топбар */
+  .top{position:fixed;top:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:100;background:rgba(0,0,0,0.4);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+  .top-brand{display:flex;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;}
+  .top-dot{width:8px;height:8px;background:var(--lime);border-radius:50%;animation:pulse 2s infinite;box-shadow:0 0 16px var(--lime-glow);}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .top-meta{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;}
+
+  /* Прогресс справа */
+  .nav{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:10px;}
+  .nav-dot{width:8px;height:8px;border-radius:50%;background:var(--subtle);cursor:pointer;transition:all 0.3s;border:none;padding:0;}
+  .nav-dot:hover{background:var(--muted);transform:scale(1.4);}
+  .nav-dot.active{background:var(--lime);box-shadow:0 0 16px var(--lime-glow);transform:scale(1.5);}
+
+  /* Подсказка скролла */
+  .hint{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.16em;text-transform:uppercase;animation:bounce 2s infinite;pointer-events:none;}
+  @keyframes bounce{0%,100%{opacity:0.4;transform:translate(-50%,0)}50%{opacity:1;transform:translate(-50%,4px)}}
+
+  /* Hero текст */
+  .h-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.32em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
+  .h-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;line-height:0.86;text-transform:uppercase;letter-spacing:-0.015em;}
+  .h-title.xl{font-size:clamp(64px,14vw,180px);}
+  .h-title.l{font-size:clamp(48px,10vw,128px);}
+  .h-title.m{font-size:clamp(36px,7vw,84px);}
+  .h-title .acc{color:var(--lime);text-shadow:0 0 60px var(--lime-glow);}
+  .h-sub{font-size:clamp(15px,1.6vw,20px);font-weight:300;color:var(--text2);max-width:680px;line-height:1.6;}
+
+  /* Анимация появления */
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(0.16,1,0.3,1),transform 1s cubic-bezier(0.16,1,0.3,1);}
+  .slide.in-view .reveal{opacity:1;transform:translateY(0);}
+  .slide.in-view .r1{transition-delay:0.1s;}
+  .slide.in-view .r2{transition-delay:0.3s;}
+  .slide.in-view .r3{transition-delay:0.5s;}
+  .slide.in-view .r4{transition-delay:0.7s;}
+  .slide.in-view .r5{transition-delay:0.9s;}
+
+  /* Word stagger */
+  .stagger span{display:inline-block;opacity:0;transform:translateY(60px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1);}
+  .slide.in-view .stagger span{opacity:1;transform:translateY(0);}
+  .slide.in-view .stagger span:nth-child(1){transition-delay:0.1s;}
+  .slide.in-view .stagger span:nth-child(2){transition-delay:0.25s;}
+  .slide.in-view .stagger span:nth-child(3){transition-delay:0.4s;}
+  .slide.in-view .stagger span:nth-child(4){transition-delay:0.55s;}
+  .slide.in-view .stagger span:nth-child(5){transition-delay:0.7s;}
+  .slide.in-view .stagger span:nth-child(6){transition-delay:0.85s;}
+
+  /* SLIDE 1 — HERO */
+  .s1{background:var(--bg);}
+  .s1::before{content:'';position:absolute;width:1200px;height:1200px;left:50%;top:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(200,255,0,0.06) 0%,transparent 60%);pointer-events:none;}
+  .s1-content{text-align:center;z-index:2;}
+  .s1-stats{display:flex;justify-content:center;gap:56px;margin-top:64px;}
+  .s1-stat{text-align:center;}
+  .s1-stat-v{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:48px;font-weight:800;color:var(--lime);line-height:1;margin-bottom:6px;}
+  .s1-stat-l{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;}
+
+  /* SLIDE 2 — Until vs After */
+  .s2{background:var(--bg);}
+  .s2-grid{max-width:1200px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+  .s2-col{padding:32px;border-radius:24px;}
+  .s2-before{background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.15);}
+  .s2-after{background:rgba(200,255,0,0.05);border:1px solid rgba(200,255,0,0.2);}
+  .s2-tag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:20px;}
+  .s2-before .s2-tag{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.25);}
+  .s2-after .s2-tag{background:rgba(200,255,0,0.1);color:var(--lime);border:1px solid rgba(200,255,0,0.25);}
+  .s2-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:42px;font-weight:800;text-transform:uppercase;line-height:0.95;margin-bottom:24px;}
+  .s2-list{list-style:none;}
+  .s2-list li{display:flex;gap:14px;padding:10px 0;font-size:16px;color:var(--text2);}
+  .s2-list li::before{font-family:'JetBrains Mono',monospace;flex-shrink:0;font-size:14px;}
+  .s2-before .s2-list li::before{content:'×';color:var(--red);font-size:24px;line-height:1;}
+  .s2-after .s2-list li::before{content:'✓';color:var(--lime);font-size:18px;font-weight:700;}
+  .s2-arrow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80px;height:80px;background:var(--bg);border:2px solid var(--lime);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px var(--lime-glow);font-size:32px;color:var(--lime);}
+
+  /* SLIDE 3 — 6 слоёв */
+  .s3{background:var(--bg);}
+  .s3-content{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;max-width:1280px;width:100%;align-items:center;}
+  .s3-left h2{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:64px;font-weight:800;text-transform:uppercase;line-height:0.92;margin-bottom:24px;}
+  .s3-left h2 .acc{color:var(--lime);}
+  .s3-left p{font-size:16px;color:var(--text2);max-width:460px;line-height:1.7;margin-bottom:14px;}
+  .s3-stack{position:relative;perspective:1200px;}
+  .s3-layer{height:78px;border-radius:14px;display:flex;align-items:center;gap:18px;padding:0 24px;margin-bottom:8px;background:var(--card);border:1px solid var(--border);transform:translateX(0) rotateY(0deg);transition:all 0.6s cubic-bezier(0.16,1,0.3,1);cursor:pointer;}
+  .s3-layer:hover{border-color:var(--lime);box-shadow:-12px 0 40px rgba(200,255,0,0.12);transform:translateX(12px);}
+  .s3-layer:hover .s3-icon{background:rgba(200,255,0,0.15);}
+  .s3-icon{width:44px;height:44px;flex-shrink:0;border-radius:10px;background:var(--bg);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:22px;transition:all 0.3s;}
+  .s3-info{flex:1;}
+  .s3-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;color:var(--lime);text-transform:uppercase;margin-bottom:2px;}
+  .s3-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:22px;font-weight:700;text-transform:uppercase;line-height:1;}
+  .s3-desc{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right;}
+
+  /* SLIDE 4 — Карта 21 дня */
+  .s4{background:var(--bg);}
+  .s4-content{max-width:1280px;width:100%;}
+  .s4-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(48px,8vw,96px);font-weight:800;text-transform:uppercase;line-height:0.9;text-align:center;margin-bottom:80px;}
+  .s4-h .acc{color:var(--lime);}
+  .s4-timeline{position:relative;display:flex;justify-content:space-between;padding:40px 32px;align-items:flex-start;}
+  .s4-line{position:absolute;left:32px;right:32px;top:67px;height:2px;background:linear-gradient(90deg,var(--border),var(--lime),var(--lime),var(--border));border-radius:2px;}
+  .s4-line::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--lime-glow),transparent);filter:blur(8px);}
+  .s4-stop{position:relative;text-align:center;flex:1;z-index:2;}
+  .s4-circ{width:54px;height:54px;border-radius:50%;background:var(--bg);border:2px solid var(--lime);box-shadow:0 0 24px var(--lime-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:22px;font-weight:800;color:var(--lime);}
+  .s4-stop:nth-child(4) .s4-circ{background:var(--lime);color:var(--bg);}
+  .s4-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:8px;}
+  .s4-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:22px;font-weight:700;text-transform:uppercase;line-height:1.05;margin-bottom:12px;}
+  .s4-pills{display:flex;flex-direction:column;gap:6px;align-items:center;}
+  .s4-pill{font-size:11px;color:var(--text2);background:var(--card);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.05em;}
+
+  /* SLIDE 5 — Архитектура */
+  .s5{background:var(--bg);}
+  .s5-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(40px,6vw,72px);font-weight:800;text-transform:uppercase;line-height:0.95;text-align:center;margin-bottom:64px;}
+  .s5-arch{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:32px;max-width:1280px;align-items:center;position:relative;}
+  .s5-node{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;text-align:center;transition:all 0.4s;}
+  .s5-node:hover{border-color:var(--lime);transform:translateY(-4px);box-shadow:0 24px 60px rgba(200,255,0,0.08);}
+  .s5-node.center{background:linear-gradient(180deg,var(--card),rgba(200,255,0,0.04));border-color:rgba(200,255,0,0.25);}
+  .s5-icon{font-size:56px;margin-bottom:18px;}
+  .s5-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--lime);margin-bottom:10px;}
+  .s5-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:26px;font-weight:700;text-transform:uppercase;margin-bottom:12px;line-height:1.05;}
+  .s5-list{list-style:none;font-size:13px;color:var(--muted);text-align:left;}
+  .s5-list li{padding:5px 0;display:flex;gap:8px;}
+  .s5-list li::before{content:'›';color:var(--lime);}
+
+  /* SLIDE 6 — Каскад моделей */
+  .s6{background:var(--bg);}
+  .s6-content{max-width:1100px;width:100%;}
+  .s6-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(44px,7vw,80px);font-weight:800;text-transform:uppercase;line-height:0.92;margin-bottom:48px;text-align:center;}
+  .s6-h .acc{color:var(--lime);}
+  .s6-cascade{display:flex;flex-direction:column;gap:6px;}
+  .s6-row{display:grid;grid-template-columns:80px 1fr 200px 120px;gap:20px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 24px;transition:all 0.3s;}
+  .s6-row:hover{border-color:var(--lime);transform:translateX(8px);}
+  .s6-rank{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:32px;font-weight:800;color:var(--lime);}
+  .s6-info-r .s6-tag-r{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.16em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;}
+  .s6-info-r .s6-name-r{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text);font-weight:500;}
+  .s6-role{font-size:13px;color:var(--text2);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.04em;}
+  .s6-price{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;color:var(--lime);text-align:right;}
+  .s6-bottom{margin-top:32px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--text2);letter-spacing:0.04em;}
+  .s6-bottom .big{font-style:italic;font-size:64px;font-weight:800;color:var(--lime);text-shadow:0 0 60px var(--lime-glow);display:block;line-height:1;margin-top:12px;}
+
+  /* SLIDE 7 — Runaway */
+  .s7{background:var(--bg);position:relative;}
+  .s7::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(239,68,68,0.06) 0%,transparent 60%);pointer-events:none;}
+  .s7-content{text-align:center;max-width:980px;}
+  .s7-tag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.32em;text-transform:uppercase;color:var(--red);background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);padding:6px 16px;border-radius:4px;margin-bottom:32px;}
+  .s7-fig{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(120px,22vw,280px);font-weight:900;line-height:1;color:var(--red);text-shadow:0 0 80px rgba(239,68,68,0.4);margin-bottom:16px;}
+  .s7-sub{font-family:'Barlow Condensed',sans-serif;font-size:clamp(18px,2.4vw,28px);color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:48px;}
+  .s7-divider{width:80px;height:1px;background:var(--lime);margin:0 auto 48px;box-shadow:0 0 16px var(--lime-glow);}
+  .s7-shield-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(36px,5vw,64px);font-weight:800;text-transform:uppercase;line-height:0.95;margin-bottom:40px;}
+  .s7-shield-h .acc{color:var(--lime);}
+  .s7-levels{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .s7-lvl{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 18px;text-align:left;transition:all 0.3s;}
+  .s7-lvl:hover{border-color:var(--lime);transform:translateY(-4px);}
+  .s7-lvl-n{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:36px;font-weight:800;color:var(--lime);line-height:1;margin-bottom:12px;}
+  .s7-lvl-h{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);margin-bottom:6px;}
+  .s7-lvl-d{font-size:11px;color:var(--muted);line-height:1.5;}
+
+  /* SLIDE 8 — Воркшоп 1 */
+  .s8,.s9,.s10{background:var(--bg);}
+  .s8-grid,.s9-grid,.s10-grid{max-width:1280px;width:100%;display:grid;grid-template-columns:0.85fr 1.15fr;gap:64px;align-items:center;}
+  .ws-tag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--lime);background:rgba(200,255,0,0.08);border:1px solid rgba(200,255,0,0.25);padding:5px 14px;border-radius:4px;margin-bottom:20px;}
+  .ws-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(46px,7vw,84px);font-weight:800;text-transform:uppercase;line-height:0.9;margin-bottom:24px;}
+  .ws-h .acc{color:var(--lime);}
+  .ws-sub{font-size:16px;color:var(--text2);line-height:1.7;margin-bottom:24px;}
+  .ws-meta{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--lime);}
+  .ws-blocks{display:flex;flex-direction:column;gap:10px;}
+  .ws-block{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 22px;display:flex;gap:18px;align-items:center;transition:all 0.3s;}
+  .ws-block:hover{border-color:var(--lime);transform:translateX(6px);}
+  .ws-num{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:32px;font-weight:800;color:var(--lime);min-width:50px;line-height:1;}
+  .ws-info{flex:1;}
+  .ws-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;line-height:1.05;margin-bottom:3px;}
+  .ws-d{font-size:13px;color:var(--muted);line-height:1.4;}
+
+  /* SLIDE 11 — Защита */
+  .s11{background:var(--bg);position:relative;}
+  .s11::before{content:'';position:absolute;width:1000px;height:1000px;left:50%;top:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(200,255,0,0.08) 0%,transparent 60%);pointer-events:none;}
+  .s11-content{text-align:center;z-index:2;}
+  .s11-emoji{font-size:120px;margin-bottom:24px;}
+  .s11-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(56px,11vw,140px);font-weight:800;text-transform:uppercase;line-height:0.86;margin-bottom:24px;}
+  .s11-h .acc{color:var(--lime);text-shadow:0 0 80px var(--lime-glow);}
+  .s11-sub{font-size:clamp(16px,1.8vw,22px);color:var(--text2);max-width:680px;margin:0 auto 56px;line-height:1.6;}
+  .s11-categories{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;}
+  .s11-cat{padding:24px 36px;background:var(--card);border:1px solid var(--border);border-radius:16px;min-width:180px;}
+  .s11-cat-emoji{font-size:36px;margin-bottom:12px;}
+  .s11-cat-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;}
+
+  /* SLIDE 12 — Стоимость */
+  .s12{background:var(--bg);}
+  .s12-content{max-width:1100px;width:100%;}
+  .s12-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(48px,8vw,96px);font-weight:800;text-transform:uppercase;line-height:0.9;text-align:center;margin-bottom:56px;}
+  .s12-h .acc{color:var(--lime);}
+  .s12-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;}
+  .s12-col{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;}
+  .s12-col-h{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+  .s12-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+  .s12-row:last-child{border-bottom:none;}
+  .s12-name{font-size:14px;color:var(--text2);}
+  .s12-val{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--lime);font-weight:500;}
+  .s12-total{background:linear-gradient(180deg,var(--card),rgba(200,255,0,0.05));border:1px solid rgba(200,255,0,0.3);border-radius:20px;padding:32px;text-align:center;}
+  .s12-total-l{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;}
+  .s12-total-v{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:64px;font-weight:800;color:var(--lime);line-height:1;text-shadow:0 0 60px var(--lime-glow);}
+  .s12-total-d{font-size:13px;color:var(--muted);margin-top:6px;}
+
+  /* SLIDE 13 — Что делать */
+  .s13{background:var(--bg);}
+  .s13-content{max-width:1100px;width:100%;text-align:center;}
+  .s13-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(48px,8vw,96px);font-weight:800;text-transform:uppercase;line-height:0.9;margin-bottom:48px;}
+  .s13-h .acc{color:var(--lime);}
+  .s13-checks{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;text-align:left;max-width:820px;margin:0 auto;}
+  .s13-check{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+  .s13-check-n{flex-shrink:0;width:32px;height:32px;border-radius:8px;background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.25);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:16px;font-weight:800;color:var(--lime);}
+  .s13-check-t{font-size:14px;color:var(--text2);line-height:1.55;}
+  .s13-check-t strong{color:var(--text);font-weight:500;}
+
+  /* SLIDE 14 — CTA */
+  .s14{background:var(--bg);position:relative;}
+  .s14::before{content:'';position:absolute;width:1400px;height:1400px;left:50%;top:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(200,255,0,0.1) 0%,transparent 55%);pointer-events:none;}
+  .s14-content{text-align:center;z-index:2;max-width:920px;}
+  .s14-tag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.32em;text-transform:uppercase;color:var(--lime);background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.25);padding:6px 16px;border-radius:4px;margin-bottom:32px;}
+  .s14-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:clamp(64px,12vw,160px);font-weight:800;text-transform:uppercase;line-height:0.86;margin-bottom:32px;letter-spacing:-0.015em;}
+  .s14-h .acc{color:var(--lime);text-shadow:0 0 80px var(--lime-glow);}
+  .s14-sub{font-size:clamp(15px,1.7vw,20px);color:var(--text2);line-height:1.7;max-width:600px;margin:0 auto 48px;}
+  .s14-btn{display:inline-flex;align-items:center;gap:12px;background:var(--lime);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:20px 48px;border-radius:12px;text-decoration:none;transition:all 0.3s;box-shadow:0 16px 60px rgba(200,255,0,0.25);}
+  .s14-btn:hover{background:#d8ff20;transform:translateY(-4px);box-shadow:0 24px 80px rgba(200,255,0,0.4);}
+  .s14-handle{margin-top:24px;font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--text);letter-spacing:0.04em;}
+  .s14-handle .at{color:var(--lime);}
+
+  /* Mobile */
+  @media (max-width:920px){
+    .top{padding:0 16px;}
+    .nav{right:12px;}
+    .s2-grid,.s3-content,.s5-arch,.s8-grid,.s9-grid,.s10-grid,.s12-grid,.s13-checks{grid-template-columns:1fr;gap:24px;}
+    .s2-arrow{position:static;margin:16px auto;transform:none;}
+    .s4-timeline{flex-direction:column;gap:32px;}
+    .s4-line{display:none;}
+    .s7-levels{grid-template-columns:repeat(2,1fr);}
+    .s6-row{grid-template-columns:60px 1fr;}
+    .s6-row .s6-role,.s6-row .s6-price{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-brand"><div class="top-dot"></div>COMANDOS AI</div>
+  <div class="top-meta">Спринт OpenClaw · 1 нояб 2026</div>
+  <div class="top-meta" style="text-align:right;">@ai_comandos</div>
+</div>
+
+<nav class="nav" id="nav"></nav>
+
+<div class="hint" id="hint">Скролл ↓</div>
+
+<!-- SLIDE 1 -->
+<section class="slide s1" data-slide="1">
+  <div class="s1-content">
+    <div class="h-eyebrow reveal r1">Спринт · 1–20 ноября 2026</div>
+    <h1 class="h-title xl reveal r2"><span class="stagger"><span>Цифровой</span></span></h1>
+    <h1 class="h-title xl reveal r3" style="margin-top:-12px;"><span class="stagger"><span>сотрудник</span></span></h1>
+    <h1 class="h-title xl reveal r4" style="margin-top:-12px;"><span class="stagger"><span>за </span><span class="acc">21</span><span> день</span></span></h1>
+    <p class="h-sub reveal r5" style="margin:36px auto 0;text-align:center;">Личный AI в Telegram. Помнит, рисует, пингует, ищет. Работает 24/7. Стоит как один поход в кофейню в неделю.</p>
+    <div class="s1-stats reveal r5">
+      <div class="s1-stat"><div class="s1-stat-v">3</div><div class="s1-stat-l">Воркшопа</div></div>
+      <div class="s1-stat"><div class="s1-stat-v">21</div><div class="s1-stat-l">День</div></div>
+      <div class="s1-stat"><div class="s1-stat-v">~$15</div><div class="s1-stat-l">/мес после</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2 — До vs После -->
+<section class="slide s2" data-slide="2">
+  <div class="s2-grid">
+    <div class="s2-col s2-before reveal r1">
+      <div class="s2-tag">Сегодня</div>
+      <h2 class="s2-h">Ты делаешь<br>всё сам</h2>
+      <ul class="s2-list">
+        <li>Час каждое утро на переписку</li>
+        <li>Память в голове + 12 заметок в Apple Notes</li>
+        <li>Сам ищешь информацию, копируешь, форматируешь</li>
+        <li>Забываешь про важные встречи и звонки</li>
+        <li>«Сегодня день фигни» — раз в неделю</li>
+      </ul>
+    </div>
+    <div class="s2-col s2-after reveal r2">
+      <div class="s2-tag">Через 21 день</div>
+      <h2 class="s2-h">У тебя есть<br><span style="color:var(--lime);">сотрудник</span></h2>
+      <ul class="s2-list">
+        <li>Утренний брифинг приходит сам в 9:00</li>
+        <li>Помнит факты после месяцев</li>
+        <li>Ищет в интернете и пишет с источниками</li>
+        <li>Голосовые в обе стороны</li>
+        <li>Рисует картинки по запросу</li>
+        <li>Работает 24/7 даже когда ты спишь</li>
+      </ul>
+    </div>
+  </div>
+  <div class="s2-arrow reveal r3">→</div>
+</section>
+
+<!-- SLIDE 3 — 6 слоёв -->
+<section class="slide s3" data-slide="3">
+  <div class="s3-content">
+    <div class="s3-left">
+      <div class="h-eyebrow reveal r1">Анатомия</div>
+      <h2 class="reveal r2">Из чего<br>состоит<br><span class="acc">сотрудник</span></h2>
+      <p class="reveal r3">Не просто бот в Telegram. Шесть слоёв. Каждый отвечает за свою часть «личности».</p>
+      <p class="reveal r4">Воркшоп 1 настраивает всё снизу вверх — от железа до рук.</p>
+    </div>
+    <div class="s3-stack">
+      <div class="s3-layer reveal r1"><div class="s3-icon">🟧</div><div class="s3-info"><div class="s3-num">06 · Руки</div><div class="s3-name">Что делает</div></div><div class="s3-desc">fs · exec · web<br>browser · image</div></div>
+      <div class="s3-layer reveal r2"><div class="s3-icon">🟨</div><div class="s3-info"><div class="s3-num">05 · Память</div><div class="s3-name">Что помнит</div></div><div class="s3-desc">MEMORY.md<br>mem0 · daily logs</div></div>
+      <div class="s3-layer reveal r2"><div class="s3-icon">🟪</div><div class="s3-info"><div class="s3-num">04 · Личность</div><div class="s3-name">Кто он</div></div><div class="s3-desc">SOUL · USER<br>AGENTS · BOOT</div></div>
+      <div class="s3-layer reveal r3"><div class="s3-icon">🟩</div><div class="s3-info"><div class="s3-num">03 · Мозг</div><div class="s3-name">Кто думает</div></div><div class="s3-desc">4 модели каскад<br>+ защита</div></div>
+      <div class="s3-layer reveal r4"><div class="s3-icon">🟦</div><div class="s3-info"><div class="s3-num">02 · Голос</div><div class="s3-name">Где говорит</div></div><div class="s3-desc">Telegram bot<br>voice TTS</div></div>
+      <div class="s3-layer reveal r5"><div class="s3-icon">🟫</div><div class="s3-info"><div class="s3-num">01 · Тело</div><div class="s3-name">Где живёт</div></div><div class="s3-desc">VPS Linux<br>OpenClaw daemon</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4 — Карта 21 дня -->
+<section class="slide s4" data-slide="4">
+  <div class="s4-content">
+    <h2 class="s4-h reveal r1"><span class="stagger"><span>Карта</span> <span>21 </span><span class="acc">дня</span></span></h2>
+    <div class="s4-timeline">
+      <div class="s4-stop reveal r2">
+        <div class="s4-circ">01</div>
+        <div class="s4-date">1 нояб · ПТ</div>
+        <div class="s4-name">Воркшоп 1<br>Установка</div>
+        <div class="s4-pills">
+          <div class="s4-pill">тело · голос · мозг</div>
+          <div class="s4-pill">картинки · защита</div>
+        </div>
+      </div>
+      <div class="s4-stop reveal r3">
+        <div class="s4-circ">02</div>
+        <div class="s4-date">8 нояб · ПТ</div>
+        <div class="s4-name">Воркшоп 2<br>Личность</div>
+        <div class="s4-pills">
+          <div class="s4-pill">SOUL через бота</div>
+          <div class="s4-pill">память · ритуалы</div>
+        </div>
+      </div>
+      <div class="s4-stop reveal r4">
+        <div class="s4-circ">03</div>
+        <div class="s4-date">15 нояб · ПТ</div>
+        <div class="s4-name">Воркшоп 3<br>Расширения</div>
+        <div class="s4-pills">
+          <div class="s4-pill">MCP · browser</div>
+          <div class="s4-pill">соц-сети · voice</div>
+        </div>
+      </div>
+      <div class="s4-stop reveal r5">
+        <div class="s4-circ">04</div>
+        <div class="s4-date">20 нояб · СР</div>
+        <div class="s4-name">Защита<br>Showcase</div>
+        <div class="s4-pills">
+          <div class="s4-pill">90 сек на каждого</div>
+          <div class="s4-pill">голосование</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5 — Архитектура управления -->
+<section class="slide s5" data-slide="5">
+  <div style="max-width:1280px;width:100%;">
+    <h2 class="s5-h reveal r1"><span class="stagger"><span>Два</span> <span>канала</span> <span>управления</span></span></h2>
+    <p style="text-align:center;font-size:16px;color:var(--text2);max-width:680px;margin:0 auto 48px;" class="reveal r2">У бота два «входа». Системные операции — через Antigravity на компе. Ежедневная кастомизация — через Telegram голосом.</p>
+    <div class="s5-arch">
+      <div class="s5-node reveal r2">
+        <div class="s5-icon">💻</div>
+        <div class="s5-tag">Канал 1</div>
+        <div class="s5-name">Antigravity<br>+ AI-плагин</div>
+        <ul class="s5-list">
+          <li>Установка OpenClaw</li>
+          <li>Системная безопасность</li>
+          <li>MCP-серверы</li>
+          <li>Browser автоматизация</li>
+        </ul>
+      </div>
+      <div class="s5-node center reveal r3">
+        <div class="s5-icon">⚙️</div>
+        <div class="s5-tag">Сервер</div>
+        <div class="s5-name">VPS<br>OpenClaw 24/7</div>
+        <ul class="s5-list">
+          <li>Daemon работает всегда</li>
+          <li>Память персистит</li>
+          <li>Cron работает в фоне</li>
+          <li>Watchdog защищает</li>
+        </ul>
+      </div>
+      <div class="s5-node reveal r4">
+        <div class="s5-icon">📱</div>
+        <div class="s5-tag">Канал 2</div>
+        <div class="s5-name">Telegram<br>чат с ботом</div>
+        <ul class="s5-list">
+          <li>Кастомизация личности</li>
+          <li>Запоминание фактов</li>
+          <li>Установка skills</li>
+          <li>Ежедневные команды</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6 — Каскад моделей -->
+<section class="slide s6" data-slide="6">
+  <div class="s6-content">
+    <h2 class="s6-h reveal r1"><span class="stagger"><span>Каскад</span> <span class="acc">5 моделей</span></span></h2>
+    <p style="text-align:center;font-size:15px;color:var(--text2);max-width:640px;margin:0 auto 40px;" class="reveal r2">Не одна тяжёлая модель за все деньги мира. Каскад: дешёвая делает 90%, дорогая — только то что важно. Защита от runaway встроена.</p>
+    <div class="s6-cascade">
+      <div class="s6-row reveal r2">
+        <div class="s6-rank">01</div>
+        <div class="s6-info-r"><div class="s6-tag-r">Primary · 90% диалогов</div><div class="s6-name-r">minimax/MiniMax-M2.7</div></div>
+        <div class="s6-role">Основной двигатель</div>
+        <div class="s6-price">$10/мес</div>
+      </div>
+      <div class="s6-row reveal r2">
+        <div class="s6-rank">02</div>
+        <div class="s6-info-r"><div class="s6-tag-r">Fallback · если упал</div><div class="s6-name-r">deepseek-v4-flash</div></div>
+        <div class="s6-role">Дешевле primary</div>
+        <div class="s6-price">~$1/мес</div>
+      </div>
+      <div class="s6-row reveal r3">
+        <div class="s6-rank">03</div>
+        <div class="s6-info-r"><div class="s6-tag-r">Heartbeat · фон 24/7</div><div class="s6-name-r">gemini-2.5-flash-lite</div></div>
+        <div class="s6-role">Самое дешёвое</div>
+        <div class="s6-price">~$0.10/мес</div>
+      </div>
+      <div class="s6-row reveal r3">
+        <div class="s6-rank">04</div>
+        <div class="s6-info-r"><div class="s6-tag-r">Subagents · параллельно</div><div class="s6-name-r">moonshotai/kimi-k2.6</div></div>
+        <div class="s6-role">Специально для агентов</div>
+        <div class="s6-price">~$1.50/мес</div>
+      </div>
+      <div class="s6-row reveal r4">
+        <div class="s6-rank">05</div>
+        <div class="s6-info-r"><div class="s6-tag-r">Premium · по /model</div><div class="s6-name-r">deepseek-v4-pro</div></div>
+        <div class="s6-role">Только важное</div>
+        <div class="s6-price">по запросу</div>
+      </div>
+    </div>
+    <div class="s6-bottom reveal r5">У других на Sonnet 4.6 — $200/мес. У нас<span class="big">~$15/мес</span></div>
+  </div>
+</section>
+
+<!-- SLIDE 7 — Runaway -->
+<section class="slide s7" data-slide="7">
+  <div class="s7-content">
+    <div class="s7-tag reveal r1">Реальный кейс из community</div>
+    <div class="s7-fig reveal r2">$4,200</div>
+    <div class="s7-sub reveal r3">за <span style="color:var(--lime);font-weight:700;">63 часа</span> · runaway-loop fallback</div>
+    <div class="s7-divider reveal r4"></div>
+    <h2 class="s7-shield-h reveal r4">У тебя — <span class="acc">не случится</span></h2>
+    <div class="s7-levels">
+      <div class="s7-lvl reveal r5">
+        <div class="s7-lvl-n">01</div>
+        <div class="s7-lvl-h">Config cap</div>
+        <div class="s7-lvl-d">$2/день · $30/мес максимум внутри OpenClaw</div>
+      </div>
+      <div class="s7-lvl reveal r5">
+        <div class="s7-lvl-n">02</div>
+        <div class="s7-lvl-h">Provider limit</div>
+        <div class="s7-lvl-d">OpenRouter $30/мес — провайдер сам режет</div>
+      </div>
+      <div class="s7-lvl reveal r5">
+        <div class="s7-lvl-n">03</div>
+        <div class="s7-lvl-h">Watchdog cron</div>
+        <div class="s7-lvl-d">Проверка каждые 30 мин · стоп если &gt;$3/час</div>
+      </div>
+      <div class="s7-lvl reveal r5">
+        <div class="s7-lvl-n">04</div>
+        <div class="s7-lvl-h">Rate limit</div>
+        <div class="s7-lvl-d">Heartbeat: 1/мин · 5/час · 50/день</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8 — Воркшоп 1 -->
+<section class="slide s8" data-slide="8">
+  <div class="s8-grid">
+    <div>
+      <div class="ws-tag reveal r1">Воркшоп 1 · 1 ноября</div>
+      <h2 class="ws-h reveal r2">Тело,<br>голос,<br><span class="acc">мозг</span></h2>
+      <p class="ws-sub reveal r3">90 минут. Двенадцать промптов в Antigravity. Бот живёт в Telegram и отвечает на «привет» через MiniMax M2.7.</p>
+      <div class="ws-meta reveal r4">12 промптов · 8 проверок · 1 аудит</div>
+    </div>
+    <div class="ws-blocks">
+      <div class="ws-block reveal r2"><div class="ws-num">A</div><div class="ws-info"><div class="ws-name">VPS hardening</div><div class="ws-d">clawd · ufw · fail2ban · swap · linger</div></div></div>
+      <div class="ws-block reveal r2"><div class="ws-num">B</div><div class="ws-info"><div class="ws-name">OpenClaw daemon</div><div class="ws-d">npm · systemd · gateway 127.0.0.1</div></div></div>
+      <div class="ws-block reveal r3"><div class="ws-num">C</div><div class="ws-info"><div class="ws-name">Каскад моделей</div><div class="ws-d">5 auth · primary · fallbacks · aliases</div></div></div>
+      <div class="ws-block reveal r3"><div class="ws-num">D</div><div class="ws-info"><div class="ws-name">Telegram-бот</div><div class="ws-d">allowlist · token · SOUL.md имя</div></div></div>
+      <div class="ws-block reveal r4"><div class="ws-num">E</div><div class="ws-info"><div class="ws-name">Картинки</div><div class="ws-d">/image · Gemini Flash · FLUX Schnell</div></div></div>
+      <div class="ws-block reveal r4"><div class="ws-num">F</div><div class="ws-info"><div class="ws-name">Защита runaway</div><div class="ws-d">watchdog cron · OpenRouter limit</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9 — Воркшоп 2 -->
+<section class="slide s9" data-slide="9">
+  <div class="s9-grid">
+    <div>
+      <div class="ws-tag reveal r1">Воркшоп 2 · 8 ноября</div>
+      <h2 class="ws-h reveal r2">Личность<br>через сам<br><span class="acc">Telegram</span></h2>
+      <p class="ws-sub reveal r3">Минимум Antigravity. Максимум общения с ботом. Бот сам редактирует свою SOUL.md и MEMORY.md по твоим запросам.</p>
+      <div class="ws-meta reveal r4">«Бот, поменяй свой характер на ироничный»</div>
+    </div>
+    <div class="ws-blocks">
+      <div class="ws-block reveal r2"><div class="ws-num">01</div><div class="ws-info"><div class="ws-name">Голос и тон</div><div class="ws-d">SOUL.md · anti-sycophancy · примеры</div></div></div>
+      <div class="ws-block reveal r2"><div class="ws-num">02</div><div class="ws-info"><div class="ws-name">Кто я ему</div><div class="ws-d">USER.md · профиль · предпочтения</div></div></div>
+      <div class="ws-block reveal r3"><div class="ws-num">03</div><div class="ws-info"><div class="ws-name">Долгая память</div><div class="ws-d">mem0 · Qdrant · auto-capture</div></div></div>
+      <div class="ws-block reveal r3"><div class="ws-num">04</div><div class="ws-info"><div class="ws-name">Утренний ритуал</div><div class="ws-d">cron 9:00 · брифинг · новости</div></div></div>
+      <div class="ws-block reveal r4"><div class="ws-num">05</div><div class="ws-info"><div class="ws-name">Heartbeat</div><div class="ws-d">проактивные пинги в фоне</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10 — Воркшоп 3 -->
+<section class="slide s10" data-slide="10">
+  <div class="s10-grid">
+    <div>
+      <div class="ws-tag reveal r1">Воркшоп 3 · 15 ноября</div>
+      <h2 class="ws-h reveal r2">Руки<br>в реальный<br><span class="acc">мир</span></h2>
+      <p class="ws-sub reveal r3">Бот ходит в интернет, заполняет формы, постит в соц-сети, читает PDF. Расширения и интеграции.</p>
+      <div class="ws-meta reveal r4">«Бот, опубликуй пост в X и LinkedIn»</div>
+    </div>
+    <div class="ws-blocks">
+      <div class="ws-block reveal r2"><div class="ws-num">01</div><div class="ws-info"><div class="ws-name">MCP-серверы</div><div class="ws-d">Tavily search · Notion · GitHub</div></div></div>
+      <div class="ws-block reveal r2"><div class="ws-num">02</div><div class="ws-info"><div class="ws-name">Browser automation</div><div class="ws-d">Stagehand · Playwright · форм-фил</div></div></div>
+      <div class="ws-block reveal r3"><div class="ws-num">03</div><div class="ws-info"><div class="ws-name">Соц-сети</div><div class="ws-d">Twitter · LinkedIn · VK через API</div></div></div>
+      <div class="ws-block reveal r3"><div class="ws-num">04</div><div class="ws-info"><div class="ws-name">Voice исходящие</div><div class="ws-d">Whisper Groq · полная транскрипция</div></div></div>
+      <div class="ws-block reveal r4"><div class="ws-num">05</div><div class="ws-info"><div class="ws-name">Финальный сценарий</div><div class="ws-d">связка cron + MCP + skill</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11 — Защита -->
+<section class="slide s11" data-slide="11">
+  <div class="s11-content">
+    <div class="s11-emoji reveal r1">🏆</div>
+    <h2 class="s11-h reveal r2"><span class="stagger"><span>Защита</span><br><span>20 </span><span class="acc">ноября</span></span></h2>
+    <p class="s11-sub reveal r3">Каждый показывает своего сотрудника 90 секунд. Голосование по 3 категориям. Призы — личные разборы и публикация в @ai_comandos.</p>
+    <div class="s11-categories">
+      <div class="s11-cat reveal r4"><div class="s11-cat-emoji">🎯</div><div class="s11-cat-name">Самый<br>полезный</div></div>
+      <div class="s11-cat reveal r4"><div class="s11-cat-emoji">😂</div><div class="s11-cat-name">Самый<br>смешной</div></div>
+      <div class="s11-cat reveal r4"><div class="s11-cat-emoji">🚀</div><div class="s11-cat-name">Самый<br>неожиданный</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 12 — Стоимость -->
+<section class="slide s12" data-slide="12">
+  <div class="s12-content">
+    <h2 class="s12-h reveal r1"><span class="stagger"><span>Сколько</span> <span class="acc">стоит</span></span></h2>
+    <div class="s12-grid">
+      <div class="s12-col reveal r2">
+        <div class="s12-col-h">Первый месяц</div>
+        <div class="s12-row"><div class="s12-name">VPS Hetzner / Beget</div><div class="s12-val">~500 ₽</div></div>
+        <div class="s12-row"><div class="s12-name">MiniMax Coding Plan</div><div class="s12-val">$10 / ~900 ₽</div></div>
+        <div class="s12-row"><div class="s12-name">DeepSeek баланс</div><div class="s12-val">$10 разово</div></div>
+        <div class="s12-row"><div class="s12-name">OpenRouter баланс</div><div class="s12-val">$10 разово</div></div>
+        <div class="s12-row"><div class="s12-name">OpenAI TTS баланс</div><div class="s12-val">$5 разово</div></div>
+        <div class="s12-row"><div class="s12-name">Groq Whisper</div><div class="s12-val">бесплатно</div></div>
+      </div>
+      <div class="s12-col reveal r3">
+        <div class="s12-col-h">Со 2-го месяца</div>
+        <div class="s12-row"><div class="s12-name">VPS</div><div class="s12-val">~500 ₽</div></div>
+        <div class="s12-row"><div class="s12-name">MiniMax подписка</div><div class="s12-val">$10 / ~900 ₽</div></div>
+        <div class="s12-row"><div class="s12-name">DeepSeek расход</div><div class="s12-val">~$1</div></div>
+        <div class="s12-row"><div class="s12-name">OpenRouter расход</div><div class="s12-val">~$2</div></div>
+        <div class="s12-row"><div class="s12-name">OpenAI TTS расход</div><div class="s12-val">~$1-2</div></div>
+        <div class="s12-row"><div class="s12-name">Groq</div><div class="s12-val">$0</div></div>
+      </div>
+    </div>
+    <div class="s12-total reveal r4">
+      <div class="s12-total-l">Итого ежемесячно</div>
+      <div class="s12-total-v">~1 500 ₽</div>
+      <div class="s12-total-d">в 13 раз дешевле чем у тех кто на Sonnet</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 13 — Что делать -->
+<section class="slide s13" data-slide="13">
+  <div class="s13-content">
+    <h2 class="s13-h reveal r1"><span class="stagger"><span>Что</span> <span>сделать</span> <span class="acc">сейчас</span></span></h2>
+    <div class="s13-checks">
+      <div class="s13-check reveal r2"><div class="s13-check-n">1</div><div class="s13-check-t">Купить <strong>VPS</strong> Ubuntu 24.04 (Hetzner или Beget)</div></div>
+      <div class="s13-check reveal r2"><div class="s13-check-n">2</div><div class="s13-check-t">Установить <strong>Antigravity</strong> + плагин AI (Claude Code или Codex)</div></div>
+      <div class="s13-check reveal r3"><div class="s13-check-n">3</div><div class="s13-check-t">Создать <strong>Telegram-бот</strong> через @BotFather</div></div>
+      <div class="s13-check reveal r3"><div class="s13-check-n">4</div><div class="s13-check-t">Получить <strong>5 API-ключей:</strong> MiniMax, DeepSeek, OpenRouter, Groq, OpenAI</div></div>
+      <div class="s13-check reveal r4"><div class="s13-check-n">5</div><div class="s13-check-t">Открыть <strong>guide.html</strong> и пройти 12 промптов на воркшопе</div></div>
+      <div class="s13-check reveal r4"><div class="s13-check-n">6</div><div class="s13-check-t">Сделать <strong>самопроверку через бот</strong> + аудит в новом чате</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14 — CTA -->
+<section class="slide s14" data-slide="14">
+  <div class="s14-content">
+    <div class="s14-tag reveal r1">Поехали</div>
+    <h2 class="s14-h reveal r2"><span class="stagger"><span>Найми</span><br><span>себе </span><span class="acc">сотрудника</span></span></h2>
+    <p class="s14-sub reveal r3">Полный гайд, промпты и стандарт — в репозитории спринта на GitHub. Подписка на канал — для следующих воркшопов и кейсов.</p>
+    <a class="s14-btn reveal r4" href="https://t.me/ai_comandos" target="_blank">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.286c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.065 14.67l-2.95-.924c-.64-.203-.654-.64.136-.948l11.526-4.445c.535-.194 1.002.131.785.895z"/></svg>
+      Подписаться на @ai_comandos
+    </a>
+    <div class="s14-handle reveal r5"><span class="at">@</span>ai_comandos</div>
+  </div>
+</section>
+
+<script>
+  // Навигатор справа
+  const slides=document.querySelectorAll('.slide');
+  const nav=document.getElementById('nav');
+  slides.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='nav-dot';
+    btn.dataset.target=i;
+    btn.title='Слайд '+(i+1);
+    btn.onclick=()=>s.scrollIntoView({behavior:'smooth'});
+    nav.appendChild(btn);
+  });
+  const dots=document.querySelectorAll('.nav-dot');
+
+  // IntersectionObserver — анимации появления + active dot
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        const idx=parseInt(e.target.dataset.slide)-1;
+        dots.forEach(d=>d.classList.remove('active'));
+        if(dots[idx])dots[idx].classList.add('active');
+        // Скрыть подсказку после первого скролла
+        if(idx>0){const h=document.getElementById('hint');if(h)h.style.opacity='0';}
+      }
+    });
+  },{threshold:0.3});
+  slides.forEach(s=>io.observe(s));
+
+  // Хоткеи: ↑ ↓ Space PgUp PgDn Home End
+  let currentSlide=0;
+  document.addEventListener('keydown',(e)=>{
+    const active=document.querySelector('.slide.in-view');
+    const idx=active?Array.from(slides).indexOf(active):0;
+    let next=idx;
+    if(e.key==='ArrowDown'||e.key==='PageDown'||e.key===' '){e.preventDefault();next=Math.min(idx+1,slides.length-1);}
+    else if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();next=Math.max(idx-1,0);}
+    else if(e.key==='Home'){e.preventDefault();next=0;}
+    else if(e.key==='End'){e.preventDefault();next=slides.length-1;}
+    if(next!==idx)slides[next].scrollIntoView({behavior:'smooth'});
+  });
+
+  // Touch swipe для мобильных
+  let touchStartY=0;
+  document.addEventListener('touchstart',(e)=>{touchStartY=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',(e)=>{
+    const dy=touchStartY-e.changedTouches[0].clientY;
+    if(Math.abs(dy)<50)return;
+    const active=document.querySelector('.slide.in-view');
+    const idx=active?Array.from(slides).indexOf(active):0;
+    const next=dy>0?Math.min(idx+1,slides.length-1):Math.max(idx-1,0);
+    if(next!==idx)slides[next].scrollIntoView({behavior:'smooth'});
+  },{passive:true});
+</script>
+</body>
+</html>
