@@ -225,30 +225,37 @@ openclaw onboard. Это TTY-мастер, ты не справишься чер
 
 ---
 
-# ⏸ ЧАСТЬ А2 — ТЫ САМ в Mac Terminal (10 минут)
+# ⏸ ЧАСТЬ А2 — ТЫ САМ в терминале (10 минут)
 
-> **Открой Mac Terminal** (НЕ Antigravity Terminal — нужен полноценный TTY).
+> Подойдёт **любой полноценный терминал** (НЕ AI-плагин в Antigravity!):
+> - 🟢 Antigravity Terminal (View → Terminal) — рекомендуется, в папке проекта
+> - 🟡 Mac Terminal.app (Spotlight → Terminal)
+> - 🔵 Windows: WSL / Git Bash
+>
+> ⚠️ Главное **НЕ путать**: AI-плагин Antigravity (Claude Code / Codex) не может запустить TTY-мастер. А **встроенный Terminal в Antigravity** (View → Terminal) — это обычный shell, в нём всё работает.
 
 ## 🔌 Подключись к VPS как clawd
 
-**Способ A — через переменные из `.env` (рекомендуется)**:
+Открой терминал **в папке проекта** (там где `.env`):
+- 🟢 **Antigravity Terminal** (View → Terminal) — открывается уже в папке проекта, рекомендую
+- 🟡 **Mac Terminal.app** — тогда сначала `cd` в папку проекта
+- 🔵 **Windows: WSL / Git Bash** — команда работает идентично Mac
+
+**Универсальная команда** (подставит VPS_IP автоматически из `.env`):
 
 ```bash
-cd ~/Desktop/Командос     # или твой путь к .env
-set -a; source .env; set +a
-ssh -i $SSH_KEY_PATH $VPS_USER@$VPS_IP
+set -a && source .env && set +a && ssh -i ~/.ssh/clawd_ed25519 clawd@$VPS_IP
 ```
 
-**Способ B — подставить IP вручную**:
+Что делает:
+- `set -a && source .env && set +a` — подгружает переменные из `.env` в shell
+- `$VPS_IP` — подставится автоматически (твой IP из `.env`)
+- `~/.ssh/clawd_ed25519` — стандартный путь к ключу (создан в Промпте 2)
+- `clawd` — стандартный юзер на VPS (создан в Промпте 4)
 
-```bash
-# ⚠️ 91.234.56.78 — это ПРИМЕР! Замени на свой реальный VPS_IP из .env
-ssh -i ~/.ssh/clawd_ed25519 clawd@91.234.56.78
-```
+Должна открыться сессия `clawd@vps:~$` **без пароля**.
 
-Должна открыться сессия `clawd@vps:~$` без пароля.
-
-⚠️ **Если в команде оставить `VPS_IP` буквально** — получишь ошибку `Could not resolve hostname vps_ip`. Это плейсхолдер, его нужно заменить!
+⚠️ Если получишь ошибку `Could not resolve hostname vps_ip` — значит ты в неправильной папке (нет `.env`) или `VPS_IP` пустой. Проверь: `pwd` (где ты) и `cat .env | grep VPS_IP` (есть ли значение).
 
 ## 🧙 Запусти мастер
 

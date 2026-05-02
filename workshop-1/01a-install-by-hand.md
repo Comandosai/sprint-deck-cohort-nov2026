@@ -203,16 +203,15 @@ exit
 
 ## 🟢 ЭТАП 4 — Подключение как clawd (1 минута)
 
-В Mac Terminal:
+Открой терминал **в папке проекта** (Antigravity Terminal / Mac Terminal с `cd` / WSL).
+
+**Универсальная команда** (подставит VPS_IP из `.env`):
 
 ```bash
-# ⚠️ 91.234.56.78 — это ПРИМЕР! Замени на свой реальный IP VPS:
-ssh -i ~/.ssh/clawd_ed25519 clawd@91.234.56.78
+set -a && source .env && set +a && ssh -i ~/.ssh/clawd_ed25519 clawd@$VPS_IP
 ```
 
 Должна открыться сессия `clawd@vps:~$` **БЕЗ пароля**.
-
-⚠️ Если оставишь в команде слово `VPS_IP` буквально — получишь ошибку `Could not resolve hostname vps_ip`. Это плейсхолдер, его надо заменить на свой реальный IP!
 
 ```bash
 sudo -n whoami
