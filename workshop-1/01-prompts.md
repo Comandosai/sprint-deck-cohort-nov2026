@@ -33,39 +33,67 @@
 
 ---
 
-## 📦 ПРОМПТ 1 — Склонировать deck + ПРОЧИТАТЬ СТАНДАРТ + .env
+## 🟢 ПРЕД-ШАГ — Открой пустую папку в Antigravity (1 мин, ты сам)
+
+ДО первого промпта подготовь рабочую папку:
+
+1. **Создай новую пустую папку** в Finder (например `~/Desktop/Командос`)
+2. В Antigravity: **File → Open Folder** → выбери эту папку
+3. Убедись что в ней **ничего нет** кроме `.DS_Store` (если есть твои файлы — выбери другую пустую, иначе git clone упадёт)
+
+Теперь Antigravity открыт на твоей рабочей папке. AI будет работать **прямо в ней**.
+
+---
+
+## 📦 ПРОМПТ 1 — Склонировать deck В ТЕКУЩУЮ ПАПКУ + .env
 
 ```
-Промпт 1: Подготовь рабочую папку и загрузи контекст.
+Промпт 1: Склонируй deck В МОЮ РАБОЧУЮ ПАПКУ (ту что открыта сейчас в Antigravity).
 
-ШАГ 1 — клонировать deck (СНАЧАЛА это):
-   git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git ~/Desktop/comandos-claw-deck
-   cd ~/Desktop/comandos-claw-deck
+ШАГ 1 — узнай где мы:
+  pwd
+  ls -la
 
-ШАГ 2 — теперь ЧИТАЙ файлы (они появились на диске):
-   1. standards/workshop-1-standard.md — это твой ИСТОЧНИК ИСТИНЫ.
-      Прочитай ПОЛНОСТЬЮ. Запомни структуру разделов A-H и критерии
-      ❗/⚠️/💡. Без этого дальше идти нельзя.
+ШАГ 2 — клонируй ПРЯМО СЮДА (точка в конце критична!):
+  rm -f .DS_Store
+  git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git .
 
-   2. knowledge-base/README.md — индекс базы знаний.
-      Достаточно одного раза посмотреть структуру, чтобы знать куда
-      бегать если что упадёт (known-issues/ для типовых проблем).
+  ⚠️ Точка в конце = клонировать в ТЕКУЩУЮ папку, не в подпапку.
+  Если git ругается «destination path already exists and is not empty» —
+  СТОП, спроси меня.
 
-   3. config/openclaw.json — эталонный конфиг (для справки, не для
-      заливки).
+ШАГ 3 — проверь что файлы появились:
+  ls -la
+  Должно быть: README.md, AGENTS.md, .env.example, .gitignore, .git/,
+  workshop-1/, knowledge-base/, standards/, config/, audit/, scripts/,
+  checklists/, docs/, skills/, workspace/
 
-ШАГ 3 — создай .env из шаблона:
-   cp .env.example .env
+ШАГ 4 — теперь ЧИТАЙ файлы:
+  1. standards/workshop-1-standard.md — ИСТОЧНИК ИСТИНЫ.
+     Прочитай ПОЛНОСТЬЮ. Запомни разделы A-H и критерии ❗/⚠️/💡.
+  2. knowledge-base/README.md — индекс known-issues.
+  3. config/openclaw.json — эталонный конфиг (для справки).
 
-ШАГ 4 — скажи мне «вставь свои 9 значений в .env» — я сам впишу из Notes:
-   VPS_IP, ROOT_PASSWORD, MINIMAX_API_KEY, DEEPSEEK_API_KEY, OPENROUTER_API_KEY,
-   GROQ_API_KEY, OPENAI_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID.
+ШАГ 5 — создай .env:
+  cp .env.example .env
+
+ШАГ 6 — скажи мне:
+  «вставь свои 9 значений в .env, файл лежит по пути [полный pwd]/.env»
+  
+  Я открою .env в Antigravity и впишу из Notes:
+  VPS_IP, ROOT_PASSWORD, MINIMAX_API_KEY, DEEPSEEK_API_KEY,
+  OPENROUTER_API_KEY, GROQ_API_KEY, OPENAI_API_KEY,
+  TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID.
 
 После моего «готово»:
-- Проверь что в .env минимум 9 непустых VAR=значение
+- Проверь .env — минимум 9 непустых VAR=значение
 - Покажи список ИМЁН переменных (БЕЗ значений!)
-- Кратко (3-5 строк) перескажи ключевые ❗ критерии стандарта что запомнил
+- Кратко (3-5 строк) перескажи ключевые ❗ критерии стандарта
 - Скажи «контекст загружен, готов к Промпту 2 (SSH-ключ)»
+
+⛔ ВАЖНО: ВСЁ В ТЕКУЩЕЙ ПАПКЕ.
+НЕ создавай новую папку comandos-claw-deck где-то ещё.
+НЕ делай cd ~/Desktop/что-то — работай В ТЕКУЩЕМ pwd.
 ```
 
 ---

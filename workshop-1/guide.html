@@ -730,53 +730,78 @@
       <div class="part-divider-line"></div>
     </div>
 
+    <!-- ПРЕД-ШАГ: открыть пустую папку -->
+    <div class="handoff" style="background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));border-color:rgba(96,165,250,0.25);">
+      <div class="handoff-icon" style="background:rgba(96,165,250,0.15);border-color:rgba(96,165,250,0.35);">📂</div>
+      <div class="handoff-body">
+        <h3 style="color:var(--blue);">ПРЕД-ШАГ: Открой ПУСТУЮ папку в Antigravity</h3>
+        <p>До Промпта 1 — <strong>создай пустую папку</strong> в Finder (например <code>~/Desktop/Командос</code>) → в Antigravity <strong>File → Open Folder</strong> → выбери её. Убедись что в ней ничего нет кроме <code>.DS_Store</code>. Это будет твоя рабочая папка — AI клонирует deck <strong>прямо в неё</strong>.</p>
+      </div>
+    </div>
+
     <!-- Промпт 1: clone -->
     <div class="pcard">
       <div class="pcard-head">
         <div class="pcard-badge">01</div>
         <div class="pcard-info">
           <div class="pcard-tool">Промпт 1 · GitHub</div>
-          <div class="pcard-title">Скачать deck + .env</div>
+          <div class="pcard-title">Склонировать deck В ТЕКУЩУЮ папку</div>
         </div>
       </div>
-      <p class="pcard-desc"><strong>СНАЧАЛА</strong> AI клонирует репо в <code>~/Desktop/comandos-claw-deck</code> — только после этого читает <code>standards/workshop-1-standard.md</code> + <code>knowledge-base/README.md</code> (раньше файлов на диске нет!). Потом создаёт <code>.env</code> из шаблона, ты вставишь 9 значений из Notes.</p>
+      <p class="pcard-desc">AI делает <code>git clone ... .</code> (с точкой в конце!) — это клонирует deck <strong>прямо в открытую папку</strong>, без создания подпапки. После — читает стандарт и базу знаний, создаёт <code>.env</code>.</p>
+      <div class="notice wrn"><div class="ni">⚠️</div>Папка должна быть <strong>ПУСТАЯ</strong> (только <code>.DS_Store</code> допустим). Если в ней уже есть твои файлы — закрой Antigravity, выбери другую пустую папку, открой заново.</div>
       <div class="pb">
         <div class="pbar"><span class="plang">antigravity · chat</span><button class="cbtn" onclick="cp(this,'p1')">📋 Копировать</button></div>
-        <div class="pcode" id="p1">Промпт 1: Подготовь рабочую папку и загрузи контекст.
+        <div class="pcode" id="p1">Промпт 1: Склонируй deck В МОЮ РАБОЧУЮ ПАПКУ (ту что открыта сейчас в Antigravity).
 
-ШАГ 1 — склонировать deck (СНАЧАЛА это):
-   git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git ~/Desktop/comandos-claw-deck
-   cd ~/Desktop/comandos-claw-deck
+ШАГ 1 — узнай где мы:
+  pwd
+  ls -la
 
-ШАГ 2 — теперь ЧИТАЙ файлы (они появились на диске):
-   1. standards/workshop-1-standard.md — твой ИСТОЧНИК ИСТИНЫ.
-      Прочитай ПОЛНОСТЬЮ. Запомни структуру разделов A-H и критерии ❗/⚠️/💡.
-      Без этого дальше идти нельзя.
+ШАГ 2 — клонируй ПРЯМО СЮДА (точка в конце критична!):
+  rm -f .DS_Store
+  git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git .
 
-   2. knowledge-base/README.md — индекс базы знаний.
-      Глянь структуру (известные ловушки в known-issues/ для типовых проблем).
+  ⚠️ Точка в конце = клонировать в ТЕКУЩУЮ папку, не в подпапку.
+  Если git ругается «destination path already exists and is not empty» — СТОП, спроси меня.
 
-   3. config/openclaw.json — эталонный конфиг (для справки, не для заливки).
+ШАГ 3 — проверь что файлы появились:
+  ls -la
+  Должно быть: README.md, AGENTS.md, .env.example, .gitignore, .git/, workshop-1/, knowledge-base/, standards/, config/, audit/, scripts/, checklists/, docs/, skills/, workspace/
 
-ШАГ 3 — создай .env из шаблона:
-   cp .env.example .env
+ШАГ 4 — теперь ЧИТАЙ файлы:
+  1. standards/workshop-1-standard.md — ИСТОЧНИК ИСТИНЫ. Прочитай ПОЛНОСТЬЮ. Запомни разделы A-H и критерии ❗/⚠️/💡.
+  2. knowledge-base/README.md — индекс known-issues.
+  3. config/openclaw.json — эталонный конфиг (для справки).
 
-ШАГ 4 — скажи мне «вставь свои 9 значений в .env» — я сам впишу из Notes
-(VPS_IP, ROOT_PASSWORD, 5 API-ключей, TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID).
+ШАГ 5 — создай .env:
+  cp .env.example .env
+
+ШАГ 6 — скажи мне:
+  «вставь свои 9 значений в .env, файл лежит по пути [полный pwd]/.env»
+
+  Я открою .env в Antigravity и впишу из Notes:
+  VPS_IP, ROOT_PASSWORD, MINIMAX_API_KEY, DEEPSEEK_API_KEY, OPENROUTER_API_KEY, GROQ_API_KEY, OPENAI_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID.
 
 После моего «готово»:
-- Проверь что в .env минимум 9 непустых VAR=значение
+- Проверь .env — минимум 9 непустых VAR=значение
 - Покажи список ИМЁН переменных (БЕЗ значений!)
-- Кратко (3-5 строк) перескажи ключевые ❗ критерии стандарта что запомнил
-- Скажи «контекст загружен, готов к Промпту 2 (SSH-ключ)»</div>
+- Кратко (3-5 строк) перескажи ключевые ❗ критерии стандарта
+- Скажи «контекст загружен, готов к Промпту 2 (SSH-ключ)»
+
+⛔ ВАЖНО: ВСЁ В ТЕКУЩЕЙ ПАПКЕ.
+НЕ создавай новую папку comandos-claw-deck где-то ещё.
+НЕ делай cd ~/Desktop/что-то — работай В ТЕКУЩЕМ pwd.</div>
       </div>
       <div class="expect">
         <div class="expect-title">✓ Что должен сказать AI в ответ</div>
         <div class="expect-body">
+          <strong>Текущий pwd:</strong> та папка которую ты открыл в Antigravity (например <code>/Users/dmitriypopov/Desktop/Командос</code>).<br>
+          <strong>ls -la показывает:</strong> README.md, AGENTS.md, .env, .git/, workshop-1/, knowledge-base/, standards/, ... (15+ записей).<br>
           <strong>Список переменных в .env:</strong> <code>VPS_IP=***</code>, <code>MINIMAX_API_KEY=***</code>, ... (имена БЕЗ значений)<br>
-          <strong>Краткий пересказ стандарта:</strong> 3-5 строк с ключевыми ❗ критериями (например «A.3 passwordless sudo, B.3 gateway 127.0.0.1, C.3 primary minimax/MiniMax-M2.7, D.6 ответ за 5 сек»).<br>
+          <strong>Краткий пересказ стандарта:</strong> 3-5 строк с ключевыми ❗ критериями.<br>
           <strong>Финальная фраза:</strong> «контекст загружен, готов к Промпту 2».<br><br>
-          ⚠️ <strong>Если AI пишет много воды без пересказа стандарта</strong> — повтори: «перескажи 3-5 ключевых ❗ критериев из standards/workshop-1-standard.md».
+          ⚠️ <strong>Если AI пишет «.env создан» но <code>ls</code> в твоей папке пустой</strong> — спроси «покажи pwd и ls -la, я не вижу файлов в моей папке». Скорее всего AI клонировал не туда.
         </div>
       </div>
     </div>
