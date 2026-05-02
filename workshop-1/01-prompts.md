@@ -329,7 +329,7 @@ openclaw logs --since 30s
 4. Проверки:
    - crontab -l показывает строку
    - bash -lc "bash ~/.openclaw/scripts/watchdog.sh" → exit 0
-   - chmod 600 на watchdog.sh (внутри токен!)
+   - chmod 700 на watchdog.sh (НЕ 600! Cron должен исполнить — execute-bit нужен)
 
 Также напомни мне зайти на openrouter.ai → Settings → Spending Limit → $30/мес.
 
@@ -351,8 +351,9 @@ openclaw logs --since 30s
 2. openclaw config set agents.defaults.imageGenerationModel.fallbacks \
      '["openrouter/black-forest-labs/flux-schnell"]'
 
-3. tools.profile должен быть "messaging" или "full". Если другое — поставь
-   "messaging" (этого хватает для /image).
+3. ⚠️ tools.profile ОБЯЗАТЕЛЬНО = "full" (стандарт E.1, не "messaging" и не "coding"!):
+   bash -lc "openclaw config set tools.profile full"
+   Иначе картинки могут не работать и провалится финальная самопроверка.
 
 Перезапусти daemon:
   systemctl --user restart openclaw && sleep 5 && bash -lc "openclaw doctor --deep | tail -10"

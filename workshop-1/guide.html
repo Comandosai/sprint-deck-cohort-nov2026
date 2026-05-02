@@ -113,13 +113,17 @@
   .kb-card-desc{font-size:12.5px;color:var(--muted);line-height:1.5;}
   .kb-card-path{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--subtle);background:var(--bg);border:1px solid var(--border);padding:3px 8px;border-radius:4px;align-self:flex-start;margin-top:auto;}
 
-  /* Топ-10 примеров вопросов */
+  /* Топ-10 примеров вопросов — кликабельные */
   .examples{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
-  .example{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;transition:border-color 0.25s;}
-  .example:hover{border-color:rgba(167,139,250,0.28);}
+  .example{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;transition:all 0.25s;cursor:pointer;}
+  .example:hover{border-color:rgba(167,139,250,0.28);background:rgba(167,139,250,0.04);transform:translateX(-2px);}
+  .example-icon{font-size:14px;color:#a78bfa;}
   .example-q{color:var(--text);}
-  .example-q::before{content:'❓ ';color:#a78bfa;}
   .example-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:#a78bfa;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.18);padding:3px 7px;border-radius:4px;}
+  .example-copy{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--subtle);transition:color 0.2s;}
+  .example:hover .example-copy{color:#a78bfa;}
+  .example.copied{background:rgba(34,197,94,0.06);border-color:rgba(34,197,94,0.25);}
+  .example.copied .example-copy{color:var(--green);}
 
   /* Section заголовки в panel-0 */
   .pf-section-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text);margin:32px 0 14px;display:flex;align-items:center;gap:12px;}
@@ -218,6 +222,44 @@
   .cheat tr:last-child td{border-bottom:none;}
   .cheat tr.warn td:nth-child(3){color:var(--orange);}
   .cheat tr.warn td:nth-child(2)::after{content:' ⚠️';}
+
+  /* Ритм-блок в начале закладки */
+  .rhythm{background:linear-gradient(135deg,rgba(200,255,0,0.05),rgba(96,165,250,0.04));border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:24px;}
+  .rhythm-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:800;text-transform:uppercase;color:var(--text);margin-bottom:10px;letter-spacing:0.02em;}
+  .rhythm-flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:10px;}
+  .rhythm-step{background:var(--card);border:1px solid var(--border);padding:6px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);}
+  .rhythm-step .acc{color:var(--lime);}
+  .rhythm-arrow{color:var(--subtle);font-size:14px;}
+
+  /* Прогресс-бар по 11 промптам */
+  .progress-bar{position:sticky;top:0;background:var(--bg);padding:12px 0;margin:0 -24px 24px;border-bottom:1px solid var(--border);z-index:10;}
+  .progress-track{display:flex;align-items:center;gap:6px;max-width:980px;margin:0 auto;padding:0 24px;}
+  .progress-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--subtle);flex-shrink:0;}
+  .progress-dots{display:flex;gap:4px;flex:1;}
+  .progress-dot{flex:1;height:6px;background:var(--card);border:1px solid var(--border);border-radius:3px;cursor:pointer;transition:all 0.25s;}
+  .progress-dot:hover{background:rgba(200,255,0,0.15);}
+  .progress-dot.done{background:var(--lime);border-color:var(--lime);box-shadow:0 0 8px rgba(200,255,0,0.4);}
+  .progress-dot.handoff{background:rgba(249,115,22,0.5);border-color:var(--orange);}
+  .progress-dot.handoff.done{background:var(--orange);box-shadow:0 0 8px rgba(249,115,22,0.4);}
+  .progress-counter{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);flex-shrink:0;font-weight:600;}
+
+  /* Блок "Что AI должен ответить" — экспект */
+  .expect{background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.18);border-radius:8px;padding:11px 14px;margin-top:10px;font-size:12.5px;line-height:1.55;color:rgba(34,197,94,0.85);}
+  .expect-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
+  .expect-body{color:var(--muted);}
+  .expect-body strong{color:var(--text);font-weight:500;}
+  .expect-body code{background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--green);}
+
+  /* SSH FAQ блок */
+  .ssh-faq{background:var(--card);border:1px solid rgba(249,115,22,0.18);border-radius:10px;padding:14px 18px;margin:10px 0;}
+  .ssh-faq-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+  .ssh-faq-q{display:grid;grid-template-columns:1fr;gap:4px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.55;}
+  .ssh-faq-q:last-child{border-bottom:none;}
+  .ssh-faq-q-text{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .ssh-faq-q-text::before{content:'❓ ';color:var(--orange);}
+  .ssh-faq-a{color:var(--muted);padding-left:18px;}
+  .ssh-faq-a::before{content:'→ ';color:var(--green);}
+  .ssh-faq-a code{background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--lime);}
 
   /* Команда для копи-паста (одна строка) */
   .cmd{background:var(--bg);border:1px solid rgba(96,165,250,0.22);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--blue);display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;}
@@ -585,7 +627,48 @@
   <!-- ============================================================ -->
   <div class="panel" id="panel-1">
 
-    <div class="notice info"><div class="ni">ℹ️</div>Открой папку <strong>comandos-claw-deck</strong> в Antigravity. Промпты 1-5 и 7-11 вставляются <strong>в чат с AI-плагином</strong> по порядку. Между ними — один ручной шаг в <strong>Mac Terminal</strong> (Промпт 6). После каждого промпта жди подтверждения «прошло» от AI.</div>
+    <!-- Ритм работы -->
+    <div class="rhythm">
+      <div class="rhythm-title">Как это будет работать (1 минута чтения)</div>
+      <div class="pcard-desc" style="margin:0;">
+        Простой ритм на каждый AI-промпт: <strong>копируй</strong> → <strong>вставь в чат AI</strong> → <strong>жди ответа</strong> → <strong>пишешь «прошло»</strong> → следующий промпт. Один шаг ручной — <strong>Промпт 6</strong> ты сам в Mac Terminal проходишь интерактивный мастер с cheat-sheet (10 минут).
+      </div>
+      <div class="rhythm-flow">
+        <div class="rhythm-step">📋 Копировать</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">💬 Вставить в AI</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">⏳ Ждать ответ</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step"><span class="acc">✓</span> «прошло»</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">следующий</div>
+      </div>
+    </div>
+
+    <!-- Прогресс-бар по 11 промптам -->
+    <div class="progress-bar">
+      <div class="progress-track">
+        <div class="progress-label">Прогресс</div>
+        <div class="progress-dots" id="progress-dots">
+          <div class="progress-dot" data-step="0" onclick="markStep(0)" title="Промпт 0 · META"></div>
+          <div class="progress-dot" data-step="1" onclick="markStep(1)" title="Промпт 1 · clone"></div>
+          <div class="progress-dot" data-step="2" onclick="markStep(2)" title="Промпт 2 · SSH"></div>
+          <div class="progress-dot" data-step="3" onclick="markStep(3)" title="Промпт 3 · ключ на VPS"></div>
+          <div class="progress-dot" data-step="4" onclick="markStep(4)" title="Промпт 4 · hardening"></div>
+          <div class="progress-dot" data-step="5" onclick="markStep(5)" title="Промпт 5 · OpenClaw install"></div>
+          <div class="progress-dot handoff" data-step="6" onclick="markStep(6)" title="🛑 Промпт 6 · ручной onboard"></div>
+          <div class="progress-dot" data-step="7" onclick="markStep(7)" title="Промпт 7 · alias"></div>
+          <div class="progress-dot" data-step="8" onclick="markStep(8)" title="Промпт 8 · watchdog"></div>
+          <div class="progress-dot" data-step="9" onclick="markStep(9)" title="Промпт 9 · картинки"></div>
+          <div class="progress-dot" data-step="10" onclick="markStep(10)" title="Промпт 10 · SOUL"></div>
+          <div class="progress-dot" data-step="11" onclick="markStep(11)" title="Промпт 11 · самопроверка"></div>
+        </div>
+        <div class="progress-counter" id="progress-counter">0/12</div>
+      </div>
+    </div>
+
+    <div class="notice info"><div class="ni">ℹ️</div>Открой папку <strong>comandos-claw-deck</strong> в Antigravity. Промпты 1-5 и 7-11 вставляются <strong>в чат с AI-плагином</strong> по порядку. Между ними — один ручной шаг в <strong>Mac Terminal</strong> (Промпт 6). После каждого промпта жди подтверждения «прошло» от AI и кликай на точку выше чтобы отметить.</div>
 
     <!-- Промпт 0: META -->
     <div class="pcard">
@@ -686,6 +769,15 @@
 - Покажи список ИМЁН переменных (БЕЗ значений!)
 - Кратко (3-5 строк) перескажи ключевые ❗ критерии стандарта что запомнил
 - Скажи «контекст загружен, готов к Промпту 2 (SSH-ключ)»</div>
+      </div>
+      <div class="expect">
+        <div class="expect-title">✓ Что должен сказать AI в ответ</div>
+        <div class="expect-body">
+          <strong>Список переменных в .env:</strong> <code>VPS_IP=***</code>, <code>MINIMAX_API_KEY=***</code>, ... (имена БЕЗ значений)<br>
+          <strong>Краткий пересказ стандарта:</strong> 3-5 строк с ключевыми ❗ критериями (например «A.3 passwordless sudo, B.3 gateway 127.0.0.1, C.3 primary minimax/MiniMax-M2.7, D.6 ответ за 5 сек»).<br>
+          <strong>Финальная фраза:</strong> «контекст загружен, готов к Промпту 2».<br><br>
+          ⚠️ <strong>Если AI пишет много воды без пересказа стандарта</strong> — повтори: «перескажи 3-5 ключевых ❗ критериев из standards/workshop-1-standard.md».
+        </div>
       </div>
     </div>
 
@@ -801,7 +893,17 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
    echo 'export PATH=$HOME/.npm-global/bin:$PATH' >> ~/.bashrc
    echo 'export PATH=$HOME/.npm-global/bin:$PATH' >> ~/.profile
    echo 'export PATH=$HOME/.npm-global/bin:$PATH' >> ~/.bash_profile
-5. npm i -g openclaw (БЕЗ sudo)
+5. ⚠️ ПРОВЕРЬ npm prefix ДО установки:
+   bash -lc "npm config get prefix"
+   Должно вернуть /home/clawd/.npm-global. Если другое — поправь:
+   npm config set prefix '~/.npm-global'
+
+6. npm i -g openclaw (БЕЗ sudo)
+
+7. ⚠️ ПРОВЕРЬ что which openclaw указывает на ~/.npm-global/bin (НЕ на nvm shim):
+   bash -lc "which openclaw"
+   Должно: /home/clawd/.npm-global/bin/openclaw
+   Если /home/clawd/.nvm/... — порядок PATH в .bashrc не тот, поправь.
 
 Проверки через bash -lc:
 - bash -lc "openclaw --version" → 2026.4.x
@@ -810,6 +912,18 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
 ⛔ ЗАПРЕЩЕНО: НЕ ЗАПУСКАЙ openclaw onboard! Это интерактивный TTY-мастер для ЧЕЛОВЕКА.
 
 Скажи: «openclaw установлен, готов к ручному onboarding — иди в Mac Terminal».</div>
+      </div>
+      <div class="expect">
+        <div class="expect-title">✓ Что должен сказать AI в ответ</div>
+        <div class="expect-body">
+          <strong>node --version:</strong> <code>v22.x.x</code><br>
+          <strong>openclaw --version:</strong> <code>2026.4.x</code><br>
+          <strong>which openclaw:</strong> <code>/home/clawd/.npm-global/bin/openclaw</code> (НЕ в .nvm/!)<br>
+          <strong>npm config get prefix:</strong> <code>/home/clawd/.npm-global</code><br>
+          <strong>Закрытые критерии:</strong> B.1, B.5<br>
+          <strong>Финальная фраза:</strong> «openclaw установлен, готов к ручному onboarding».<br><br>
+          ⚠️ <strong>Если AI начинает запускать <code>openclaw onboard</code></strong> — СТОП! Скажи: «не запускай onboard, я сам в Mac Terminal сделаю».
+        </div>
       </div>
     </div>
 
@@ -843,6 +957,31 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
         <code>ssh -i ~/.ssh/clawd_ed25519 clawd@VPS_IP</code>
       </div>
       <p class="pcard-desc" style="margin-top:10px;">Подставь свой <code>VPS_IP</code>. Должна открыться сессия <code>clawd@vps:~$</code> <strong>без пароля</strong>.</p>
+
+      <!-- SSH FAQ для не-тех аудитории -->
+      <div class="ssh-faq">
+        <div class="ssh-faq-title">⚡ Что увидишь на экране — типовые ситуации</div>
+        <div class="ssh-faq-q">
+          <div class="ssh-faq-q-text">Are you sure you want to continue connecting (yes/no/[fingerprint])?</div>
+          <div class="ssh-faq-a">Печатаешь <code>yes</code> и Enter. Это первый раз — SSH запоминает «отпечаток» VPS чтобы потом проверять что не подменили сервер.</div>
+        </div>
+        <div class="ssh-faq-q">
+          <div class="ssh-faq-q-text">clawd@ip-xxx:~$</div>
+          <div class="ssh-faq-a">✅ <strong>Победа!</strong> Ты внутри VPS. Без пароля = ключ работает. Иди к Шагу 2 (запуск onboard).</div>
+        </div>
+        <div class="ssh-faq-q">
+          <div class="ssh-faq-q-text">Permission denied (publickey)</div>
+          <div class="ssh-faq-a">Ключ не работает. Возвращайся в Antigravity → скажи AI «ключ не работает, проверь Промпт 3» — AI диагностирует.</div>
+        </div>
+        <div class="ssh-faq-q">
+          <div class="ssh-faq-q-text">clawd@VPS_IP's password:</div>
+          <div class="ssh-faq-a">⚠️ Просит пароль = ключ не подхватился. Скорее всего опечатка в команде. Проверь что <code>VPS_IP</code> заменён на реальный IP. Не вводи пароль (его нет) — нажми Ctrl+C.</div>
+        </div>
+        <div class="ssh-faq-q">
+          <div class="ssh-faq-q-text">Connection timed out / refused</div>
+          <div class="ssh-faq-a">VPS не отвечает. Проверь что VPS работает (зайди в админку хостера) и что <code>VPS_IP</code> правильный.</div>
+        </div>
+      </div>
     </div>
 
     <!-- Запуск onboard -->
@@ -877,7 +1016,7 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
           <tr class="warn"><td>4</td><td>Authentication mode?</td><td>token</td></tr>
           <tr><td>5</td><td>Gateway bind?</td><td>loopback</td></tr>
           <tr><td>6</td><td>Gateway port?</td><td>18789</td></tr>
-          <tr class="warn"><td>7</td><td>Enable device-pair plugin?</td><td>yes</td></tr>
+          <tr class="warn"><td>7</td><td>Enable device-pair plugin? <em style="color:var(--subtle);">(может не появиться в quickstart — это норма, плагин включится автоматически)</em></td><td>yes</td></tr>
           <tr><td>8</td><td>Configure providers?</td><td>yes</td></tr>
           <tr><td>9</td><td>Add MiniMax?</td><td>yes → MINIMAX_API_KEY</td></tr>
           <tr><td>10</td><td>Add DeepSeek?</td><td>yes → DEEPSEEK_API_KEY</td></tr>
@@ -976,12 +1115,29 @@ openclaw doctor --deep | tail   # 0 critical</div>
 2. openclaw aliases set think deepseek/deepseek-v4-pro:thinking
 3. openclaw aliases list  → должно показать оба
 
+⚠️ FALLBACK если "openclaw aliases set" не работает (schema mismatch):
+- Проверь синтаксис: openclaw aliases --help
+- Если команды нет — настрой через config:
+    openclaw config set modelAliases.premium deepseek/deepseek-v4-pro
+    openclaw config set modelAliases.think deepseek/deepseek-v4-pro:thinking
+- Проверь что записалось:
+    cat ~/.openclaw/openclaw.json | python3 -c "import json,sys; print(json.load(sys.stdin).get('modelAliases'))"
+
 Также проверь:
 - openclaw models status — primary minimax/MiniMax-M2.7
 - Если fallback на primary не deepseek-v4-flash — добавь:
   openclaw fallbacks add minimax/MiniMax-M2.7 deepseek/deepseek-v4-flash
 
 Закрой C.7, C.8.</div>
+      </div>
+      <div class="expect">
+        <div class="expect-title">✓ Что должен сказать AI в ответ</div>
+        <div class="expect-body">
+          <strong>openclaw aliases list:</strong> <code>premium → deepseek/deepseek-v4-pro</code> и <code>think → deepseek/deepseek-v4-pro:thinking</code><br>
+          <strong>openclaw models status:</strong> primary = <code>minimax/MiniMax-M2.7</code>, fallback = <code>deepseek/deepseek-v4-flash</code><br>
+          <strong>Закрытые критерии:</strong> C.7, C.8<br>
+          ⚠️ <strong>Если schema mismatch</strong> и команда <code>aliases set</code> не работает — AI должен использовать <code>config set modelAliases.premium ...</code> (это OK, документировано в Промпте).
+        </div>
       </div>
     </div>
 
@@ -1014,7 +1170,16 @@ openclaw doctor --deep | tail   # 0 critical</div>
 4. Проверки:
    - crontab -l показывает строку
    - bash -lc "bash ~/.openclaw/scripts/watchdog.sh" → exit 0
-   - chmod 600 на watchdog.sh
+   - chmod 700 на watchdog.sh (НЕ 600! Cron должен исполнить — нужен +x bit)
+
+5. ⚠️ REAL-FIRE TEST (обязательно!):
+   - Временно меняем порог в watchdog.sh: $3 → $0.001
+   - Запускаем: bash -lc "bash ~/.openclaw/scripts/watchdog.sh"
+   - Проверяем: пришёл ли alert в Telegram + остановился ли daemon (systemctl --user status openclaw)
+   - Если работает → возвращаем порог $3
+   - Если daemon стоит → systemctl --user start openclaw
+
+   Это критично! Без real-fire теста не знаешь, реально ли защита от $4200/63ч кейса работает.
 
 Также напомни мне зайти на openrouter.ai → Settings → Spending Limit → $30/мес.
 
@@ -1042,7 +1207,9 @@ openclaw doctor --deep | tail   # 0 critical</div>
 
 2. openclaw config set agents.defaults.imageGenerationModel.fallbacks '["openrouter/black-forest-labs/flux-schnell"]'
 
-3. tools.profile должен быть "messaging" или "full".
+3. ⚠️ tools.profile ОБЯЗАТЕЛЬНО = "full" (стандарт E.1, не "messaging" и не "coding"!):
+   bash -lc "openclaw config set tools.profile full"
+   Иначе картинки могут не работать и провалится финальная самопроверка.
 
 Перезапусти daemon:
   systemctl --user restart openclaw && sleep 5 && bash -lc "openclaw doctor --deep | tail -10"
@@ -1141,7 +1308,26 @@ openclaw doctor --deep | tail   # 0 critical</div>
   <!-- ============================================================ -->
   <div class="panel panel-green" id="panel-2">
 
-    <div class="notice info"><div class="ni">📲</div>Открой <strong>Telegram</strong> → чат с твоим ботом. Копируй каждый запрос → отправляй боту. Ответы бота сохраняй в любом текстовом редакторе — пойдут в Закладку 03 для аудита.</div>
+    <!-- Ритм работы для самопроверки -->
+    <div class="rhythm" style="background:linear-gradient(135deg,rgba(34,197,94,0.05),rgba(96,165,250,0.04));">
+      <div class="rhythm-title">Как пользоваться (1 минута чтения)</div>
+      <div class="pcard-desc" style="margin:0;">
+        Это <strong>контур №1 проверки</strong> — сам Telegram-бот отдаёт «сырые» артефакты состояния системы. Ты просто <strong>копируешь и отправляешь боту</strong> 8 запросов по очереди, ответы бота <strong>сохраняешь</strong> — пригодятся для Закладки 03 (аудит).
+      </div>
+      <div class="rhythm-flow">
+        <div class="rhythm-step">📋 Копировать запрос</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">📲 Боту в Telegram</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">⏳ Жди ответ</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step"><span class="acc" style="color:var(--green);">💾</span> Сохрани в Notes</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">следующий</div>
+      </div>
+    </div>
+
+    <div class="notice info"><div class="ni">📲</div>Открой <strong>Telegram</strong> → чат с твоим ботом. Копируй каждый запрос → отправляй боту. Ответы бота сохраняй в любом текстовом редакторе (Notes, Apple Notes, txt-файл) — пойдут в Закладку 03 для аудита.</div>
 
     <div class="notice tip"><div class="ni">💡</div>Если бот говорит «не могу выполнить эту команду» — попроси AI в Antigravity проверить что <code>tools.profile=full</code> и <code>exec.ask</code> разрешает чтение файлов.</div>
 
@@ -1174,6 +1360,16 @@ openclaw doctor --deep | tail   # 0 critical</div>
       <div class="pb">
         <div class="pbar"><span class="plang">telegram · твой бот</span><button class="cbtn" onclick="cp(this,'q2')">📋 Копировать</button></div>
         <div class="pcode" id="q2">Запусти openclaw models status и пришли мне ПОЛНЫЙ вывод без сокращений. Покажи также primary, fallbacks, aliases.</div>
+      </div>
+      <div class="expect" style="background:rgba(34,197,94,0.06);">
+        <div class="expect-title" style="color:var(--green);">✓ Что искать в ответе</div>
+        <div class="expect-body">
+          <strong>primary:</strong> <code style="color:var(--green);">minimax/MiniMax-M2.7</code> (с заглавными M!)<br>
+          <strong>fallback:</strong> <code style="color:var(--green);">deepseek/deepseek-v4-flash</code> (дешевле primary!)<br>
+          <strong>aliases:</strong> <code style="color:var(--green);">premium → deepseek-v4-pro</code>, <code style="color:var(--green);">think → ...:thinking</code><br>
+          <strong>5 провайдеров</strong> с зелёной галкой: minimax, deepseek, openrouter, groq, openai<br><br>
+          ⚠️ <strong>Если primary = <code>minimax/minimax-m2.7</code> (нижний регистр)</strong> — это ❌ для C.3, нужно фиксить.
+        </div>
       </div>
     </div>
 
@@ -1288,9 +1484,13 @@ openclaw doctor --deep | tail   # 0 critical</div>
       </div>
     </div>
 
-    <div class="final">
-      <div class="final-title">Артефакты <span class="acc">собраны</span></div>
-      <div class="final-desc">Все 8 ответов бота сохранил себе в текстовик? <br>Переходи на <strong>Закладку 03</strong> — независимый аудитор сравнит со стандартом и выдаст вердикт.</div>
+    <div class="final" style="background:linear-gradient(135deg,rgba(34,197,94,0.05),rgba(249,115,22,0.05));border-color:rgba(34,197,94,0.25);">
+      <div class="final-title">Артефакты <span class="acc" style="color:var(--green);">собраны</span></div>
+      <div class="final-desc">
+        Все 8 ответов бота должны быть у тебя в Notes (или текстовом файле).<br>
+        Каждый ответ нужен для аудита — пригодится буквально каждая строка.<br><br>
+        <strong>Переходи на <span style="color:var(--orange);">Закладку 03 «Контроль»</span></strong> — там независимый AI-аудитор в новом чате сравнит твои артефакты со стандартом и выдаст финальный вердикт по 30 критериям.
+      </div>
     </div>
 
   </div>
@@ -1300,9 +1500,82 @@ openclaw doctor --deep | tail   # 0 critical</div>
   <!-- ============================================================ -->
   <div class="panel panel-orange" id="panel-3">
 
-    <div class="notice wrn"><div class="ni">🆕</div>Открой <strong>НОВЫЙ чат AI</strong> в Antigravity (новое окно или новая сессия) — НЕ тот где шла настройка! Это нужно чтобы аудитор был <strong>независимым</strong> и не унаследовал «всё ок» bias главного AI.</div>
+    <!-- Ритм работы для аудитора -->
+    <div class="rhythm" style="background:linear-gradient(135deg,rgba(249,115,22,0.05),rgba(167,139,250,0.04));">
+      <div class="rhythm-title">Как работает контур №2 (1 минута чтения)</div>
+      <div class="pcard-desc" style="margin:0;">
+        Это <strong>независимая проверка</strong> другим AI в <strong>новом чате</strong> (без bias главного AI который тебе всю установку делал). Аудитор сравнит 8 артефактов из Закладки 02 со стандартом и выдаст <strong>точный вердикт</strong>: пройден / почти / проблемы.
+      </div>
+      <div class="rhythm-flow">
+        <div class="rhythm-step">🆕 Новый чат AI</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">📋 Копировать промпт</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">📝 Вставить 8 ответов</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step"><span class="acc" style="color:var(--orange);">⚡</span> Получить вердикт</div>
+      </div>
+    </div>
 
-    <div class="notice info"><div class="ni">📋</div>Один большой промпт ниже. Скопируй целиком, в нём 8 мест где написано <code>ВСТАВЬ СЮДА ОТВЕТ БОТА</code> — туда вставляешь по очереди ответы из Закладки 02. Получаешь полный аудит за 1-2 минуты.</div>
+    <!-- Шаги пошагово -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">1</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--orange);">Шаг 1 · Открыть новый чат</div>
+          <div class="pcard-title">НЕ в том чате где шла установка!</div>
+        </div>
+      </div>
+      <p class="pcard-desc">В Antigravity нажми <strong>«+»</strong> или <strong>New Chat</strong> чтобы открыть пустой чат с AI-плагином. Этот аудитор не должен знать ничего про твою установку — только то что ты ему скажешь сейчас.</p>
+      <div class="notice wrn"><div class="ni">⚠️</div>Если используешь тот же чат где шёл прогон 11 промптов — AI скажет «всё отлично!» (он же сам это настраивал). Цель аудита — <strong>независимый взгляд</strong>.</div>
+    </div>
+
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">2</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--orange);">Шаг 2 · Скопировать промпт</div>
+          <div class="pcard-title">Большой промпт со стандартом</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Промпт ниже содержит <strong>весь стандарт</strong> (~30 критериев) + 8 пустых блоков под ответы бота. Скопируй целиком и вставь в новый чат AI.</p>
+    </div>
+
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">3</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--orange);">Шаг 3 · Вставить 8 ответов бота</div>
+          <div class="pcard-title">По одному из Закладки 02</div>
+        </div>
+      </div>
+      <p class="pcard-desc">В промпте 8 мест с пометкой <code>[Запрос N: ...] / ВСТАВЬ СЮДА ОТВЕТ БОТА</code>. Открой свои сохранённые ответы из Закладки 02 и аккуратно вставь каждый в свой блок (Запрос 1 → блок [Запрос 1], Запрос 2 → блок [Запрос 2] и т.д.).</p>
+      <div class="notice tip"><div class="ni">💡</div><strong>Лайфхак:</strong> делай это в текстовом редакторе (Notes / VS Code), а не сразу в чате — так удобнее не перепутать порядок. Потом готовый промпт со всеми вставленными ответами одной кнопкой → в чат.</div>
+    </div>
+
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">4</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--orange);">Шаг 4 · Получить отчёт</div>
+          <div class="pcard-title">Подожди 1-2 минуты</div>
+        </div>
+      </div>
+      <p class="pcard-desc">AI пройдётся по каждому критерию A.1...H.3 и выдаст:</p>
+      <div class="expect" style="background:rgba(249,115,22,0.06);border-color:rgba(249,115,22,0.18);">
+        <div class="expect-title" style="color:var(--orange);">✓ Структура отчёта аудитора</div>
+        <div class="expect-body">
+          <strong>1.</strong> Таблица всех критериев со статусами ✅ / ⚠️ / ❌ / ❓<br>
+          <strong>2.</strong> Статистика: ❗ закрыто X из N<br>
+          <strong>3.</strong> План доделок: что починить, через какой канал, какой шаг<br>
+          <strong>4.</strong> <strong>Финальный вердикт:</strong> 🎉 пройден / 🟡 почти / ❌ есть проблемы<br>
+          <strong>5.</strong> Настойчивая рекомендация что доделать ДО Воркшопа 2
+        </div>
+      </div>
+    </div>
+
+    <!-- Большой промпт аудитора -->
+    <h2 class="pf-section-title" style="color:var(--orange);"><span class="num" style="background:rgba(249,115,22,0.12);border-color:rgba(249,115,22,0.28);color:var(--orange);">⚡</span>Промпт аудитора</h2>
 
     <div class="pcard">
       <div class="pcard-head">
@@ -1469,9 +1742,32 @@ H.3 ⚠️ SOUL.md содержит anti-sycophancy правило
       </div>
     </div>
 
+    <!-- Что делать по вердикту -->
+    <h2 class="pf-section-title" style="color:var(--orange);"><span class="num" style="background:rgba(249,115,22,0.12);border-color:rgba(249,115,22,0.28);color:var(--orange);">→</span>Что делать после вердикта</h2>
+
+    <div class="kb-grid">
+      <div class="kb-card" style="border-color:rgba(34,197,94,0.28);background:linear-gradient(135deg,rgba(34,197,94,0.04),rgba(34,197,94,0.01));">
+        <div class="kb-card-tag" style="color:var(--green);">🎉 ПРОЙДЕН</div>
+        <div class="kb-card-name" style="color:var(--green);">Все ❗ закрыты</div>
+        <div class="kb-card-desc"><strong>Поздравляю!</strong> Цифровой сотрудник готов. Можешь спокойно идти к Воркшопу 2 (через 7 дней). Сохрани отчёт аудита — он понадобится для сравнения.</div>
+      </div>
+      <div class="kb-card" style="border-color:rgba(255,200,0,0.4);background:linear-gradient(135deg,rgba(255,200,0,0.04),rgba(255,200,0,0.01));">
+        <div class="kb-card-tag" style="color:#ffcc00;">🟡 ПОЧТИ</div>
+        <div class="kb-card-name" style="color:#ffcc00;">Есть ⚠️</div>
+        <div class="kb-card-desc">Все ❗ закрыты, но есть нюансы. Можешь идти к В2, но <strong>лучше доделать ⚠️ в течение недели</strong>. Возьми список из плана аудитора и проходи через Antigravity / Telegram / браузер.</div>
+      </div>
+      <div class="kb-card" style="border-color:rgba(239,68,68,0.4);background:linear-gradient(135deg,rgba(239,68,68,0.04),rgba(239,68,68,0.01));">
+        <div class="kb-card-tag" style="color:#ef4444;">❌ ПРОБЛЕМЫ</div>
+        <div class="kb-card-name" style="color:#ef4444;">Не все ❗</div>
+        <div class="kb-card-desc"><strong>Стоп.</strong> К В2 пока не идём. Возвращайся в основной чат AI (Antigravity) с конкретными ❌ из плана аудитора → попроси починить → повтори self-check (Закладка 02) → повтори аудит (этот промпт).</div>
+      </div>
+    </div>
+
+    <div class="notice tip" style="margin-top:14px;"><div class="ni">🆘</div>Если на этапе доделок что-то совсем непонятно или AI ходит по кругу — открой <strong>Закладку 04 «Консультант»</strong>. Это твой персональный AI-эксперт с базой знаний 2 МБ.</div>
+
     <div class="final">
       <div class="final-title">Воркшоп 1 <span class="acc">завершён</span></div>
-      <div class="final-desc">Если вердикт 🎉 — поздравляю, цифровой сотрудник готов!<br>Если 🟡 или ❌ — возвращайся в Antigravity и чини по плану аудитора.</div>
+      <div class="final-desc">Если вердикт 🎉 — поздравляю, цифровой сотрудник готов!<br>Если 🟡 или ❌ — план доделок выше, и не забывай про Закладку 04 (консультант).</div>
     </div>
 
   </div>
@@ -1481,7 +1777,56 @@ H.3 ⚠️ SOUL.md содержит anti-sycophancy правило
   <!-- ============================================================ -->
   <div class="panel panel-violet" id="panel-4">
 
-    <div class="notice info" style="background:rgba(167,139,250,0.06);border-color:rgba(167,139,250,0.18);color:rgba(167,139,250,0.85);"><div class="ni">🆘</div>Если на любом шаге что-то упало или непонятно — открой <strong>НОВЫЙ чат AI</strong> (Claude.ai в браузере, или новая сессия в Antigravity) и вставь промпт ниже. Это твой персональный AI-эксперт по OpenClaw с базой знаний 2 МБ. Отвечает за 30 секунд с цитатой из known-issues.</div>
+    <!-- Ритм работы для консультанта -->
+    <div class="rhythm" style="background:linear-gradient(135deg,rgba(167,139,250,0.06),rgba(96,165,250,0.04));">
+      <div class="rhythm-title">Как пользоваться консультантом (1 минута)</div>
+      <div class="pcard-desc" style="margin:0;">
+        Если на любом шаге <strong>что-то упало или непонятно</strong> — открой <strong>отдельный чат AI</strong>, вставь промпт ниже, опиши проблему. Получишь точный ответ с цитатой из 2 МБ ресерча за 30 секунд. Главное — <strong>НЕ в том чате где идёт установка</strong>, иначе AI войдёт в свой bias.
+      </div>
+      <div class="rhythm-flow">
+        <div class="rhythm-step">🆕 Новый чат</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">📋 Вставить промпт</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step">❓ Задать вопрос</div>
+        <div class="rhythm-arrow">→</div>
+        <div class="rhythm-step"><span class="acc" style="color:#a78bfa;">✓</span> Ответ за 30 сек</div>
+      </div>
+    </div>
+
+    <div class="notice info" style="background:rgba(167,139,250,0.06);border-color:rgba(167,139,250,0.18);color:rgba(167,139,250,0.85);"><div class="ni">🆘</div>Этот контур — <strong>третий уровень защиты</strong>. Главный AI делает (контур 1), бот сам проверяет (контур 2 — Закладка 02), независимый аудитор оценивает (контур 3 — Закладка 03). А консультант — это <strong>экстренный эксперт</strong> на случай если ты застрял.</div>
+
+    <!-- Где открыть новый чат — пошагово -->
+    <h2 class="pf-section-title" style="color:#a78bfa;"><span class="num" style="background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.28);color:#a78bfa;">A</span>Где открыть новый чат AI</h2>
+
+    <p class="pcard-desc" style="margin-bottom:14px;">Любой из вариантов подойдёт — выбирай тот что у тебя под рукой:</p>
+
+    <div class="hosts">
+      <div class="host" style="border-color:rgba(167,139,250,0.28);">
+        <div class="host-rank">🥇</div>
+        <div class="host-tag" style="color:#a78bfa;">Самый удобный</div>
+        <div class="host-name">Antigravity · New Chat</div>
+        <div class="host-spec">кнопка «+» в боковой панели → откроется пустой чат</div>
+        <div class="host-pros"><span class="ok">AI видит файлы knowledge-base/ напрямую</span><br><span class="ok">Можно переключаться между основным чатом и консультантом</span></div>
+        <div class="host-price" style="color:#a78bfa;font-size:14px;line-height:1.4;">У тебя уже открыт.<br>Просто новая сессия.</div>
+      </div>
+      <div class="host">
+        <div class="host-tag">В браузере</div>
+        <div class="host-name">Claude.ai</div>
+        <div class="host-spec">claude.ai → New conversation</div>
+        <div class="host-pros"><span class="ok">Чистая среда без bias</span><br><span class="bad">Файлы knowledge-base нужно прикреплять руками (drag-and-drop)</span></div>
+        <a href="https://claude.ai" class="host-link" target="_blank" rel="noopener" style="color:#a78bfa;">claude.ai →</a>
+      </div>
+      <div class="host">
+        <div class="host-tag">Альтернатива</div>
+        <div class="host-name">ChatGPT</div>
+        <div class="host-spec">chat.openai.com → New chat</div>
+        <div class="host-pros"><span class="ok">Привычно многим</span><br><span class="bad">Тоже нужно прикреплять файлы вручную</span></div>
+        <a href="https://chat.openai.com" class="host-link" target="_blank" rel="noopener" style="color:#a78bfa;">chat.openai.com →</a>
+      </div>
+    </div>
+
+    <div class="notice tip"><div class="ni">💡</div><strong>Если используешь Claude.ai или ChatGPT</strong> — после промпта вставь дополнительно содержимое того <code>knowledge-base/known-issues/XX.md</code> файла, который тебе нужен (см. список в разделе ниже). Так консультант получит точный контекст.</div>
 
     <!-- Зачем консультант -->
     <div class="pcard">
@@ -1627,17 +1972,18 @@ knowledge-base/
         </div>
       </div>
       <p class="pcard-desc">Любой из этих вопросов задай консультанту — получишь точный ответ с цитатой:</p>
+      <p class="pcard-desc"><strong>👆 Кликни</strong> по любому вопросу — он скопируется в буфер. Вставь в чат с консультантом сразу после промпта.</p>
       <div class="examples">
-        <div class="example"><div class="example-q">Бот молчит в Telegram, что проверять?</div><div class="example-tag">issue 05</div></div>
-        <div class="example"><div class="example-q">В логах gateway closed (1008), что это?</div><div class="example-tag">issue 01</div></div>
-        <div class="example"><div class="example-q">openclaw: command not found из cron, почему?</div><div class="example-tag">issue 02</div></div>
-        <div class="example"><div class="example-q">Бот отвечает через DeepSeek а не MiniMax</div><div class="example-tag">issue 04</div></div>
-        <div class="example"><div class="example-q">Какую модель на primary поставить?</div><div class="example-tag">block 03</div></div>
-        <div class="example"><div class="example-q">Как защитить от runaway-инцидента?</div><div class="example-tag">issue 06</div></div>
-        <div class="example"><div class="example-q">Как настроить SOUL.md без пустых фраз?</div><div class="example-tag">block 05</div></div>
-        <div class="example"><div class="example-q">Что такое heartbeat и зачем оно?</div><div class="example-tag">block 12</div></div>
-        <div class="example"><div class="example-q">Как добавить память типа mem0?</div><div class="example-tag">block 15 + pro 05</div></div>
-        <div class="example"><div class="example-q">Какой VPS-хостер для России?</div><div class="example-tag">block 01</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Бот молчит в Telegram, что проверять?</div><div class="example-tag">issue 05</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">В логах gateway closed (1008), что это?</div><div class="example-tag">issue 01</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">openclaw: command not found из cron, почему?</div><div class="example-tag">issue 02</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Бот отвечает через DeepSeek а не MiniMax</div><div class="example-tag">issue 04</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Какую модель на primary поставить?</div><div class="example-tag">block 03</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Как защитить от runaway-инцидента?</div><div class="example-tag">issue 06</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Как настроить SOUL.md без пустых фраз?</div><div class="example-tag">block 05</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Что такое heartbeat и зачем оно?</div><div class="example-tag">block 12</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Как добавить память типа mem0?</div><div class="example-tag">block 15 + pro 05</div><div class="example-copy">📋</div></div>
+        <div class="example" onclick="copyExample(this)"><span class="example-icon">❓</span><div class="example-q">Какой VPS-хостер для России?</div><div class="example-tag">block 01</div><div class="example-copy">📋</div></div>
       </div>
     </div>
 
@@ -1657,6 +2003,38 @@ knowledge-base/
         <li>❌ <strong style="color:var(--text);">«Перепиши промпт»</strong> — это работа Дмитрия</li>
       </ul>
       <p class="pcard-desc" style="margin-top:14px;">Консультант = <strong>советник</strong>. Не исполнитель. Если нужно действие — иди в главный чат с AI или в свой Mac Terminal.</p>
+    </div>
+
+    <!-- Если консультант не помог -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">🆘</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Если консультант не помог</div>
+          <div class="pcard-title">Эскалация — что делать дальше</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Консультант покрывает 90% типовых ситуаций. Если твой случай уникальный — действуй по эскалации:</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-body">
+            <div class="step-title">Поищи в GitHub Issues OpenClaw</div>
+            <div class="step-desc"><a href="https://github.com/openclaw/openclaw/issues" target="_blank" rel="noopener" style="color:#a78bfa;">github.com/openclaw/openclaw/issues</a> — там обсуждаются реальные баги. Ищи по симптому (например <code>"1008 pairing"</code> или <code>"models status not working"</code>).</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <div class="step-title">Спроси в общем чате спринта</div>
+            <div class="step-desc">Если ты участник когорты @ai_comandos — пиши в общий чат с подробностями: симптом, твоя версия openclaw, последние логи. Кто-то из других участников или Дмитрий ответит.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-body">
+            <div class="step-title">Если нашёл новое решение — поделись</div>
+            <div class="step-desc">Напиши Дмитрию (@ai_comandos) описание: <strong>симптом → причина → точный фикс</strong>. Он добавит в <code>knowledge-base/known-issues/</code> для следующих когорт. Так база растёт и помогает всем.</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="final" style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(96,165,250,0.05));border-color:rgba(167,139,250,0.25);">
@@ -1701,6 +2079,49 @@ function goTab(n){
   document.getElementById('panel-'+n).classList.add('active');
   window.scrollTo({top:document.querySelector('.tabs').offsetTop-20,behavior:'smooth'});
 }
+
+// Кликабельные примеры вопросов в Закладке 04
+function copyExample(el){
+  const q = el.querySelector('.example-q').innerText;
+  navigator.clipboard.writeText(q).then(() => {
+    el.classList.add('copied');
+    const cp = el.querySelector('.example-copy');
+    const orig = cp.textContent;
+    cp.textContent = '✓';
+    setTimeout(() => {
+      el.classList.remove('copied');
+      cp.textContent = orig;
+    }, 1500);
+  });
+}
+
+// Прогресс-бар: пометить шаг
+function markStep(n){
+  const dot = document.querySelector('.progress-dot[data-step="'+n+'"]');
+  if (!dot) return;
+  dot.classList.toggle('done');
+  // Сохранить в localStorage
+  const done = JSON.parse(localStorage.getItem('w1_progress') || '{}');
+  done[n] = dot.classList.contains('done');
+  localStorage.setItem('w1_progress', JSON.stringify(done));
+  // Обновить счётчик
+  const total = document.querySelectorAll('.progress-dot.done').length;
+  document.getElementById('progress-counter').textContent = total + '/12';
+}
+
+// Восстановить прогресс при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+  const done = JSON.parse(localStorage.getItem('w1_progress') || '{}');
+  Object.keys(done).forEach(n => {
+    if (done[n]) {
+      const dot = document.querySelector('.progress-dot[data-step="'+n+'"]');
+      if (dot) dot.classList.add('done');
+    }
+  });
+  const total = document.querySelectorAll('.progress-dot.done').length;
+  const cnt = document.getElementById('progress-counter');
+  if (cnt) cnt.textContent = total + '/12';
+});
 
 function cp(btn,id){
   const el=document.getElementById(id);
