@@ -206,10 +206,13 @@ exit
 В Mac Terminal:
 
 ```bash
-ssh -i ~/.ssh/clawd_ed25519 clawd@VPS_IP
+# ⚠️ 91.234.56.78 — это ПРИМЕР! Замени на свой реальный IP VPS:
+ssh -i ~/.ssh/clawd_ed25519 clawd@91.234.56.78
 ```
 
 Должна открыться сессия `clawd@vps:~$` **БЕЗ пароля**.
+
+⚠️ Если оставишь в команде слово `VPS_IP` буквально — получишь ошибку `Could not resolve hostname vps_ip`. Это плейсхолдер, его надо заменить на свой реальный IP!
 
 ```bash
 sudo -n whoami

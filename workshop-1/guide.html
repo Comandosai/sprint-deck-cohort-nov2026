@@ -978,10 +978,20 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
         </div>
       </div>
       <p class="pcard-desc">Открой <strong>встроенный Terminal.app</strong> на маке (Spotlight → «Terminal»). НЕ Antigravity Terminal — нужен полноценный TTY.</p>
+
+      <p class="pcard-desc" style="margin-top:14px;"><strong>Самый простой способ</strong> — подгрузить переменные из <code>.env</code> и подключиться:</p>
       <div class="cmd">
-        <code>ssh -i ~/.ssh/clawd_ed25519 clawd@VPS_IP</code>
+        <code>cd ~/Desktop/Командос && set -a; source .env; set +a && ssh -i $SSH_KEY_PATH $VPS_USER@$VPS_IP</code>
       </div>
-      <p class="pcard-desc" style="margin-top:10px;">Подставь свой <code>VPS_IP</code>. Должна открыться сессия <code>clawd@vps:~$</code> <strong>без пароля</strong>.</p>
+      <p class="pcard-desc" style="margin-top:10px;font-size:12.5px;color:var(--muted);">Здесь <code>$VPS_IP</code>, <code>$VPS_USER</code>, <code>$SSH_KEY_PATH</code> подставятся автоматически из <code>.env</code>. Замени путь <code>~/Desktop/Командос</code> на тот где у тебя лежит <code>.env</code>.</p>
+
+      <p class="pcard-desc" style="margin-top:14px;"><strong>Альтернатива</strong> — подставить IP вручную (например <code>91.234.56.78</code> — это твой реальный IP из <code>.env</code>):</p>
+      <div class="cmd">
+        <code>ssh -i ~/.ssh/clawd_ed25519 clawd@<span style="color:var(--orange);">91.234.56.78</span></code>
+      </div>
+      <p class="pcard-desc" style="margin-top:10px;font-size:12.5px;color:var(--muted);">⚠️ <code style="color:var(--orange);">91.234.56.78</code> — это <strong>пример</strong>! Подставь свой настоящий <code>VPS_IP</code> из <code>.env</code>.</p>
+
+      <p class="pcard-desc" style="margin-top:14px;">Должна открыться сессия <code>clawd@vps:~$</code> <strong>без пароля</strong>.</p>
 
       <!-- SSH FAQ для не-тех аудитории -->
       <div class="ssh-faq">
