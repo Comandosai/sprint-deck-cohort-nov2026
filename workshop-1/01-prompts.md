@@ -1,206 +1,420 @@
-# 🎤 11 промптов Воркшопа 1
+# 🎤 Воркшоп 1 — 11 промптов (гибридный путь)
 
-> Каждый промпт — короткий. AI сам определяет команды на основе стандарта.
-> Перед началом убедись что ты вставил `00-meta-prompt.md` в чат с AI.
-
----
-
-## Подставь СВОИ значения перед началом
-
-Только в Промптах 3 и 4 нужны конкретные значения:
-
-- `<VPS_IP>` → IP твоего VPS (на email от хостера)
-- `<ROOT_PASSWORD>` → пароль root (на email от хостера)
-
-В остальных промптах AI читает из `.env` — подставлять не нужно.
+> **AI делает 80% рутины, ты делаешь 1 ключевой шаг руками.**
+> Перед началом убедись что вставил `00-meta-prompt.md` в чат с AI.
 
 ---
 
-## 📦 Промпт 1 — Склонировать deck
+## 🧭 Структура воркшопа
 
 ```
-Промпт 1: Склонируй наш deck с GitHub.
-Репозиторий: https://github.com/Comandosai/sprint-deck-cohort-nov2026.git
-В рабочую папку. Создай .env из .env.example.
+ЧАСТЬ А1 — AI делает рутину (5 промптов, ~10 минут)
+   П1. Склонировать deck + .env
+   П2. SSH-ключ
+   П3. Загрузить ключ на VPS
+   П4. VPS hardening
+   П5. Node 22 + npm + установить OpenClaw
+   П6. СТОП — передаю эстафету тебе
+
+   ⏸ ЧАСТЬ А2 — ТЫ САМ в Mac Terminal (~10 минут)
+   ssh clawd@VPS_IP
+   openclaw onboard   ← интерактивный мастер
+   → бот отвечает в Telegram
+
+ЧАСТЬ Б — AI доделывает тонкости (4 промпта, ~10 минут)
+   П7. Alias premium / think
+   П8. Watchdog
+   П9. Картинки
+   П10. SOUL.md (личность)
+   П11. Финальная самопроверка
 ```
+
+**Итого**: ~30 минут.
 
 ---
 
-## 🔑 Промпт 2 — SSH-ключ
+## 📦 ПРОМПТ 1 — Склонировать deck + .env
 
 ```
-Промпт 2: Создай мне SSH-ключ ed25519 в ~/.ssh/clawd_ed25519 без пароля.
-Покажи публичный ключ.
-```
+Промпт 1: Подготовь рабочую папку.
 
----
+1. Склонируй deck в ~/Desktop/comandos-claw-deck:
+   git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git \
+     ~/Desktop/comandos-claw-deck
+   cd ~/Desktop/comandos-claw-deck
 
-## 🔑 Промпт 3 — Загрузить ключ на VPS
+2. Открой standards/workshop-1-standard.md — это источник истины с критериями
+   готовности (~30 пунктов A-H).
 
-⚠️ **Замени** `<VPS_IP>` и `<ROOT_PASSWORD>` своими значениями ПЕРЕД вставкой:
+3. Открой knowledge-base/README.md если он есть — это база знаний по OpenClaw
+   с known-issues. Если в любом промпте что-то непонятно — ищи там.
 
-```
-Промпт 3: Загрузи мой публичный ключ на VPS.
-VPS: <VPS_IP>
-User: root
-Пароль: <ROOT_PASSWORD>
+4. Создай .env из .env.example.
 
-После загрузки проверь что ssh -i ~/.ssh/clawd_ed25519 root@<VPS_IP> "echo OK"
-работает БЕЗ пароля. Скажи «готово».
-```
+5. Скажи мне «вставь свои 9 значений в .env» — я сам впишу из Notes:
+   VPS_IP, ROOT_PASSWORD, MINIMAX_API_KEY, DEEPSEEK_API_KEY, OPENROUTER_API_KEY,
+   GROQ_API_KEY, OPENAI_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID.
 
----
-
-## ⚙️ Промпт 4 — Заполнить .env
-
-⚠️ **Замени** `<VPS_IP>` своим значением ПЕРЕД вставкой:
-
-```
-Промпт 4: Отредактируй СУЩЕСТВУЮЩИЙ .env (не создавай новый!):
-VPS_IP=<VPS_IP>
-VPS_USER=root
-SSH_KEY_PATH=~/.ssh/clawd_ed25519
-
-Скажи мне «теперь вставь свои API-ключи в .env» — я их вставлю сам.
-После моего «готово» проверь что в .env минимум 8 непустых строк VAR=значение.
+После моего «готово» проверь .env — должно быть 9 непустых VAR=значение.
+Покажи список ИМЁН переменных (БЕЗ значений!).
 ```
 
 ---
 
-## 🛡 Промпт 5 — Подготовить VPS
+## 🔑 ПРОМПТ 2 — SSH-ключ
 
 ```
-Промпт 5: Подготовь VPS по разделу A стандарта (standards/workshop-1-standard.md).
-IP читай из .env.
+Промпт 2: Создай SSH-ключ ed25519 в ~/.ssh/clawd_ed25519 БЕЗ пароля.
 
-КРИТИЧНО: passwordless sudo для clawd сделать ДО блокировки root!
-Проверка перед блокировкой root: ssh clawd@VPS "sudo -n whoami" должен ответить root.
+ssh-keygen -t ed25519 -f ~/.ssh/clawd_ed25519 -C "clawd@vps" -N ""
 
-После завершения покажи какие критерии A.1-A.10 закрыл, и обнови мой .env: 
-VPS_USER=root → VPS_USER=clawd.
+Покажи мне ПУБЛИЧНЫЙ ключ (содержимое clawd_ed25519.pub) — он понадобится в
+следующем промпте.
 ```
 
 ---
 
-## 🤖 Промпт 6 — Установить OpenClaw daemon
+## 🔌 ПРОМПТ 3 — Загрузить ключ на VPS
 
 ```
-Промпт 6: Установи OpenClaw daemon на VPS под clawd по разделу B стандарта.
-npm i -g БЕЗ sudo через npm prefix ~/.npm-global.
-Gateway на 127.0.0.1, не 0.0.0.0!
-systemd-user сервис с auto-restart, MemoryMax 2G.
+Промпт 3: Загрузи мой публичный SSH-ключ на VPS как root.
 
-Покажи что закрыл из B.1-B.6.
-```
+VPS_IP и ROOT_PASSWORD читай из .env через
+`set -a; source .env; set +a`.
 
----
+Если твой инструмент блокирует SSH с паролем (Codex/Claude Code часто блокируют)
+— дай мне готовую команду для МОЕГО Mac Terminal:
 
-## 🧠 Промпт 7 — Каскад моделей
+  ssh-copy-id -i ~/.ssh/clawd_ed25519.pub root@<VPS_IP>
 
-```
-Промпт 7: Настрой каскад моделей по разделу C стандарта.
+Я введу root-пароль сам и скажу «загрузил».
 
-ВАЖНО:
-- Primary: minimax/MiniMax-M2.7 (с заглавными буквами! case-sensitive!)
-- Fallback: deepseek/deepseek-v4-flash (только дешевле primary!)
-- Heartbeat: openrouter/google/gemini-2.5-flash-lite
-- Subagents: openrouter/moonshotai/kimi-k2.6
-- Alias premium: deepseek/deepseek-v4-pro
-- Alias think: deepseek/deepseek-v4-pro:thinking
+После моего «загрузил» проверь:
+  ssh -i ~/.ssh/clawd_ed25519 -o BatchMode=yes root@<VPS_IP> "echo OK"
 
-Эталонный config есть в config/openclaw.json — НО схема в установленной версии 
-OpenClaw может отличаться, тогда настраивай через CLI команды (openclaw auth set, 
-openclaw models set, fallbacks add, aliases set).
-
-Ключи из .env подставляй прямыми значениями (set -a; source .env; set +a),
-НЕ литералами.
-
-После настройки проверь openclaw models status и openclaw auth list. 
-В конце я напишу боту "привет" — должен ответить через MiniMax (НЕ через DeepSeek).
-В логах модель = minimax/MiniMax-M2.7.
-
-Если probe MiniMax падает — диагностируй причину (slug? endpoint? ключ?), не молчи.
-
-Покажи что закрыл из C.1-C.10.
+Должно ответить OK без пароля. Это закрывает A.4 (SSH key-based auth работает).
 ```
 
 ---
 
-## 📱 Промпт 8 — Telegram-бот
+## 🛡 ПРОМПТ 4 — VPS hardening
 
 ```
-Промпт 8: Подключи Telegram-бот по разделу D стандарта.
-Токен и user_id из .env (TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID).
-dmPolicy: allowlist, allowFrom: числовой user_id.
-Token в файле с chmod 600 (НЕ в openclaw.json напрямую).
+Промпт 4: Подготовь VPS по разделу A стандарта (standards/workshop-1-standard.md).
 
-Спроси меня «как зовут твоего цифрового сотрудника?». 
-После моего ответа — впиши имя в SOUL.md с правилом 
-«не использовать пустые фразы вроде Отличный вопрос!».
+Подключайся как root через ~/.ssh/clawd_ed25519. Выполни:
 
-После restart скажи мне «напиши боту привет в Telegram».
+1. apt update && apt upgrade -y (без интерактива: DEBIAN_FRONTEND=noninteractive)
+2. Создать пользователя clawd (--disabled-password, в группу sudo)
+3. ⚠️ КРИТИЧНО: passwordless sudo для clawd ДО блокировки root:
+   echo "clawd ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/clawd
+   chmod 440 /etc/sudoers.d/clawd
 
-Когда я напишу — покажи логи и убедись что модель в логах = minimax/MiniMax-M2.7
-(не deepseek!). Если deepseek — что-то с probe MiniMax, диагностируй.
+   ОБЯЗАТЕЛЬНО проверь: su - clawd -c "sudo -n whoami" → должно ответить root.
+   Если нет — СТОП, скажи мне, не блокируй root SSH!
 
-Покажи что закрыл из D.1-D.7.
+4. Скопировать SSH-ключ из /root/.ssh/authorized_keys в /home/clawd/.ssh/
+   (chmod 600, owner clawd:clawd)
+
+5. Заблокировать root SSH:
+   PermitRootLogin no
+   PasswordAuthentication no
+   systemctl restart ssh
+
+6. ufw: deny incoming, allow outgoing, limit 22/tcp, enable
+
+7. fail2ban: install, enable, start
+
+8. Swap 4GB через /swapfile + /etc/fstab
+
+9. unattended-upgrades + Automatic-Reboot=false
+
+10. loginctl enable-linger clawd
+
+После — обнови .env: VPS_USER=root → VPS_USER=clawd.
+
+Покажи какие критерии A.1-A.10 закрыл.
 ```
 
 ---
 
-## 🛡 Промпт 9 — Watchdog cron
+## 📦 ПРОМПТ 5 — Node 22 + npm + OpenClaw
 
 ```
-Промпт 9: Настрой watchdog kill-switch по разделу F стандарта.
-Cron каждые 30 минут на VPS. Если spend > $3/час — стоп daemon + alert в Telegram.
+Промпт 5: Установи Node 22 + npm prefix + OpenClaw на VPS под clawd.
 
-В watchdog.sh подставь TG_TOKEN и TG_USER_ID прямыми значениями из .env 
-(через set -a; source .env; set +a; затем подставить в heredoc).
+Подключайся как clawd через ssh -i ~/.ssh/clawd_ed25519.
 
-Также напомни мне зайти на openrouter.ai и поставить Spending Limit $30/мес 
-(уровень F.5). Это я делаю сам в браузере.
+1. nvm установка через https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh
 
-Покажи что закрыл из F.1-F.5.
+2. nvm install 22 → nvm use 22 → nvm alias default 22
+
+3. npm prefix:
+   mkdir -p ~/.npm-global
+   npm config set prefix '~/.npm-global'
+
+4. ⚠️ PATH в ТРИ файла (это КРИТИЧНО для cron/systemd/non-login shell):
+   echo 'export PATH=$HOME/.npm-global/bin:$PATH' >> ~/.bashrc
+   echo 'export PATH=$HOME/.npm-global/bin:$PATH' >> ~/.profile
+   echo 'export PATH=$HOME/.npm-global/bin:$PATH' >> ~/.bash_profile
+
+5. npm i -g openclaw  (БЕЗ sudo)
+
+Проверки через bash -lc:
+- node --version → v22.x.x
+- bash -lc "openclaw --version" → 2026.4.x
+- bash -lc "which openclaw" → /home/clawd/.npm-global/bin/openclaw
+
+⛔ ЗАПРЕЩЕНО: НЕ ЗАПУСКАЙ openclaw onboard! Это интерактивный TTY-мастер
+для ЧЕЛОВЕКА. Через AI-batch вызовы он не работает корректно (мы это
+проверили — упирается в pairing-ловушки на 2 дня).
+
+Покажи что закрыл из B.1, B.5. Скажи: «openclaw установлен, готов к
+ручному onboarding — делай Промпт 6».
 ```
 
 ---
 
-## 🎨 Промпт 10 — Картинки
+## ⏸ ПРОМПТ 6 — СТОП. Эстафета человеку
 
 ```
-Промпт 10: Настрой генерацию картинок по разделу E стандарта.
-Default: openrouter/google/gemini-2.5-flash-image
-Fast: openrouter/black-forest-labs/flux-schnell
+Промпт 6: Стоп. Сейчас Я открою Mac Terminal и САМ пройду интерактивный
+openclaw onboard. Это TTY-мастер, ты не справишься через batch.
 
-Проверь что tools.profile = "full" (НЕ messaging и НЕ coding!).
-В SOUL.md добавь правило про команду /image.
+Не делай больше ничего. Жди моё сообщение «бот живой в Telegram».
 
-После restart — я напишу боту "/image кот в шапке астронавта".
-Должна прийти картинка за 5-15 сек. Покажи стоимость через openclaw spend.
+Когда я вернусь — дам Промпт 7 (alias premium и тонкие настройки).
+```
+
+---
+
+# ⏸ ЧАСТЬ А2 — ТЫ САМ в Mac Terminal (10 минут)
+
+> **Открой Mac Terminal** (НЕ Antigravity Terminal — нужен полноценный TTY).
+
+## 🔌 Подключись к VPS как clawd
+
+```bash
+ssh -i ~/.ssh/clawd_ed25519 clawd@VPS_IP
+```
+
+Подставь свой VPS_IP. Должна открыться сессия `clawd@vps:~$` без пароля.
+
+## 🧙 Запусти мастер
+
+```bash
+openclaw onboard
+```
+
+## 📋 Cheat-sheet ответов на вопросы мастера
+
+| # | Вопрос мастера | Ответ |
+|---|---|---|
+| 1 | Welcome / continue? | **Enter** |
+| 2 | Mode? | **local** |
+| 3 | Flow? | **quickstart** |
+| 4 | **Authentication mode?** | **token** ⚠️ (НЕ skip!) |
+| 5 | Gateway bind? | **loopback** |
+| 6 | Gateway port? | **18789** или Enter |
+| 7 | **Enable device-pair plugin?** | **yes** ⚠️ (если спросит — обязательно!) |
+| 8 | Configure providers now? | **yes** |
+| 9 | Add MiniMax? | **yes** → вставь `MINIMAX_API_KEY` |
+| 10 | Add DeepSeek? | **yes** → вставь `DEEPSEEK_API_KEY` |
+| 11 | Add OpenRouter? | **yes** → вставь `OPENROUTER_API_KEY` |
+| 12 | Add Groq? | **yes** → вставь `GROQ_API_KEY` |
+| 13 | Add OpenAI? | **yes** → вставь `OPENAI_API_KEY` |
+| 14 | Default primary model? | **minimax/MiniMax-M2.7** ⚠️ (заглавные M!) |
+| 15 | Configure channels? | **yes** |
+| 16 | Channel type? | **telegram** |
+| 17 | Telegram bot token? | вставь `TELEGRAM_BOT_TOKEN` |
+| 18 | Channel name? | **main** или Enter |
+| 19 | dmPolicy? | **allowlist** |
+| 20 | Allow from user IDs? | твой `TELEGRAM_USER_ID` (числовой) |
+| 21 | Install skills now? | **skip** (поставим в Воркшоп 3) |
+| 22 | Install systemd-user service? | **yes** |
+| 23 | Enable linger? | **yes** |
+| 24 | Start daemon now? | **yes** |
+| 25 | Run doctor? | **yes** |
+| 26 | Save config? | **yes** |
+
+**Если мастер задал вопрос которого нет в таблице** → нажми Ctrl+C, открой
+консультанта (см. `knowledge-base/CONSULTANT-PROMPT.md`) и спроси что выбрать,
+потом запусти `openclaw onboard` снова.
+
+## ✅ Проверка после onboard
+
+В той же SSH-сессии:
+
+```bash
+openclaw devices list           # должна быть запись с operator.admin
+openclaw models status          # 5 провайдеров с ✓
+openclaw channels list          # telegram main active
+openclaw doctor --deep | tail   # 0 critical
+systemctl --user status openclaw --no-pager | head -10
+```
+
+## 🤖 Напиши боту в Telegram
+
+Открой Telegram → найди своего бота → напиши **«Привет!»**
+
+Должно ответить за 3-5 сек. В SSH параллельно:
+```bash
+openclaw logs --since 30s
+```
+
+Найди строку `model=minimax/MiniMax-M2.7 ok` — победа.
+
+⚠️ Если модель `deepseek` вместо `minimax` — fallback сработал, primary упал.
+Скажи AI: «MiniMax не работает, в логах модель = deepseek. Диагностируй».
+
+---
+
+# 💚 Возвращайся в Antigravity
+
+Скажи AI: **«бот живой, отвечает через MiniMax. Дай Промпт 7.»**
+
+---
+
+## 🎨 ПРОМПТ 7 — Alias premium и think
+
+```
+Промпт 7: Бот живой. Теперь добавь aliases для премиум-режима по разделу C
+стандарта.
+
+На VPS под clawd через bash -lc:
+
+1. openclaw aliases set premium deepseek/deepseek-v4-pro
+2. openclaw aliases set think deepseek/deepseek-v4-pro:thinking
+3. openclaw aliases list  → должно показать оба
+
+Также проверь:
+- openclaw models status — primary minimax/MiniMax-M2.7
+- Если fallback на primary не deepseek-v4-flash — добавь:
+  openclaw fallbacks add minimax/MiniMax-M2.7 deepseek/deepseek-v4-flash
+
+Закрой C.7, C.8.
+```
+
+---
+
+## 🛡 ПРОМПТ 8 — Watchdog
+
+```
+Промпт 8: Настрой watchdog kill-switch по разделу F стандарта.
+
+На VPS под clawd:
+
+1. Создай ~/.openclaw/scripts/watchdog.sh с правами +x.
+   ⚠️ ОБЯЗАТЕЛЬНО первой строкой ПОСЛЕ shebang:
+     export PATH=$HOME/.npm-global/bin:$PATH
+   Без этого cron не найдёт openclaw.
+
+2. Логика watchdog: если за последний час расход > $3 — стоп daemon + alert
+   в Telegram.
+
+   TG_TOKEN и TG_USER_ID подставь ПРЯМЫМИ значениями из .env через
+   `set -a; source ~/.env; set +a` heredoc.
+
+3. crontab под clawd: */30 * * * * /home/clawd/.openclaw/scripts/watchdog.sh
+
+4. Проверки:
+   - crontab -l показывает строку
+   - bash -lc "bash ~/.openclaw/scripts/watchdog.sh" → exit 0
+   - chmod 600 на watchdog.sh (внутри токен!)
+
+Также напомни мне зайти на openrouter.ai → Settings → Spending Limit → $30/мес.
+
+Закрой F.1-F.5.
+```
+
+---
+
+## 🎨 ПРОМПТ 9 — Картинки
+
+```
+Промпт 9: Настрой генерацию картинок по разделу E стандарта.
+
+Через bash -lc на VPS:
+
+1. openclaw config set agents.defaults.imageGenerationModel.primary \
+     openrouter/google/gemini-2.5-flash-image
+
+2. openclaw config set agents.defaults.imageGenerationModel.fallbacks \
+     '["openrouter/black-forest-labs/flux-schnell"]'
+
+3. tools.profile должен быть "messaging" или "full". Если другое — поставь
+   "messaging" (этого хватает для /image).
+
+Перезапусти daemon:
+  systemctl --user restart openclaw && sleep 5 && bash -lc "openclaw doctor --deep | tail -10"
+
+После я напишу боту "/image кот в шапке астронавта" — покажи логи и подтверди
+что картинка пришла.
 
 Закрой E.1-E.5.
 ```
 
 ---
 
-## ✅ Промпт 11 — Финальная самопроверка
+## 👤 ПРОМПТ 10 — SOUL.md (личность)
 
 ```
-Промпт 11: Сделай финальную самопроверку Воркшопа 1.
+Промпт 10: Настрой личность бота через SOUL.md.
 
-Пройдись по разделам A-G стандарта (standards/workshop-1-standard.md) и для 
-каждого ❗ критерия выдай статус:
-- ✅ закрыто (с доказательством — выводом команды)
-- ⚠️ частично / неясно
-- ❌ не закрыто (с объяснением почему)
+Спроси меня: «Как зовут твоего цифрового сотрудника? Какой у него характер
+(дерзкий / тёплый / деловой / технарь)?»
 
-В конце скажи общий вердикт:
-- 🎉 «Воркшоп 1 пройден» — все ❗ закрыты
-- ⚠️ «Почти готово» — есть мелкие ⚠️, но критичные ❗ закрыты
-- ❌ «Есть проблемы» — что-то ❗ не закрыто
+После моего ответа создай ~/.openclaw/workspace/SOUL.md:
+
+# Личность
+
+## Имя
+[имя]
+
+## Характер
+[характер]
+
+## Правила
+- Отвечай кратко и по делу на русском
+- НИКОГДА не используй пустые фразы: «Отличный вопрос!», «С удовольствием
+  помогу!», «Вот развёрнутый ответ:», «Конечно!»
+- Не показывай chain-of-thought, не пиши «Анализирую...»
+- Если не знаешь — скажи прямо «не знаю», не выдумывай
+
+Перезапусти daemon. Я напишу боту «привет» — он должен представиться по имени
+БЕЗ пустых фраз.
+
+Закрой D.7, H.1-H.3.
+```
+
+---
+
+## ✅ ПРОМПТ 11 — Финальная самопроверка
+
+```
+Промпт 11: Финальная самопроверка Воркшопа 1.
+
+Пройдись по разделам A-H стандарта (standards/workshop-1-standard.md) и для
+КАЖДОГО ❗ критерия выдай:
+- ✅ закрыто (с доказательством — командой и её выводом)
+- ⚠️ частично/неясно (с пояснением)
+- ❌ не закрыто (с объяснением)
+
+Обязательно покажи сырой вывод:
+- bash -lc "openclaw devices list"
+- bash -lc "openclaw models status"
+- bash -lc "openclaw channels list"
+- bash -lc "openclaw doctor --deep | tail -25"
+- crontab -l
+- systemctl --user status openclaw --no-pager | head -10
 
 Сохрани отчёт самопроверки на VPS как ~/.openclaw/workshop-1-self-check.md
 для последующего аудита.
+
+Вердикт:
+- 🎉 «Воркшоп 1 пройден» — все ❗ закрыты
+- 🟡 «Почти готово» — все ❗ закрыты, есть ⚠️
+- ❌ «Есть проблемы» — что-то ❗ не закрыто
 ```
 
 ---
@@ -208,13 +422,32 @@ Fast: openrouter/black-forest-labs/flux-schnell
 # 🎯 После 11 промптов
 
 После Промпта 11 у тебя должно быть:
-- ✅ Бот в Telegram отвечает на «привет» через MiniMax
-- ✅ `/image кот` возвращает картинку
-- ✅ Watchdog в crontab
+- ✅ Бот в Telegram отвечает на «привет» через MiniMax M2.7
+- ✅ `/image кот` возвращает картинку за 5-15 сек
+- ✅ Бот представляется по имени
+- ✅ Watchdog в crontab каждые 30 мин
 - ✅ Все ❗ критерии стандарта закрыты
 
 **Дальше:**
-1. Открой `02-self-check.md` — копируй 8 запросов в Telegram-бот, собирай артефакты
-2. Открой `03-audit.md` — запусти независимый аудит в новом чате Antigravity
+1. **`02-self-check.md`** — копируй 8 запросов прямо в Telegram-бот, собирай артефакты состояния
+2. **`03-audit.md`** — запусти независимый аудит в НОВОМ чате Antigravity
 
-После аудита получишь окончательный вердикт «В1 пройден» или список доделок.
+После аудита получишь окончательный вердикт.
+
+---
+
+# 🆘 Если на любом промпте что-то падает
+
+**Не паникуй и не лезь чинить через AI «попробуй ещё раз»** — это путь к двум дням ада.
+
+Открой `knowledge-base/CONSULTANT-PROMPT.md`, скопируй его в **НОВЫЙ чат AI**
+(не в этот!) — это твой персональный консультант с базой знаний 20 блоков
+исследований + known-issues. Задай конкретный вопрос — получишь точный фикс
+за 30 секунд.
+
+Также см. `knowledge-base/known-issues/`:
+- `1008-pairing-required.md` — gateway closed 1008
+- `path-non-login-shell.md` — openclaw: command not found из cron
+- `slug-case-sensitive.md` — minimax/minimax-m2.7 vs minimax/MiniMax-M2.7
+- `device-pair-disabled.md` — paired.json пустой
+- `runaway-4200-incident.md` — что не делать с fallback моделями

@@ -3,7 +3,7 @@
 > Пульт управления удалённым OpenClaw-агентом на VPS.
 > Это рабочее окружение, которое ты открываешь в Antigravity. AI-плагин (Claude Code или Codex) управляет ботом по SSH через скрипты из этой папки.
 
-**Версия deck:** 1.1.0 — добавлены workshop-1, standards, audit framework
+**Версия deck:** 1.5.0 — гибридный путь установки (AI делает рутину + ручной onboard), исправлены ловушки 1008/PATH/device-pair
 **Подготовлено:** Дмитрий Попов (@ai_comandos)
 
 ---
@@ -14,11 +14,14 @@
 
 ```
 workshop-1/
-├── README.md            ← начни отсюда
-├── 00-meta-prompt.md    ← вставляется ОДИН РАЗ в начале В1
-├── 01-prompts.md        ← 11 промптов по порядку
-├── 02-self-check.md     ← собрать артефакты от бота
-└── 03-audit.md          ← независимый аудит в новом чате
+├── README.md                  ← начни отсюда
+├── 00-meta-prompt.md          ← вставляется ОДИН РАЗ в начале В1
+├── 01-prompts.md              ← 11 гибридных промптов (AI + ручной onboard)
+├── 01a-install-by-hand.md     ← план Б: полностью руками без AI (опционально)
+├── 02-self-check.md           ← собрать артефакты от бота
+├── 03-audit.md                ← независимый аудит в новом чате
+├── guide.html                 ← интерактивный гайд в браузере
+└── presentation.html          ← кинематографическая презентация
 ```
 
 После прохождения Воркшопа 1 → переходи к Воркшопу 2 (через 7 дней).
@@ -138,12 +141,45 @@ workshop-1/
 
 ---
 
-## 📝 Что нового в v1.1
+## 📝 Что нового в v1.5 (2 мая 2026)
 
-- ✅ `workshop-1/` — папка с полным гайдом В1 (4 файла + README)
+Этот релиз — результат **двух дней реальной отладки** установки на живой VPS.
+Все ловушки задокументированы, промпты переписаны под выверенный путь.
+
+### 🆕 Главные изменения
+
+- 🎯 **Гибридный путь установки**: AI делает рутину (5 промптов), человек делает
+  только ручной `openclaw onboard` в Mac Terminal (~10 минут с cheat-sheet),
+  AI доделывает тонкости (4 промпта). Итого: ~30 минут вместо ~90.
+
+- 📋 **`workshop-1/01a-install-by-hand.md`** — план Б, полностью ручная
+  установка для тех кто не хочет использовать AI на этом этапе.
+
+- 🛡 **Усиленный meta-prompt** с режимами **DIAGNOSE → FIX → VERIFY** и
+  явным запретом на запуск `openclaw onboard` через AI (ловушка №1).
+
+### 🐛 Исправленные ловушки OpenClaw 2026.4.x
+
+- **1008 pairing required** — onboard через `--non-interactive --auth=skip`
+  оставляет CLI в read-only scope. Любой запрос к моделям → 1008.
+  Фикс: ручной onboard с `auth=token` + `device-pair` плагин включён.
+
+- **PATH в non-login shell** — npm prefix виден только в interactive bash.
+  Cron, systemd, ssh-batch не видят. Фикс: PATH в три файла
+  (`~/.bashrc`, `~/.profile`, `~/.bash_profile`) + использование `bash -lc`.
+
+- **Slug case-sensitive** — `minimax/MiniMax-M2.7` (с заглавными), не
+  `minimax/minimax-m2.7`. Иначе probe падает, fallback на DeepSeek.
+
+- **Plugin device-pair выключен** — встречалось когда конфиг лепили руками
+  без `onboard`. Без этого плагина любой scope-upgrade → 1008.
+
+### 📜 Из v1.0-v1.4
+
+- ✅ `workshop-1/` — папка с полным гайдом В1
 - ✅ `standards/workshop-1-standard.md` — ~30 критериев готовности
 - ✅ `audit/` — фреймворк независимого аудита
-- ✅ Meta-prompt + 11 коротких outcomes-based промптов
-- ✅ Self-check через сам Telegram-бот
+- ✅ Self-check через сам Telegram-бот (8 запросов)
 - ✅ Независимый аудитор в новом чате
-- ✅ Учтены все известные баги OpenClaw 2026.4.27 (case-sensitive slugs, schema mismatch)
+- ✅ `workshop-1/guide.html` — интерактивный HTML-гайд (брендинг COMANDOS AI)
+- ✅ `workshop-1/presentation.html` — кинематографическая презентация спринта
