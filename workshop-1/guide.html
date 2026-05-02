@@ -601,7 +601,14 @@
         <div class="pbar"><span class="plang">antigravity · chat</span><button class="cbtn" onclick="cp(this,'p0')">📋 Копировать</button></div>
         <div class="pcode" id="p0">Ты помогаешь мне развернуть OpenClaw на VPS — это будет мой личный AI-сотрудник в Telegram. Я делаю это в рамках спринта @ai_comandos, Воркшоп 1.
 
-ИСТОЧНИК ИСТИНЫ: standards/workshop-1-standard.md — прочитай его, там ~30 критериев готовности (❗ критично, ⚠️ рекомендуется, 💡 опционально).
+⚠️ Репо ещё нет на диске — не пытайся читать файлы сейчас!
+
+В Промпте 1 я склонирую deck и тогда прочитаю:
+- standards/workshop-1-standard.md (~30 критериев готовности)
+- knowledge-base/README.md (база знаний с known-issues)
+- config/openclaw.json (эталонный конфиг)
+
+Сейчас только правила работы — они ниже.
 
 РАЗДЕЛЕНИЕ ТРУДА (важно!):
 - ТЫ делаешь рутину: SSH-ключи, VPS hardening, npm установка, правка конфигов
@@ -629,7 +636,7 @@
 
 Если инструмент блокирует SSH с паролем — дай мне готовую команду для моего терминала.
 
-Готов? Прочитай стандарт и скажи «готов, давай Промпт 1».</div>
+Готов? Усвой правила (НЕ читай файлы — их ещё нет!) и скажи «готов, давай Промпт 1». В Промпте 1 склонируешь deck и тогда прочитаешь стандарт + knowledge-base.</div>
       </div>
     </div>
 
@@ -649,24 +656,36 @@
           <div class="pcard-title">Скачать deck + .env</div>
         </div>
       </div>
-      <p class="pcard-desc">AI клонирует репо в <code>~/Desktop/comandos-claw-deck</code>, читает стандарт, создаёт <code>.env</code>. Ты вставишь 9 значений из Notes.</p>
+      <p class="pcard-desc"><strong>СНАЧАЛА</strong> AI клонирует репо в <code>~/Desktop/comandos-claw-deck</code> — только после этого читает <code>standards/workshop-1-standard.md</code> + <code>knowledge-base/README.md</code> (раньше файлов на диске нет!). Потом создаёт <code>.env</code> из шаблона, ты вставишь 9 значений из Notes.</p>
       <div class="pb">
         <div class="pbar"><span class="plang">antigravity · chat</span><button class="cbtn" onclick="cp(this,'p1')">📋 Копировать</button></div>
-        <div class="pcode" id="p1">Промпт 1: Подготовь рабочую папку.
+        <div class="pcode" id="p1">Промпт 1: Подготовь рабочую папку и загрузи контекст.
 
-1. Склонируй deck в ~/Desktop/comandos-claw-deck:
+ШАГ 1 — склонировать deck (СНАЧАЛА это):
    git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git ~/Desktop/comandos-claw-deck
    cd ~/Desktop/comandos-claw-deck
 
-2. Открой standards/workshop-1-standard.md — это источник истины.
+ШАГ 2 — теперь ЧИТАЙ файлы (они появились на диске):
+   1. standards/workshop-1-standard.md — твой ИСТОЧНИК ИСТИНЫ.
+      Прочитай ПОЛНОСТЬЮ. Запомни структуру разделов A-H и критерии ❗/⚠️/💡.
+      Без этого дальше идти нельзя.
 
-3. Если есть knowledge-base/ — посмотри его README.
+   2. knowledge-base/README.md — индекс базы знаний.
+      Глянь структуру (известные ловушки в known-issues/ для типовых проблем).
 
-4. Создай .env из .env.example.
+   3. config/openclaw.json — эталонный конфиг (для справки, не для заливки).
 
-5. Скажи мне «вставь свои 9 значений в .env» — я сам впишу из Notes (VPS_IP, ROOT_PASSWORD, 5 API-ключей, TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID).
+ШАГ 3 — создай .env из шаблона:
+   cp .env.example .env
 
-После моего «готово» проверь .env — должно быть 9 непустых VAR=значение. Покажи список ИМЁН переменных (БЕЗ значений!).</div>
+ШАГ 4 — скажи мне «вставь свои 9 значений в .env» — я сам впишу из Notes
+(VPS_IP, ROOT_PASSWORD, 5 API-ключей, TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID).
+
+После моего «готово»:
+- Проверь что в .env минимум 9 непустых VAR=значение
+- Покажи список ИМЁН переменных (БЕЗ значений!)
+- Кратко (3-5 строк) перескажи ключевые ❗ критерии стандарта что запомнил
+- Скажи «контекст загружен, готов к Промпту 2 (SSH-ключ)»</div>
       </div>
     </div>
 

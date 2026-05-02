@@ -33,30 +33,39 @@
 
 ---
 
-## 📦 ПРОМПТ 1 — Склонировать deck + .env
+## 📦 ПРОМПТ 1 — Склонировать deck + ПРОЧИТАТЬ СТАНДАРТ + .env
 
 ```
-Промпт 1: Подготовь рабочую папку.
+Промпт 1: Подготовь рабочую папку и загрузи контекст.
 
-1. Склонируй deck в ~/Desktop/comandos-claw-deck:
-   git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git \
-     ~/Desktop/comandos-claw-deck
+ШАГ 1 — клонировать deck (СНАЧАЛА это):
+   git clone https://github.com/Comandosai/sprint-deck-cohort-nov2026.git ~/Desktop/comandos-claw-deck
    cd ~/Desktop/comandos-claw-deck
 
-2. Открой standards/workshop-1-standard.md — это источник истины с критериями
-   готовности (~30 пунктов A-H).
+ШАГ 2 — теперь ЧИТАЙ файлы (они появились на диске):
+   1. standards/workshop-1-standard.md — это твой ИСТОЧНИК ИСТИНЫ.
+      Прочитай ПОЛНОСТЬЮ. Запомни структуру разделов A-H и критерии
+      ❗/⚠️/💡. Без этого дальше идти нельзя.
 
-3. Открой knowledge-base/README.md если он есть — это база знаний по OpenClaw
-   с known-issues. Если в любом промпте что-то непонятно — ищи там.
+   2. knowledge-base/README.md — индекс базы знаний.
+      Достаточно одного раза посмотреть структуру, чтобы знать куда
+      бегать если что упадёт (known-issues/ для типовых проблем).
 
-4. Создай .env из .env.example.
+   3. config/openclaw.json — эталонный конфиг (для справки, не для
+      заливки).
 
-5. Скажи мне «вставь свои 9 значений в .env» — я сам впишу из Notes:
+ШАГ 3 — создай .env из шаблона:
+   cp .env.example .env
+
+ШАГ 4 — скажи мне «вставь свои 9 значений в .env» — я сам впишу из Notes:
    VPS_IP, ROOT_PASSWORD, MINIMAX_API_KEY, DEEPSEEK_API_KEY, OPENROUTER_API_KEY,
    GROQ_API_KEY, OPENAI_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_USER_ID.
 
-После моего «готово» проверь .env — должно быть 9 непустых VAR=значение.
-Покажи список ИМЁН переменных (БЕЗ значений!).
+После моего «готово»:
+- Проверь что в .env минимум 9 непустых VAR=значение
+- Покажи список ИМЁН переменных (БЕЗ значений!)
+- Кратко (3-5 строк) перескажи ключевые ❗ критерии стандарта что запомнил
+- Скажи «контекст загружен, готов к Промпту 2 (SSH-ключ)»
 ```
 
 ---
