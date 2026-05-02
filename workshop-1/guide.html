@@ -50,7 +50,7 @@
   .prelude-item strong{color:var(--text);font-weight:500;}
 
   /* ТАБЫ */
-  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:32px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px;}
+  .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:32px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px;}
   .tab{background:transparent;border:1px solid transparent;border-radius:10px;padding:18px 16px;cursor:pointer;text-align:left;transition:all 0.25s;display:flex;flex-direction:column;gap:6px;}
   .tab:hover{background:rgba(255,255,255,0.02);}
   .tab.active{background:var(--bg);border-color:var(--border);}
@@ -59,6 +59,7 @@
   .tab[data-tab="1"].active .tab-num{color:var(--lime);}
   .tab[data-tab="2"].active .tab-num{color:var(--green);}
   .tab[data-tab="3"].active .tab-num{color:var(--orange);}
+  .tab[data-tab="4"].active .tab-num{color:#a78bfa;}
   .tab-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.05;letter-spacing:0.01em;}
   .tab-desc{font-size:11px;color:var(--muted);line-height:1.4;}
 
@@ -92,6 +93,33 @@
   .panel-blue .pcard:hover{border-color:rgba(96,165,250,0.28);}
   .panel-blue .pcard-badge{color:var(--blue);}
   .panel-blue .pcard-tool{color:var(--blue);}
+
+  /* Фиолетовый (4 закладка — Консультант) */
+  .panel-violet .pcard:hover{border-color:rgba(167,139,250,0.28);}
+  .panel-violet .pcard-badge{color:#a78bfa;}
+  .panel-violet .pcard-tool{color:#a78bfa;}
+  .panel-violet .pb{border-color:rgba(167,139,250,0.22);}
+  .panel-violet .pbar{background:rgba(167,139,250,0.05);border-color:rgba(167,139,250,0.15);}
+  .panel-violet .cbtn{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.25);color:#a78bfa;}
+  .panel-violet .cbtn:hover{background:rgba(167,139,250,0.18);}
+  .panel-violet .pcode .v{color:#a78bfa;}
+
+  /* Карточки KB (для закладки 04) */
+  .kb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:14px 0;}
+  .kb-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;transition:border-color 0.25s;}
+  .kb-card:hover{border-color:rgba(167,139,250,0.28);}
+  .kb-card-tag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;}
+  .kb-card-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:16px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.1;}
+  .kb-card-desc{font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .kb-card-path{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--subtle);background:var(--bg);border:1px solid var(--border);padding:3px 8px;border-radius:4px;align-self:flex-start;margin-top:auto;}
+
+  /* Топ-10 примеров вопросов */
+  .examples{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+  .example{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;transition:border-color 0.25s;}
+  .example:hover{border-color:rgba(167,139,250,0.28);}
+  .example-q{color:var(--text);}
+  .example-q::before{content:'❓ ';color:#a78bfa;}
+  .example-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:#a78bfa;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.18);padding:3px 7px;border-radius:4px;}
 
   /* Section заголовки в panel-0 */
   .pf-section-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text);margin:32px 0 14px;display:flex;align-items:center;gap:12px;}
@@ -315,6 +343,11 @@
       <span class="tab-num">03 · Новый чат AI</span>
       <span class="tab-title">Контроль</span>
       <span class="tab-desc">Один большой промпт независимому аудитору — вердикт по 30 критериям</span>
+    </button>
+    <button class="tab" data-tab="4" onclick="goTab(4)">
+      <span class="tab-num">04 · Если упало</span>
+      <span class="tab-title">Консультант</span>
+      <span class="tab-desc">AI-эксперт с базой знаний 2МБ — открывается в новом чате, отвечает за 30 секунд</span>
     </button>
   </div>
 
@@ -1420,6 +1453,196 @@ H.3 ⚠️ SOUL.md содержит anti-sycophancy правило
     <div class="final">
       <div class="final-title">Воркшоп 1 <span class="acc">завершён</span></div>
       <div class="final-desc">Если вердикт 🎉 — поздравляю, цифровой сотрудник готов!<br>Если 🟡 или ❌ — возвращайся в Antigravity и чини по плану аудитора.</div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ЗАКЛАДКА 4 — КОНСУЛЬТАНТ                                        -->
+  <!-- ============================================================ -->
+  <div class="panel panel-violet" id="panel-4">
+
+    <div class="notice info" style="background:rgba(167,139,250,0.06);border-color:rgba(167,139,250,0.18);color:rgba(167,139,250,0.85);"><div class="ni">🆘</div>Если на любом шаге что-то упало или непонятно — открой <strong>НОВЫЙ чат AI</strong> (Claude.ai в браузере, или новая сессия в Antigravity) и вставь промпт ниже. Это твой персональный AI-эксперт по OpenClaw с базой знаний 2 МБ. Отвечает за 30 секунд с цитатой из known-issues.</div>
+
+    <!-- Зачем консультант -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">?</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Зачем нужен</div>
+          <div class="pcard-title">Второй чат AI = независимый эксперт</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Главный AI в чате установки — <strong>исполнитель</strong>. Когда ты застрял, его легко уговорить «попробовать что-нибудь» (переключить канал, переустановить). Это путь к 2-дневному аду.</p>
+      <p class="pcard-desc">Консультант в отдельном чате <strong>только консультирует</strong> — читает базу знаний и интернет, даёт точный ответ. Не лезет в SSH, не меняет VPS. Не унаследовал bias главного AI.</p>
+    </div>
+
+    <!-- База знаний -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">📚</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">База знаний</div>
+          <div class="pcard-title">Что у консультанта под рукой</div>
+        </div>
+      </div>
+      <p class="pcard-desc">2 МБ выверенного материала в папке <code>knowledge-base/</code> репозитория:</p>
+      <div class="kb-grid">
+        <div class="kb-card">
+          <div class="kb-card-tag">7 файлов</div>
+          <div class="kb-card-name">Known-issues</div>
+          <div class="kb-card-desc">Реальные ловушки от 2-дневной отладки: 1008 pairing, PATH в cron, slug case, runaway $4200.</div>
+          <div class="kb-card-path">knowledge-base/known-issues/</div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-tag">20 файлов</div>
+          <div class="kb-card-name">Блоки ресерча</div>
+          <div class="kb-card-desc">VPS, модели, Telegram, личность, память, tools, skills, MCP, проактивность, безопасность и т.д.</div>
+          <div class="kb-card-path">knowledge-base/blocks/</div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-tag">5 файлов</div>
+          <div class="kb-card-name">PRO-материалы</div>
+          <div class="kb-card-desc">Cost optimization, hidden features, community wisdom, production hardening, memory + multi-agent.</div>
+          <div class="kb-card-path">knowledge-base/pro/</div>
+        </div>
+      </div>
+      <p class="pcard-desc" style="margin-top:14px;">Источники: docs.openclaw.ai, github.com/openclaw, reddit, X, habr (апрель-май 2026). Если в базе нет — консультант сходит в интернет.</p>
+    </div>
+
+    <!-- Главный промпт -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">📋</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Промпт консультанта</div>
+          <div class="pcard-title">Скопируй в новый чат AI</div>
+        </div>
+      </div>
+      <p class="pcard-desc"><strong>Открой НОВЫЙ чат</strong> (Claude.ai в браузере, или новая сессия в Antigravity — НЕ тот где идёт установка!). Скопируй промпт целиком и вставь первым сообщением. AI ответит «готов» — задавай вопрос.</p>
+      <div class="pb">
+        <div class="pbar"><span class="plang">new chat · paste once</span><button class="cbtn" onclick="cp(this,'consultant')">📋 Копировать ВЕСЬ промпт</button></div>
+        <div class="pcode" id="consultant">═══════════════════════════════════════════════════════════════════
+ТЫ — AI-КОНСУЛЬТАНТ ПО OPENCLAW ДЛЯ СПРИНТА @ai_comandos
+═══════════════════════════════════════════════════════════════════
+
+ТВОЯ РОЛЬ
+Ты помогаешь участникам спринта Дмитрия Попова (@ai_comandos) в момент когда у них что-то непонятно или сломалось при установке OpenClaw.
+
+═══ ТВОЯ БАЗА ЗНАНИЙ ═══
+
+В папке knowledge-base/ этого репозитория лежит ~2 МБ выверенного материала по OpenClaw 2026.4.x:
+
+knowledge-base/
+├── README.md                       — индекс по базе
+├── known-issues/                   — 7 реальных ловушек и фиксов
+│   ├── 01-1008-pairing-required.md       (главная боль)
+│   ├── 02-path-non-login-shell.md        (PATH в cron/SSH)
+│   ├── 03-device-pair-disabled.md        (плагин выключен)
+│   ├── 04-slug-case-sensitive.md         (MiniMax-M2.7 vs minimax)
+│   ├── 05-bot-silent-in-telegram.md      (бот молчит)
+│   ├── 06-runaway-4200-incident.md       ($4200/63ч кейс)
+│   └── 07-env-not-in-systemd.md          (env не пробрасывается)
+├── blocks/                         — 20 блоков ресерча (VPS, модели, Telegram...)
+└── pro/                            — 5 PRO-материалов (cost, hidden, community...)
+
+ПРОЧИТАЙ knowledge-base/README.md СЕЙЧАС — узнай структуру.
+
+═══ КАК ТЫ РАБОТАЕШЬ ═══
+
+1. ПОЛУЧАЕШЬ ВОПРОС — прочти его полностью.
+
+2. ИЩЕШЬ В KB В ТАКОМ ПОРЯДКЕ:
+   а) knowledge-base/known-issues/ — это ПЕРВЫЙ источник
+   б) knowledge-base/blocks/ — для углублённой темы
+   в) knowledge-base/pro/ — для специфичных вопросов
+
+3. ЕСЛИ В KB НЕТ — иди в интернет через WebSearch/WebFetch:
+   - docs.openclaw.ai
+   - github.com/openclaw/openclaw (issues, discussions)
+   - reddit, X, habr
+
+4. ОТВЕЧАЙ ПО ФОРМАТУ:
+
+   ## Прямой ответ (1-2 предложения)
+   [Что это и что делать]
+
+   ## Где это в KB
+   knowledge-base/known-issues/XX-name.md
+   > «короткая цитата из файла»
+
+   ## Точная команда / шаг
+   ```bash
+   # копи-паста готовая команда
+   ```
+
+   ## Что НЕ делать
+   - [Анти-паттерн 1]
+   - [Анти-паттерн 2]
+
+═══ ЧЕГО ТЫ НЕ ДЕЛАЕШЬ ═══
+
+❌ Не выдумываешь команды («скорее всего работает...»)
+❌ Не запускаешь SSH / не модифицируешь VPS — ты только консультант
+❌ Не повторяешь вопрос пользователя
+❌ Не угадываешь — если не знаешь, скажи прямо
+
+═══ ЯЗЫК ═══
+
+Русский. Кратко, по делу, без воды. Без пустых фраз «Отличный вопрос!». Сразу к сути.
+
+═══════════════════════════════════════════════════════════════════
+
+Готов? Прочитай knowledge-base/README.md и скажи «готов, задавай вопрос».
+═══════════════════════════════════════════════════════════════════</div>
+      </div>
+    </div>
+
+    <!-- Топ-10 примеров -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">💬</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Примеры вопросов</div>
+          <div class="pcard-title">Не знаешь с чего начать?</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Любой из этих вопросов задай консультанту — получишь точный ответ с цитатой:</p>
+      <div class="examples">
+        <div class="example"><div class="example-q">Бот молчит в Telegram, что проверять?</div><div class="example-tag">issue 05</div></div>
+        <div class="example"><div class="example-q">В логах gateway closed (1008), что это?</div><div class="example-tag">issue 01</div></div>
+        <div class="example"><div class="example-q">openclaw: command not found из cron, почему?</div><div class="example-tag">issue 02</div></div>
+        <div class="example"><div class="example-q">Бот отвечает через DeepSeek а не MiniMax</div><div class="example-tag">issue 04</div></div>
+        <div class="example"><div class="example-q">Какую модель на primary поставить?</div><div class="example-tag">block 03</div></div>
+        <div class="example"><div class="example-q">Как защитить от runaway-инцидента?</div><div class="example-tag">issue 06</div></div>
+        <div class="example"><div class="example-q">Как настроить SOUL.md без пустых фраз?</div><div class="example-tag">block 05</div></div>
+        <div class="example"><div class="example-q">Что такое heartbeat и зачем оно?</div><div class="example-tag">block 12</div></div>
+        <div class="example"><div class="example-q">Как добавить память типа mem0?</div><div class="example-tag">block 15 + pro 05</div></div>
+        <div class="example"><div class="example-q">Какой VPS-хостер для России?</div><div class="example-tag">block 01</div></div>
+      </div>
+    </div>
+
+    <!-- Когда НЕ использовать -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">⛔</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Не для этого</div>
+          <div class="pcard-title">Когда НЕ нужен консультант</div>
+        </div>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:var(--muted);line-height:1.6;">
+        <li>❌ <strong style="color:var(--text);">«Сделай за меня установку»</strong> — это работа главного AI или ручного пути</li>
+        <li>❌ <strong style="color:var(--text);">«Подключись к моему VPS»</strong> — консультант не работает с инфраструктурой</li>
+        <li>❌ <strong style="color:var(--text);">«Дай мне API-ключ»</strong> — он не знает твоих ключей</li>
+        <li>❌ <strong style="color:var(--text);">«Перепиши промпт»</strong> — это работа Дмитрия</li>
+      </ul>
+      <p class="pcard-desc" style="margin-top:14px;">Консультант = <strong>советник</strong>. Не исполнитель. Если нужно действие — иди в главный чат с AI или в свой Mac Terminal.</p>
+    </div>
+
+    <div class="final" style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(96,165,250,0.05));border-color:rgba(167,139,250,0.25);">
+      <div class="final-title">База знаний <span class="acc" style="color:#a78bfa;">всегда под рукой</span></div>
+      <div class="final-desc">Ты не один с этим. 20 блоков ресерча + 7 known-issues от реальной отладки + интернет = ответ на любой вопрос за 30 секунд.</div>
     </div>
 
   </div>

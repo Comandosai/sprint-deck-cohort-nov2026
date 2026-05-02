@@ -3,7 +3,7 @@
 > Пульт управления удалённым OpenClaw-агентом на VPS.
 > Это рабочее окружение, которое ты открываешь в Antigravity. AI-плагин (Claude Code или Codex) управляет ботом по SSH через скрипты из этой папки.
 
-**Версия deck:** 1.5.0 — гибридный путь установки (AI делает рутину + ручной onboard), исправлены ловушки 1008/PATH/device-pair
+**Версия deck:** 1.6.0 — knowledge-base (2 МБ ресерча) + AI-консультант + 5-я закладка в гайде
 **Подготовлено:** Дмитрий Попов (@ai_comandos)
 
 ---
@@ -33,6 +33,7 @@ workshop-1/
 | Папка | Что там | Когда открывать |
 |---|---|---|
 | **`workshop-1/`** | Гайд по В1 + промпты + аудит | На Воркшопе 1 |
+| **`knowledge-base/`** | 2 МБ ресерча + 7 known-issues + промпт консультанта | Если что-то непонятно или сломалось |
 | **`standards/`** | Чек-листы готовности после каждого В | AI и аудитор используют как источник истины |
 | **`audit/reports/`** | Отчёты самопроверки и аудита | Создаются участником в процессе В |
 | **`workspace/`** | Личность бота (SOUL, USER, AGENTS) | Кастомизация после В1 |
@@ -138,6 +139,24 @@ workshop-1/
 - Документация: https://docs.openclaw.ai
 - Репозиторий OpenClaw: https://github.com/openclaw/openclaw
 - Этот deck на GitHub: https://github.com/Comandosai/sprint-deck-cohort-nov2026
+
+---
+
+## 📝 Что нового в v1.6 (5 мая 2026)
+
+База знаний под рукой + AI-консультант:
+
+- 📚 **`knowledge-base/`** (~2 МБ): 20 блоков ресерча + 5 PRO-материалов + 7 known-issues
+- 🆘 **`knowledge-base/CONSULTANT-PROMPT.md`** — готовый промпт для нового чата AI как эксперта
+- 🆘 **Закладка 04 «Консультант»** в `workshop-1/guide.html` (фиолетовая) — кнопка копи-паста промпта
+- 📋 **7 known-issues** на основе реальной 2-дневной отладки:
+  1. `1008-pairing-required` — главная ловушка установки
+  2. `path-non-login-shell` — `openclaw: command not found` из cron
+  3. `device-pair-disabled` — плагин выключен → нет pairing
+  4. `slug-case-sensitive` — `MiniMax-M2.7` vs `minimax-m2.7`
+  5. `bot-silent-in-telegram` — универсальный гид «бот молчит»
+  6. `runaway-4200-incident` — кейс $4200 за 63 часа
+  7. `env-not-in-systemd` — env не пробрасывается в daemon
 
 ---
 
