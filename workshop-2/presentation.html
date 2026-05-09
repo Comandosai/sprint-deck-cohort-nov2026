@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Воркшоп 2 · Бот помнит и говорит · @ai_comandos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;1,700;1,800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0e0f; --card:#181a1b; --card2:#1f2122; --border:rgba(255,255,255,0.06);
+    --text:#f0f0f0; --muted:rgba(240,240,240,0.62); --subtle:rgba(240,240,240,0.4);
+    --lime:#c8ff00; --lime-dim:rgba(200,255,0,0.1); --lime-glow:rgba(200,255,0,0.35);
+    --green:#22c55e; --orange:#f97316; --blue:#60a5fa; --red:#ef4444; --violet:#a78bfa;
+    --cyan:#22d3ee; --pink:#f472b6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.014) 0,rgba(255,255,255,0.014) 1px,transparent 1px,transparent 3px)}
+
+  /* TOPBAR */
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(13,14,15,0.78);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;z-index:500;gap:14px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime-glow);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.85)}}
+  .brand{color:var(--text)}
+  .topbar .sep{color:var(--subtle)}
+  .topbar .crumb{color:var(--muted)}
+  .topbar .right{margin-left:auto;color:var(--lime)}
+  .topbar .right a{color:var(--lime);text-decoration:none}
+  .topbar .nav-counter{color:var(--subtle);font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;font-size:10px}
+
+  /* SLIDES */
+  .slide{min-height:100vh;scroll-snap-align:start;padding:96px 64px 72px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+  .slide::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 80% 0%,rgba(200,255,0,0.04),transparent 55%)}
+  .slide-num{position:absolute;top:64px;right:64px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.18em;color:var(--subtle)}
+  .slide-inner{position:relative;z-index:2;max-width:1280px;margin:0 auto;width:100%}
+
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--lime);margin-bottom:18px}
+  .tag::before{content:'';width:24px;height:1px;background:var(--lime)}
+  .tag.violet{color:var(--violet)}
+  .tag.violet::before{background:var(--violet)}
+  .tag.red{color:var(--red)}
+  .tag.red::before{background:var(--red)}
+
+  h1{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:clamp(48px,8vw,108px);line-height:0.96;letter-spacing:-0.005em;text-transform:uppercase;color:var(--text);margin-bottom:24px}
+  h1 .acc{color:var(--lime)}
+  h1 .strike{color:var(--subtle);text-decoration:line-through;text-decoration-thickness:4px;text-decoration-color:var(--red)}
+  h2{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:clamp(36px,5.5vw,72px);line-height:1;letter-spacing:0;text-transform:uppercase;color:var(--text);margin-bottom:24px}
+  h2 .acc{color:var(--lime)}
+  h2 .red{color:var(--red)}
+  h2 .violet{color:var(--violet)}
+  h3{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;font-size:24px;text-transform:uppercase;color:var(--lime);letter-spacing:0.02em;margin:0 0 12px}
+  .lede{font-size:22px;color:var(--muted);max-width:880px;line-height:1.45;font-weight:300}
+  .lede strong{color:var(--text);font-weight:500}
+  .lede.big{font-size:26px;line-height:1.4}
+
+  /* HERO */
+  .hero{background:radial-gradient(circle at 30% 20%,rgba(200,255,0,0.06),transparent 50%),radial-gradient(circle at 80% 80%,rgba(34,211,238,0.04),transparent 60%)}
+  .hero h1{font-size:clamp(56px,9vw,140px)}
+  .hero-meta{display:flex;gap:32px;margin-top:48px;flex-wrap:wrap}
+  .hero-meta .item{display:flex;flex-direction:column;gap:4px}
+  .hero-meta .lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--subtle)}
+  .hero-meta .val{font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--text);font-weight:500}
+  .hero-meta .val.lime{color:var(--lime)}
+  .hero-track{margin-top:64px;display:flex;gap:6px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--subtle);letter-spacing:0.1em}
+  .hero-track .step{padding:5px 11px;border:1px solid var(--border);border-radius:4px;background:var(--card)}
+  .hero-track .step.curr{background:var(--lime);color:#0d0e0f;border-color:var(--lime);font-weight:700}
+  .hero-track .arr{color:var(--subtle)}
+
+  /* Аналогия-карточка */
+  .analogy{background:linear-gradient(135deg,rgba(200,255,0,0.05),rgba(34,211,238,0.04));border:1px solid rgba(200,255,0,0.18);border-radius:14px;padding:32px 36px;margin-top:32px;max-width:920px;display:flex;gap:24px;align-items:flex-start}
+  .analogy-emoji{font-size:64px;line-height:1}
+  .analogy-body{flex:1}
+  .analogy-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+  .analogy-text{font-size:18px;color:var(--text);line-height:1.5;font-weight:400}
+  .analogy-text strong{color:var(--lime)}
+
+  /* Диалог как пример */
+  .chat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 28px;max-width:680px;margin-top:30px;display:flex;flex-direction:column;gap:14px}
+  .chat-msg{display:flex;gap:14px;align-items:flex-start}
+  .chat-avatar{width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--border)}
+  .chat-msg.bot .chat-avatar{background:var(--lime-dim);border-color:rgba(200,255,0,0.3)}
+  .chat-bubble{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14.5px;color:var(--text);line-height:1.5;max-width:520px}
+  .chat-msg.bot .chat-bubble{background:var(--lime-dim);border-color:rgba(200,255,0,0.18)}
+  .chat-bubble .meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--subtle);margin-top:6px}
+  .chat-divider{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--subtle);text-align:center;padding:8px 0;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border)}
+
+  /* Карточки problems/promises */
+  .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px}
+  .pain{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:10px;padding:24px 26px;display:flex;flex-direction:column;gap:10px}
+  .pain-icon{font-size:28px}
+  .pain-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:22px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.05}
+  .pain-desc{font-size:14px;color:var(--muted);line-height:1.5}
+
+  .promise-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:36px}
+  .promise{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:10px;padding:26px 28px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+  .promise::after{content:'';position:absolute;top:0;right:0;width:100px;height:100px;background:radial-gradient(circle,var(--lime-dim),transparent 70%);pointer-events:none}
+  .promise-icon{font-size:32px;line-height:1}
+  .promise-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text);line-height:1.05}
+  .promise-desc{font-size:14.5px;color:var(--muted);line-height:1.5}
+
+  /* 4 слоя */
+  .layers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+  .layer{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 22px;position:relative;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+  .layer-num{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:60px;font-weight:800;line-height:0.85;color:var(--lime);opacity:0.18;position:absolute;top:14px;right:18px}
+  .layer-icon{font-size:28px}
+  .layer-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:22px;font-weight:800;text-transform:uppercase;color:var(--text);line-height:1.05}
+  .layer-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);padding:3px 8px;border-radius:4px;align-self:flex-start;border:1px solid rgba(200,255,0,0.2)}
+  .layer-desc{font-size:13.5px;color:var(--muted);line-height:1.5;flex:1}
+  .layer-where{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--subtle);padding-top:10px;border-top:1px solid var(--border)}
+  .layer-where b{color:var(--lime)}
+
+  /* ОДИН слой подробно */
+  .layer-deep{display:grid;grid-template-columns:280px 1fr;gap:36px;margin-top:32px;align-items:start}
+  .layer-deep-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;text-align:center;position:relative;overflow:hidden}
+  .layer-deep-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(200,255,0,0.08),transparent 70%);pointer-events:none}
+  .layer-deep-num{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:120px;font-weight:800;line-height:0.85;color:var(--lime);position:relative;z-index:1}
+  .layer-deep-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text);margin-top:14px;position:relative;z-index:1}
+  .layer-deep-emoji{font-size:48px;margin-top:18px;position:relative;z-index:1}
+  .layer-deep-body{display:flex;flex-direction:column;gap:18px}
+  .layer-deep-q{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:700;text-transform:uppercase;color:var(--lime);line-height:1.1}
+  .layer-deep-a{font-size:17px;color:var(--text);line-height:1.5;font-weight:400}
+  .layer-deep-a strong{color:var(--lime)}
+
+  /* Дорожная карта */
+  .timeline{margin-top:40px;display:grid;gap:12px;max-width:980px}
+  .tl-row{display:grid;grid-template-columns:90px 1fr 110px;gap:20px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 22px;transition:border-color 0.2s}
+  .tl-row:hover{border-color:rgba(200,255,0,0.25)}
+  .tl-num{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:30px;font-weight:800;color:var(--lime);line-height:1}
+  .tl-body{display:flex;flex-direction:column;gap:4px}
+  .tl-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:20px;font-weight:700;text-transform:uppercase;color:var(--text);letter-spacing:0.01em}
+  .tl-desc{font-size:13px;color:var(--muted)}
+  .tl-time{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--lime);text-align:right;font-weight:500}
+  .tl-row.optional{border-style:dashed;border-color:rgba(167,139,250,0.3)}
+  .tl-row.optional .tl-num{color:var(--violet)}
+  .tl-row.optional .tl-time{color:var(--violet)}
+  .tl-row.featured{background:linear-gradient(90deg,rgba(200,255,0,0.06),rgba(34,211,238,0.04));border-color:rgba(200,255,0,0.3)}
+
+  /* Списки пунктов */
+  .points{display:grid;gap:10px;margin-top:30px;max-width:1100px}
+  .point{display:grid;grid-template-columns:48px 1fr;gap:18px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 22px}
+  .point-num{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:800;color:var(--lime);line-height:1.2}
+  .point-body{display:flex;flex-direction:column;gap:4px}
+  .point-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);letter-spacing:0.01em}
+  .point-desc{font-size:14px;color:var(--muted);line-height:1.5}
+  .point-desc code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;color:var(--lime)}
+  .point-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--subtle);margin-left:auto}
+  .point.crit{border-left:3px solid var(--red)}
+  .point.warn{border-left:3px solid var(--orange)}
+  .point.opt{border-left:3px solid var(--blue)}
+  .point.new{position:relative}
+  .point.new::after{content:'НОВОЕ';position:absolute;top:14px;right:18px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;color:var(--lime);background:var(--lime-dim);padding:3px 8px;border-radius:3px;border:1px solid rgba(200,255,0,0.25)}
+
+  /* Сценарии */
+  .scenario{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 30px;margin-top:32px;max-width:1100px}
+  .scenario-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--lime);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px}
+  .scenario-q{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:700;text-transform:uppercase;color:var(--text);margin-bottom:18px;line-height:1.1}
+  .scenario-flow{display:grid;gap:10px}
+  .sc-step{display:grid;grid-template-columns:32px 1fr;gap:14px;align-items:flex-start}
+  .sc-bullet{width:24px;height:24px;border-radius:50%;background:var(--lime);color:#0d0e0f;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;margin-top:1px}
+  .sc-text{font-size:14.5px;color:var(--muted);line-height:1.55}
+  .sc-text b{color:var(--text);font-weight:500}
+  .sc-text code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;color:var(--lime)}
+
+  /* MEMORY.md секции */
+  .memory-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;margin-top:30px;max-width:760px}
+  .memory-title{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--subtle);margin-bottom:18px}
+  .memory-section{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px dashed rgba(255,255,255,0.06)}
+  .memory-section:last-child{border-bottom:0}
+  .memory-icon{font-size:22px;width:32px;text-align:center}
+  .memory-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);min-width:200px}
+  .memory-example{font-size:13px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+  /* Структура файлов */
+  .file-tree{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px 28px;margin-top:30px;line-height:1.85;color:var(--muted);max-width:760px}
+  .file-tree .lvl{color:var(--lime);font-weight:600}
+  .file-tree .file{color:var(--text)}
+  .file-tree .cmt{color:var(--subtle)}
+
+  /* Стек схема */
+  .stack-diagram{margin-top:30px;display:flex;flex-direction:column;gap:14px;align-items:center;max-width:780px;margin-left:auto;margin-right:auto}
+  .stack-box{width:100%;padding:18px 24px;background:var(--card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:18px;position:relative}
+  .stack-box.vps{border-left:3px solid var(--lime)}
+  .stack-box.gh{border-left:3px solid var(--cyan)}
+  .stack-box.mac{border-left:3px solid var(--violet)}
+  .stack-icon{font-size:28px}
+  .stack-info{flex:1}
+  .stack-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:20px;font-weight:700;text-transform:uppercase;color:var(--text)}
+  .stack-desc{font-size:13px;color:var(--muted);margin-top:2px}
+  .stack-arrow{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--lime);letter-spacing:0.1em;padding:4px 12px;background:var(--lime-dim);border:1px solid rgba(200,255,0,0.25);border-radius:4px}
+  .stack-conn{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--lime);letter-spacing:0.1em}
+
+  /* Сдача */
+  .submission{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px;max-width:1200px}
+  .sub-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;display:flex;flex-direction:column;gap:8px;position:relative;border-left:3px solid var(--green)}
+  .sub-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);font-weight:600;letter-spacing:0.1em}
+  .sub-icon{font-size:30px;margin:4px 0}
+  .sub-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.1}
+  .sub-from{font-size:12px;color:var(--subtle);font-family:'JetBrains Mono',monospace;margin-top:auto;padding-top:8px;border-top:1px dashed var(--border)}
+
+  /* Результат */
+  .results{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:36px;max-width:1100px}
+  .result{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 26px;display:flex;gap:16px;align-items:flex-start}
+  .result-check{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:700;color:#0d0e0f}
+  .result-info{flex:1}
+  .result-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:19px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.05;margin-bottom:4px}
+  .result-desc{font-size:13.5px;color:var(--muted);line-height:1.5}
+
+  /* CTA */
+  .cta{text-align:center;background:radial-gradient(circle at 50% 50%,rgba(200,255,0,0.08),transparent 60%)}
+  .cta h1{font-size:clamp(64px,10vw,160px);margin-bottom:32px}
+  .cta-sub{font-size:24px;color:var(--muted);margin-bottom:48px;max-width:780px;margin-left:auto;margin-right:auto;font-weight:300}
+  .cta-sub strong{color:var(--text);font-weight:500}
+  .cta-btn{display:inline-flex;align-items:center;gap:12px;background:var(--lime);color:#0d0e0f;padding:18px 36px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:0.1em;text-decoration:none;box-shadow:0 0 32px rgba(200,255,0,0.25);transition:transform 0.2s,box-shadow 0.2s}
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(200,255,0,0.4)}
+  .cta-handle{margin-top:36px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--lime);letter-spacing:0.16em}
+
+  /* Колонки */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:32px;align-items:start}
+  .col-big-num{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:200px;line-height:0.85;color:var(--lime);letter-spacing:-0.02em}
+  .col-big-num.red{color:var(--red)}
+  .col-big-num.green{color:var(--green)}
+  .col-big-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--subtle);margin-top:12px}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;display:flex;flex-direction:column;gap:6px}
+  .stat-val{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:42px;color:var(--lime);line-height:1}
+  .stat-lbl{font-size:13px;color:var(--muted)}
+
+  /* Глоссарий */
+  .glossary{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:36px;max-width:1100px}
+  .gloss-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 24px;display:flex;flex-direction:column;gap:6px}
+  .gloss-term{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:20px;font-weight:700;text-transform:uppercase;color:var(--lime);letter-spacing:0.01em}
+  .gloss-eli5{font-size:14.5px;color:var(--text);line-height:1.5}
+  .gloss-eli5 b{color:var(--lime)}
+
+  /* Стоимость */
+  .price-block{margin-top:36px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;display:flex;flex-direction:column;gap:6px}
+  .price-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:16px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:0.01em}
+  .price-val{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:36px;font-weight:800;color:var(--lime);line-height:1}
+  .price-unit{font-size:12px;color:var(--subtle);font-family:'JetBrains Mono',monospace}
+  .price-total{background:linear-gradient(135deg,var(--lime),var(--green));color:#0d0e0f;border:0;text-align:center}
+  .price-total .price-name{color:#0d0e0f}
+  .price-total .price-val{color:#0d0e0f}
+  .price-total .price-unit{color:rgba(13,14,15,0.7)}
+
+  /* Footer */
+  .slide-foot{position:absolute;bottom:32px;left:64px;right:64px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--subtle);letter-spacing:0.14em}
+
+  /* responsive */
+  @media (max-width:1024px){
+    .slide{padding:80px 32px 60px}
+    .slide-foot{left:32px;right:32px;bottom:24px}
+    .slide-num{top:48px;right:32px}
+    .pain-grid,.promise-grid,.layers,.results,.submission,.stat-grid,.price-block,.glossary{grid-template-columns:1fr 1fr;gap:14px}
+    .two-col,.layer-deep{grid-template-columns:1fr;gap:24px}
+    .col-big-num,.layer-deep-num{font-size:120px}
+  }
+  @media (max-width:680px){
+    .pain-grid,.promise-grid,.layers,.results,.submission,.stat-grid,.price-block,.glossary{grid-template-columns:1fr}
+    .tl-row{grid-template-columns:60px 1fr;gap:14px}
+    .tl-time{grid-column:1/-1;text-align:left;margin-top:6px}
+    h1,.hero h1,.cta h1{font-size:56px}
+    h2{font-size:36px}
+    .point{grid-template-columns:1fr;gap:8px}
+    .point.new::after{position:relative;top:0;right:0;align-self:flex-start;display:inline-block;margin-top:6px}
+    .analogy{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="dot"></span>
+  <span class="brand">COMANDOS AI</span>
+  <span class="sep">·</span>
+  <span class="crumb">Воркшоп 2 — Память + Голос</span>
+  <span class="right">
+    <span class="nav-counter">27 СЛАЙДОВ</span>
+    &nbsp;·&nbsp;<a href="https://t.me/ai_comandos" target="_blank">@ai_comandos</a>
+  </span>
+</header>
+
+<!-- 01 HERO -->
+<section class="slide hero">
+  <span class="slide-num">01 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Воркшоп 2 · 8 ноября 2026</span>
+    <h1>Бот <span class="acc">помнит</span>.<br>Бот <span class="acc">говорит</span>.<br>Бот <span class="strike">не теряется</span>.</h1>
+    <p class="lede big">125 минут — и ты выходишь с цифровым сотрудником, у которого <strong>4 слоя памяти</strong>, <strong>живой голос</strong> и <strong>автоматический бэкап на GitHub</strong>. Если VPS сгорит — восстановление за 5 минут.</p>
+    <div class="hero-meta">
+      <div class="item"><span class="lbl">Длительность</span><span class="val">125 минут</span></div>
+      <div class="item"><span class="lbl">Слоёв памяти</span><span class="val lime">4</span></div>
+      <div class="item"><span class="lbl">Артефактов сдачи</span><span class="val">7</span></div>
+      <div class="item"><span class="lbl">Доплата в месяц</span><span class="val">~$3</span></div>
+      <div class="item"><span class="lbl">Сложность</span><span class="val">средняя</span></div>
+    </div>
+    <div class="hero-track">
+      <span class="step">В1 ✓ говорит</span>
+      <span class="arr">→</span>
+      <span class="step curr">В2 помнит</span>
+      <span class="arr">→</span>
+      <span class="step">В3 действует</span>
+    </div>
+  </div>
+  <div class="slide-foot"><span>@ai_comandos · Дмитрий Попов</span><span>Скролл вниз ↓</span></div>
+</section>
+
+<!-- 02 ПОЧЕМУ ВАЖНО ПОНИМАТЬ -->
+<section class="slide">
+  <span class="slide-num">02 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Перед стартом · важно понять</span>
+    <h2>Что такое <span class="acc">«память»</span> для бота?</h2>
+    <p class="lede big">Представь обычного бота как <strong>секретаря с тяжёлой амнезией</strong>: каждый раз когда ты к нему обращаешься — он не помнит ни кто ты, ни что вы вчера обсуждали. Каждое утро ты заново рассказываешь ему про свой бизнес, про клиентов, про проекты.</p>
+
+    <div class="analogy">
+      <div class="analogy-emoji">🧠</div>
+      <div class="analogy-body">
+        <div class="analogy-label">Аналогия из жизни</div>
+        <div class="analogy-text">Память для бота — это как <strong>записная книжка + секретарь + поисковая система</strong> в одном. Записная книжка — где лежат факты. Секретарь — кто их сам выписывает из ваших разговоров. Поисковик — как ты потом эти факты находишь когда нужно.</div>
+      </div>
+    </div>
+
+    <p class="lede" style="margin-top:32px">Сегодня мы научим твоего бота всему этому. К концу — он будет помнить тебя как <strong>хороший личный ассистент после 5 лет работы</strong>.</p>
+  </div>
+  <div class="slide-foot"><span>Slide 02 · Концепция</span><span>↓</span></div>
+</section>
+
+<!-- 03 КАК БЫЛО В В1 -->
+<section class="slide">
+  <span class="slide-num">03 / 27</span>
+  <div class="slide-inner">
+    <span class="tag red">После Воркшопа 1 у тебя</span>
+    <h1>Говорящий <span class="acc">бот</span>.<br>Но он <span class="strike">забывает</span>.</h1>
+    <p class="lede">Воркшоп 1 дал базу — бот в Telegram, понимает голосовые, рисует картинки, премиум-режим. Но он <strong>не помнит ничего после <code style="font-family:'JetBrains Mono',monospace;font-size:18px;background:var(--card);padding:2px 8px;border-radius:4px;color:var(--lime)">/reset</code></strong>. И если ты с ним долго переписываешься — он начинает «тупеть» через 2 недели.</p>
+
+    <div class="pain-grid">
+      <div class="pain"><div class="pain-icon">😵</div><div class="pain-title">Забывает после <code style="font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg);padding:1px 5px;border-radius:3px;color:var(--lime)">/reset</code></div><div class="pain-desc">Каждая новая сессия — чистый лист. «Вчера говорил про Ивана, бюджет $50k» — стёрто.</div></div>
+      <div class="pain"><div class="pain-icon">🐌</div><div class="pain-title">Тупеет через 2 недели</div><div class="pain-desc">Сессия раздувается до 2.9MB, ответ через 30+ секунд. Молча. Никто не понимает почему.</div></div>
+      <div class="pain"><div class="pain-icon">🔥</div><div class="pain-title">VPS сгорит — данных нет</div><div class="pain-desc">Никаких бэкапов. Накапал заметок 3 месяца, хостер потерял диск — всё в ноль.</div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 03 · Боль</span><span>↓</span></div>
+</section>
+
+<!-- 04 ИСТОРИЯ — пример из жизни -->
+<section class="slide">
+  <span class="slide-num">04 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Реальная история</span>
+    <h2>Как бот <span class="red">потерял $50,000</span></h2>
+
+    <div class="chat">
+      <div class="chat-msg"><div class="chat-avatar">👤</div><div class="chat-bubble">Привет, расскажи про Ивана из Acme Corp<div class="meta">Понедельник, 9:00</div></div></div>
+      <div class="chat-msg bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">Извини, я не помню никакого Ивана. Расскажи мне про него.<div class="meta">9:00:02</div></div></div>
+      <div class="chat-divider">…проходит 2 минуты замешательства…</div>
+      <div class="chat-msg"><div class="chat-avatar">👤</div><div class="chat-bubble">😡 Я тебе вчера 40 минут рассказывал про него! Бюджет 50к, дедлайн в пятницу, 3 встречи провели!<div class="meta">9:02</div></div></div>
+      <div class="chat-msg bot"><div class="chat-avatar">🤖</div><div class="chat-bubble">Извини, после <code>/reset</code> у меня нет твоей истории. Можешь рассказать заново?<div class="meta">9:02:03</div></div></div>
+    </div>
+
+    <p class="lede" style="margin-top:32px"><strong>Это и есть проблема.</strong> Бот без памяти = текстовый интерфейс к ChatGPT, а не цифровой сотрудник. Сегодня мы это меняем.</p>
+  </div>
+  <div class="slide-foot"><span>Slide 04 · Зачем</span><span>↓</span></div>
+</section>
+
+<!-- 05 ОБЕЩАНИЕ В2 -->
+<section class="slide">
+  <span class="slide-num">05 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">За 125 минут получишь</span>
+    <h1>AI-<span class="acc">сотрудника</span><br>который <span class="acc">знает тебя</span></h1>
+    <p class="lede">Не «секретаря с амнезией», а реального помощника, который помнит вчерашний разговор, не теряет важное и не пропадает если что-то сломалось.</p>
+
+    <div class="promise-grid">
+      <div class="promise"><div class="promise-icon">🧠</div><div class="promise-title">Помнит вчерашний разговор</div><div class="promise-desc">После <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg);padding:1px 5px;border-radius:3px;color:var(--lime)">/reset</code> бот помнит что Иван — CTO Acme с бюджетом $50k. Amnesia-test пройден.</div></div>
+      <div class="promise"><div class="promise-icon">🎙</div><div class="promise-title">Говорит голосом</div><div class="promise-desc">Учим бота произносить ответы голосом — короткие реплики звучат как живой человек.</div></div>
+      <div class="promise"><div class="promise-icon">⚡</div><div class="promise-title">Не тупит на длинных диалогах</div><div class="promise-desc">Месяц работает стабильно — без «бот молчит», без 30-секундных ответов.</div></div>
+      <div class="promise"><div class="promise-icon">📦</div><div class="promise-title">Бэкапится в GitHub каждый час</div><div class="promise-desc">VPS сгорел? <strong>5 минут — git clone — агент жив.</strong> Токены зашифрованы.</div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 05 · Обещание</span><span>↓</span></div>
+</section>
+
+<!-- 06 КАК ЭТО РАБОТАЕТ — общая идея -->
+<section class="slide">
+  <span class="slide-num">06 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Общая идея</span>
+    <h2>4 слоя памяти. <span class="acc">У каждого своя задача.</span></h2>
+    <p class="lede big">Когда ты пишешь «<strong>запомни X</strong>» — оно попадает <strong>сразу в несколько слоёв одновременно</strong>. Чтобы потом найти можно было разными способами: и быстро в блокноте, и через поиск, и через библиотеку.</p>
+
+    <div class="layers">
+      <div class="layer">
+        <span class="layer-num">1</span>
+        <div class="layer-icon">📁</div>
+        <span class="layer-tag">Workspace files</span>
+        <div class="layer-name">Блокнот на столе</div>
+        <div class="layer-desc">Файлы которые бот видит ВСЕГДА — без поиска. Личность, твои предпочтения, активные клиенты.</div>
+        <div class="layer-where">Где: <b>VPS, файлы</b></div>
+      </div>
+      <div class="layer">
+        <span class="layer-num">2</span>
+        <div class="layer-icon">🧠</div>
+        <span class="layer-tag">Mem0</span>
+        <div class="layer-name">Секретарь-стенограф</div>
+        <div class="layer-desc">Слушает диалоги, сам выдёргивает факты, кладёт их в индекс. Не надо говорить «запомни».</div>
+        <div class="layer-where">Где: <b>VPS, Mem0 SDK</b></div>
+      </div>
+      <div class="layer">
+        <span class="layer-num">3</span>
+        <div class="layer-icon">🗄</div>
+        <span class="layer-tag">Qdrant</span>
+        <div class="layer-name">Поисковик по мыслям</div>
+        <div class="layer-desc">Ищет по смыслу — спросишь «когда видел Анну?» — найдёт даже если ты её называл «сестрой».</div>
+        <div class="layer-where">Где: <b>VPS, Docker</b></div>
+      </div>
+      <div class="layer">
+        <span class="layer-num">4</span>
+        <div class="layer-icon">📚</div>
+        <span class="layer-tag" style="color:var(--violet);background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.25)">Obsidian (опц)</span>
+        <div class="layer-name">Твоя библиотека</div>
+        <div class="layer-desc">Гайдлайны, базы клиентов, фреймворки. Бот читает оттуда — пишет в твоём стиле.</div>
+        <div class="layer-where">Где: <b>Mac → GitHub → VPS</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 06 · Архитектура</span><span>↓</span></div>
+</section>
+
+<!-- 07 СЛОЙ 1 ПОДРОБНО -->
+<section class="slide">
+  <span class="slide-num">07 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Слой 1 · разбираем</span>
+    <h2>Workspace files = <span class="acc">блокнот на столе</span></h2>
+
+    <div class="layer-deep">
+      <div class="layer-deep-card">
+        <div class="layer-deep-num">1</div>
+        <div class="layer-deep-emoji">📁</div>
+        <div class="layer-deep-name">Файлы на VPS</div>
+      </div>
+      <div class="layer-deep-body">
+        <div class="layer-deep-q">Что это простыми словами</div>
+        <div class="layer-deep-a">Это обычные текстовые файлы (markdown). Бот <strong>видит их сразу при каждом сообщении</strong> — как блокнот лежащий на столе. Не надо ничего искать.</div>
+
+        <div class="layer-deep-q">Что туда кладём</div>
+        <div class="layer-deep-a"><strong>SOUL.md</strong> — личность бота. <strong>USER.md</strong> — кто ты. <strong>MEMORY.md</strong> — главные факты: клиенты, решения, контакты, фреймворки. <strong>memory/2026-05-08.md</strong> — дневной журнал.</div>
+
+        <div class="layer-deep-q">Когда работает</div>
+        <div class="layer-deep-a">Каждый запрос. Бот видит MEMORY.md как ты видишь стикер на холодильнике — даже не задумываешься, оно <strong>просто там</strong>.</div>
+
+        <div class="layer-deep-q">Минусы</div>
+        <div class="layer-deep-a">Нельзя класть много — каждый знак стоит токенов. <strong>Держим компактно (200 строк max)</strong>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 07 · Слой 1</span><span>↓</span></div>
+</section>
+
+<!-- 08 СЛОЙ 2 — Mem0 -->
+<section class="slide">
+  <span class="slide-num">08 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Слой 2 · разбираем</span>
+    <h2>Mem0 = <span class="acc">секретарь-стенограф</span></h2>
+
+    <div class="layer-deep">
+      <div class="layer-deep-card">
+        <div class="layer-deep-num">2</div>
+        <div class="layer-deep-emoji">🧠</div>
+        <div class="layer-deep-name">Auto-capture</div>
+      </div>
+      <div class="layer-deep-body">
+        <div class="layer-deep-q">Что это простыми словами</div>
+        <div class="layer-deep-a">Mem0 — это <strong>невидимый секретарь, который слушает все ваши разговоры</strong> и сам конспектирует факты. Не надо говорить «запомни» — он услышал, понял, записал.</div>
+
+        <div class="layer-deep-q">Пример из жизни</div>
+        <div class="layer-deep-a">Ты сказал боту: «<em>Анна, моя сестра, в августе родит, надо подарок</em>». Mem0 услышал и <strong>сам выдернул 3 факта</strong>: Анна = твоя сестра, событие = роды, дата = август 2026. Ты их не диктовал — он сам.</div>
+
+        <div class="layer-deep-q">Когда работает</div>
+        <div class="layer-deep-a">В фоне. Каждое твоё сообщение проходит через Mem0 — он решает «есть ли тут факт?» и если да — сохраняет.</div>
+
+        <div class="layer-deep-q">Зачем нужно</div>
+        <div class="layer-deep-a">Через месяц спросишь «<em>что у меня в семье в этом году?</em>» — бот вспомнит про Анну и роды. Без явного «запомни».</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 08 · Слой 2</span><span>↓</span></div>
+</section>
+
+<!-- 09 СЛОЙ 3 — Qdrant -->
+<section class="slide">
+  <span class="slide-num">09 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Слой 3 · разбираем</span>
+    <h2>Qdrant = <span class="acc">Google по твоим мыслям</span></h2>
+
+    <div class="layer-deep">
+      <div class="layer-deep-card">
+        <div class="layer-deep-num">3</div>
+        <div class="layer-deep-emoji">🗄</div>
+        <div class="layer-deep-name">Vector DB</div>
+      </div>
+      <div class="layer-deep-body">
+        <div class="layer-deep-q">Что это простыми словами</div>
+        <div class="layer-deep-a">Qdrant — это <strong>поисковик по твоим фактам</strong>. Только не по словам как Google, а <strong>по смыслу</strong>. Спросишь «<em>с кем я обсуждал AI?</em>» — найдёт даже если в записях ты называл это «нейронкой» или «искусственным интеллектом».</div>
+
+        <div class="layer-deep-q">Чем отличается от обычного поиска</div>
+        <div class="layer-deep-a">Обычный <code style="font-family:'JetBrains Mono',monospace;font-size:14px;background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--lime)">grep</code> ищет по точным словам. Qdrant ищет по «<strong>близости смысла</strong>» — преобразует каждый текст в число (вектор) и сравнивает математически. «AI» и «нейронка» оказываются «рядом».</div>
+
+        <div class="layer-deep-q">Где живёт</div>
+        <div class="layer-deep-a">Внутри Docker-контейнера на твоём VPS. Ты с ней <strong>напрямую не работаешь</strong> — это техническая база под капотом для Mem0 и других.</div>
+
+        <div class="layer-deep-q">Сколько стоит</div>
+        <div class="layer-deep-a">Сама база — <strong>бесплатная</strong> (open-source). Эмбеддинги через OpenAI — ~$1/мес.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 09 · Слой 3</span><span>↓</span></div>
+</section>
+
+<!-- 10 СЛОЙ 4 — Obsidian -->
+<section class="slide">
+  <span class="slide-num">10 / 27</span>
+  <div class="slide-inner">
+    <span class="tag violet">Слой 4 · разбираем · опционально</span>
+    <h2>Obsidian = <span class="violet">твоя личная Википедия</span></h2>
+
+    <div class="layer-deep">
+      <div class="layer-deep-card" style="border-color:rgba(167,139,250,0.3)">
+        <div class="layer-deep-num" style="color:var(--violet)">4</div>
+        <div class="layer-deep-emoji">📚</div>
+        <div class="layer-deep-name">Vault</div>
+      </div>
+      <div class="layer-deep-body">
+        <div class="layer-deep-q" style="color:var(--violet)">Что это простыми словами</div>
+        <div class="layer-deep-a">Obsidian — это <strong>программа на Mac/PC где ты ведёшь свои заметки</strong>. Гайдлайны постов, базы клиентов, методички, шаблоны. Это <strong>твоя библиотека</strong>.</div>
+
+        <div class="layer-deep-q" style="color:var(--violet)">Зачем боту</div>
+        <div class="layer-deep-a">Ты говоришь «<em>напиши пост в моём стиле</em>» — бот находит в твоём Obsidian файл <code style="font-family:'JetBrains Mono',monospace;font-size:14px;background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--lime)">STYLE_GUIDE.md</code> и пишет точно по нему. Не угадывает — <strong>читает твою методичку</strong>.</div>
+
+        <div class="layer-deep-q" style="color:var(--violet)">Почему опционально</div>
+        <div class="layer-deep-a">Если у тебя нет Obsidian — пропускаешь. На результат В2 не влияет. <strong>Но кто включит — получит большой буст</strong>: бот пишет действительно в твоём стиле, а не «под кого-то».</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 10 · Слой 4</span><span>↓</span></div>
+</section>
+
+<!-- 11 ДОРОЖНАЯ КАРТА -->
+<section class="slide">
+  <span class="slide-num">11 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Что будем делать</span>
+    <h2>7 частей · <span class="acc">125 минут</span></h2>
+    <p class="lede" style="font-size:18px">Прошли через идею. Теперь — конкретный план: что делаем, в какой последовательности, сколько времени.</p>
+
+    <div class="timeline">
+      <div class="tl-row featured"><div class="tl-num">0</div><div class="tl-body"><div class="tl-title">Доделки В1 + Голос (TTS)</div><div class="tl-desc">9 пунктов которые планировались но не дали + добавляем боту голос</div></div><div class="tl-time">30 мин</div></div>
+      <div class="tl-row"><div class="tl-num">1</div><div class="tl-body"><div class="tl-title">Карта 4 слоёв + MEMORY.md</div><div class="tl-desc">Закладываем правильную структуру файлов</div></div><div class="tl-time">10 мин</div></div>
+      <div class="tl-row"><div class="tl-num">2</div><div class="tl-body"><div class="tl-title">Защита контекста</div><div class="tl-desc">Бот не «тупеет» через месяц</div></div><div class="tl-time">15 мин</div></div>
+      <div class="tl-row featured"><div class="tl-num">3</div><div class="tl-body"><div class="tl-title">Постоянная память: Qdrant + Mem0</div><div class="tl-desc">Бот реально помнит. Auto-capture из диалогов.</div></div><div class="tl-time">25 мин</div></div>
+      <div class="tl-row optional"><div class="tl-num">4</div><div class="tl-body"><div class="tl-title">Obsidian Vault <span style="color:var(--violet);font-size:13px;font-style:normal">(опционально)</span></div><div class="tl-desc">Vault на Mac, бот пишет в твоём стиле</div></div><div class="tl-time">15 мин</div></div>
+      <div class="tl-row"><div class="tl-num">5</div><div class="tl-body"><div class="tl-title">Бэкап на GitHub</div><div class="tl-desc">Автокоммит каждый час, runbook восстановления</div></div><div class="tl-time">15 мин</div></div>
+      <div class="tl-row"><div class="tl-num">6</div><div class="tl-body"><div class="tl-title">Гигиена + Amnesia test</div><div class="tl-desc">Архивация, weekly digest, финальный тест памяти</div></div><div class="tl-time">10 мин</div></div>
+      <div class="tl-row"><div class="tl-num">7</div><div class="tl-body"><div class="tl-title">Сдача — 7 артефактов спринт-боту</div><div class="tl-desc">Скриншоты + вердикт «🎉 Воркшоп 2 пройден»</div></div><div class="tl-time">5 мин</div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 11 · Карта</span><span>↓</span></div>
+</section>
+
+<!-- 12 ЧАСТЬ 0 — голос (TTS) -->
+<section class="slide">
+  <span class="slide-num">12 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 0 · 5 минут · НОВОЕ</span>
+    <h2>Учим бота <span class="acc">говорить голосом</span></h2>
+    <p class="lede big">В Воркшопе 1 мы дали боту <strong>уши</strong> (Whisper — он понимает твои голосовые). Сегодня даём ему <strong>рот</strong> — он будет произносить ответы голосом.</p>
+
+    <div class="analogy">
+      <div class="analogy-emoji">🎙</div>
+      <div class="analogy-body">
+        <div class="analogy-label">Аналогия из жизни</div>
+        <div class="analogy-text">Это как <strong>Алиса от Яндекса</strong> — печатаешь текст, она читает голосом. Только в нашем случае это OpenAI TTS — голос «alloy» звучит как живой человек, без робототехники.</div>
+      </div>
+    </div>
+
+    <div class="points" style="margin-top:32px">
+      <div class="point crit new"><div class="point-num">0.0</div><div class="point-body"><div class="point-title">Подключаем TTS на VPS</div><div class="point-desc">Включаем модель <code>openai/tts-1</code> с голосом <code>alloy</code> в openclaw.json. Стоит ~$1–2 в месяц. Используется только на короткие ответы (до 200 символов) — иначе бот будет петь монологи 5 минут.</div></div></div>
+      <div class="point warn new"><div class="point-num">0.0.1</div><div class="point-body"><div class="point-title">Правило в SOUL.md: «короткие ответы — голосом»</div><div class="point-desc">Учим бота: длинные ответы — текстом, короткие реплики типа «принял», «да, понял» — голосом. Иначе он каждый ответ будет читать.</div></div></div>
+      <div class="point opt new"><div class="point-num">0.0.2</div><div class="point-body"><div class="point-title">(опц) ElevenLabs для качества</div><div class="point-desc">Если хочешь голос покрасивее — ElevenLabs Starter $5/мес, можно сделать клон твоего голоса. Бот будет разговаривать как ты.</div></div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 12 · Часть 0 · Голос</span><span>↓</span></div>
+</section>
+
+<!-- 13 ЧАСТЬ 0 — остальные доделки В1 -->
+<section class="slide">
+  <span class="slide-num">13 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 0 · 25 минут</span>
+    <h2>Остальные <span class="acc">8 доделок</span> Воркшопа 1</h2>
+    <p class="lede">Эти пункты планировались в В1, но мы не успели. Без них Часть 2-3 (защита контекста и память) не заработают как надо — поэтому закрываем сейчас.</p>
+
+    <div class="points">
+      <div class="point crit"><div class="point-num">0.1</div><div class="point-body"><div class="point-title">Трёхуровневая архитектура файлов</div><div class="point-desc">Объясняем правило: личность (SOUL/USER/IDENTITY) ≠ операции (AGENTS/TOOLS/HEARTBEAT) ≠ знания (MEMORY/memory). Не смешиваем — иначе потом не разобраться.</div></div></div>
+      <div class="point crit"><div class="point-num">0.2</div><div class="point-body"><div class="point-title">Heartbeat реально на дешёвой модели</div><div class="point-desc">Известный баг #30894: фоновые пробуждения бота молча идут на дорогую модель. $50/день за «что нового?». Проверяем через логи что реально используется Gemini Flash-Lite.</div></div></div>
+      <div class="point crit new"><div class="point-num">0.3</div><div class="point-body"><div class="point-title">Prompt caching (-90%)</div><div class="point-desc">Скидка 90% на Anthropic-моделях. 5 минут настройки → счёт падает в 5–10 раз. Главное чтобы в SOUL.md не было дат и времени — они ломают кэш.</div></div></div>
+      <div class="point crit new"><div class="point-num">0.4</div><div class="point-body"><div class="point-title">chmod 600 после doctor --fix</div><div class="point-desc">Баг #18866: команда doctor сбрасывает права openclaw.json до 644 → токен gateway открыт миру. Делаем это привычкой.</div></div></div>
+      <div class="point warn new"><div class="point-num">0.5</div><div class="point-body"><div class="point-title">Команды /context list и /usage full</div><div class="point-desc">Две диагностические команды. Первая — что съело контекст. Вторая — реальный расход и cache hit rate.</div></div></div>
+      <div class="point crit"><div class="point-num">0.6</div><div class="point-body"><div class="point-title">Привычка: gateway restart после правок</div><div class="point-desc">Hot-reload молча НЕ работает для compaction. После любой правки openclaw.json — рестарт.</div></div></div>
+      <div class="point opt new"><div class="point-num">0.7</div><div class="point-body"><div class="point-title">ackReaction 👀</div><div class="point-desc">Бот ставит эмодзи «вижу, работаю» на твоё сообщение. Снимает 80% жалоб «бот молчит».</div></div></div>
+      <div class="point warn new"><div class="point-num">0.8</div><div class="point-body"><div class="point-title">Сверка моделей через OpenRouter</div><div class="point-desc">Slugs обновляются раз в месяц — проверяем что наши <code>minimax/MiniMax-M2.7</code>, <code>deepseek-v4-pro</code> ещё живые.</div></div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 13 · Часть 0 · Доделки</span><span>↓</span></div>
+</section>
+
+<!-- 14 ЧАСТЬ 1 — Архитектура (что и куда) -->
+<section class="slide">
+  <span class="slide-num">14 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 1 · 10 минут</span>
+    <h2>Раскладываем файлы <span class="acc">по полочкам</span></h2>
+    <p class="lede">Главная ошибка которую совершают 90% — пихать всё в один файл. Задачи в SOUL.md, предпочтения в AGENTS.md. Через месяц это <strong>невозможно отлаживать</strong>. Поэтому ставим правильную структуру СРАЗУ.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:30px">
+      <div>
+        <h3 style="color:var(--text)">Структура workspace</h3>
+        <div class="file-tree">
+~/.openclaw/workspace/
+├── <span class="lvl">SOUL.md</span>           <span class="cmt"># кто бот, как говорит</span>
+├── <span class="lvl">USER.md</span>           <span class="cmt"># кто ты — имя, бизнес</span>
+├── <span class="lvl">IDENTITY.md</span>       <span class="cmt"># голос/стиль</span>
+├── <span class="lvl">AGENTS.md</span>         <span class="cmt"># инструкции</span>
+├── <span class="lvl">TOOLS.md</span>          <span class="cmt"># какие тулзы</span>
+├── <span class="lvl">HEARTBEAT.md</span>      <span class="cmt"># фоновые задачи</span>
+├── <span class="lvl">MEMORY.md</span>         <span class="cmt"># главные факты</span>
+└── <span class="file">memory/</span>
+    ├── 2026-05-08.md   <span class="cmt"># дневник</span>
+    ├── 2026-05-09.md
+    └── archive/        <span class="cmt"># &gt;30 дней</span>
+        </div>
+      </div>
+      <div>
+        <h3 style="color:var(--text)">MEMORY.md — 5 жёстких секций</h3>
+        <div class="memory-card">
+          <div class="memory-section"><span class="memory-icon">👤</span><span class="memory-name">Предпочтения</span><span class="memory-example">«не отвечаю по выходным»</span></div>
+          <div class="memory-section"><span class="memory-icon">🏢</span><span class="memory-name">Активные клиенты</span><span class="memory-example">Иван · Acme · $50k · 15 мая</span></div>
+          <div class="memory-section"><span class="memory-icon">🔑</span><span class="memory-name">Ключевые решения</span><span class="memory-example">5 мая · повышаю цену до 49к</span></div>
+          <div class="memory-section"><span class="memory-icon">📇</span><span class="memory-name">Контакты</span><span class="memory-example">Пётр · юрист · @petr</span></div>
+          <div class="memory-section"><span class="memory-icon">📚</span><span class="memory-name">Фреймворки</span><span class="memory-example">шаблоны постов, методички</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 14 · Часть 1</span><span>↓</span></div>
+</section>
+
+<!-- 15 ЧАСТЬ 2 — Защита контекста (на пальцах) -->
+<section class="slide">
+  <span class="slide-num">15 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 2 · 15 минут</span>
+    <h2>Почему бот <span class="red">тупеет</span> через 2 недели?</h2>
+    <p class="lede">Каждое твоё сообщение бот добавляет в свой «рабочий стол». Через 100 сообщений стол завален, бот не может ничего найти. Без защиты — через 2 недели <strong>сессия раздувается до 2.9 МБ и бот молча перестаёт отвечать</strong>.</p>
+
+    <div class="analogy">
+      <div class="analogy-emoji">🗂</div>
+      <div class="analogy-body">
+        <div class="analogy-label">Аналогия из жизни</div>
+        <div class="analogy-text">Представь стол секретаря. На него каждый час кладут новые документы. Никто не убирает старые. Через месяц <strong>стол завален в потолок</strong> — секретарь не может даже свою чашку кофе найти. Решение: <strong>каждые час уборщик сжимает старые документы в краткие конспекты</strong>, а самые ненужные выбрасывает.</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:42px">
+      <div>
+        <div class="col-big-num red">2.9<span style="font-size:80px">MB</span></div>
+        <div class="col-big-label">Размер сессии без защиты через 2 недели</div>
+        <p style="font-size:15px;color:var(--muted);margin-top:18px;line-height:1.6">Это и есть «потолок завален документами». Бот пытается каждый раз обрабатывать ВСЁ — падает по timeout, ты не понимаешь почему.</p>
+      </div>
+      <div>
+        <h3 style="color:var(--text);margin-bottom:14px">4 механизма решают это:</h3>
+        <div class="points" style="margin:0">
+          <div class="point crit"><div class="point-num">2.1</div><div class="point-body"><div class="point-title">Compaction</div><div class="point-desc">«Уборщик» — сжимает середину разговора в конспект.</div></div></div>
+          <div class="point crit"><div class="point-num">2.2</div><div class="point-body"><div class="point-title">memoryFlush</div><div class="point-desc">ПЕРЕД сжатием — записывает важное в дневник.</div></div></div>
+          <div class="point crit new"><div class="point-num">2.3</div><div class="point-body"><div class="point-title">contextPruning</div><div class="point-desc">Выбрасывает старый «мусор» (tool-results).</div></div></div>
+          <div class="point warn"><div class="point-num">2.4</div><div class="point-body"><div class="point-title">continuation-skip</div><div class="point-desc">Не дублирует SOUL/USER в каждом ходе.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 15 · Часть 2</span><span>↓</span></div>
+</section>
+
+<!-- 16 ЧАСТЬ 3 — настройка памяти -->
+<section class="slide">
+  <span class="slide-num">16 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 3 · 25 минут · самая магия</span>
+    <h2>Бот <span class="acc">сам выдёргивает факты</span></h2>
+    <p class="lede big">Настраиваем Слой 2 (Mem0) и Слой 3 (Qdrant). После этого тебе <strong>не надо говорить «запомни»</strong> — бот слушает фоном, извлекает факты, кладёт в индекс.</p>
+
+    <div class="points">
+      <div class="point crit"><div class="point-num">3.1</div><div class="point-body"><div class="point-title">Поднимаем Qdrant в Docker</div><div class="point-desc">Векторная БД на VPS. Хранилище для всех фактов. Стоит 0₽ — open-source.</div></div></div>
+      <div class="point crit"><div class="point-num">3.2</div><div class="point-body"><div class="point-title">Подключаем Mem0 SDK</div><div class="point-desc">Тот самый «секретарь-стенограф» — слушает диалоги, извлекает факты, пишет в Qdrant.</div></div></div>
+      <div class="point crit"><div class="point-num">3.3</div><div class="point-body"><div class="point-title">Hybrid search (vectors + BM25)</div><div class="point-desc">Поиск и по смыслу (vectors), и по точным словам (BM25). Через Cohere reranker отсеивается «шум».</div></div></div>
+      <div class="point warn"><div class="point-num">3.4</div><div class="point-body"><div class="point-title">Temporal decay (свежее весит больше)</div><div class="point-desc">Факт сегодня — вес 100%. Через месяц — 50%. Через полгода — 10%. Старое не мешает свежему.</div></div></div>
+      <div class="point crit"><div class="point-num">3.5</div><div class="point-body"><div class="point-title">Privacy guard</div><div class="point-desc">detect-secrets блокирует пароли, API-ключи, СНИЛС, ИНН на запись. Не маскирует — блокирует.</div></div></div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-val">~$1</div><div class="stat-lbl">embeddings/мес</div></div>
+      <div class="stat"><div class="stat-val">~$2</div><div class="stat-lbl">reranker/мес</div></div>
+      <div class="stat"><div class="stat-val">0.7/0.3</div><div class="stat-lbl">vec/BM25 баланс</div></div>
+      <div class="stat"><div class="stat-val">30д</div><div class="stat-lbl">half-life</div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 16 · Часть 3</span><span>↓</span></div>
+</section>
+
+<!-- 17 СЦЕНАРИЙ 1 — запомни Ивана -->
+<section class="slide">
+  <span class="slide-num">17 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 3 · сценарий 1</span>
+    <h2>Что происходит <span class="acc">за 1 ход бота</span></h2>
+
+    <div class="scenario">
+      <div class="scenario-tag">Ты говоришь: «Запомни — Иван CTO Acme, бюджет $50k»</div>
+      <div class="scenario-q">Бот за один ход делает 4 вещи:</div>
+      <div class="scenario-flow">
+        <div class="sc-step"><span class="sc-bullet">1</span><span class="sc-text">Дописывает в <b>MEMORY.md → 🏢 Активные клиенты</b>: <code>Иван · Acme · $50k · CTO</code> — это Слой 1, виден всегда.</span></div>
+        <div class="sc-step"><span class="sc-bullet">2</span><span class="sc-text">Дописывает в дневник <b>memory/2026-05-08.md</b>: <code>14:32 — Иван · CTO Acme · [tag:decision]</code> — это для weekly digest и поиска по дате.</span></div>
+        <div class="sc-step"><span class="sc-bullet">3</span><span class="sc-text"><b>Mem0 auto-capture</b> извлекает 4 факта в Qdrant: <code>{entity:Иван, role:CTO, company:Acme, budget:50000}</code> — это Слой 2/3 для семантического поиска.</span></div>
+        <div class="sc-step"><span class="sc-bullet">4</span><span class="sc-text"><b>Cron каждый час</b> делает <code>git push</code> в твой приватный GitHub — Слой бэкапа. Если VPS сгорит — данные живы.</span></div>
+      </div>
+    </div>
+
+    <p class="lede" style="margin-top:32px">Через месяц спросишь «<em>кто такой Иван?</em>» — бот мгновенно находит в MEMORY.md (Слой 1, без поиска). Спросишь «<em>с кем у меня бюджеты выше $30k?</em>» — Qdrant (Слой 3) вернёт всех клиентов с big-budget tag.</p>
+  </div>
+  <div class="slide-foot"><span>Slide 17 · Сценарий «Иван»</span><span>↓</span></div>
+</section>
+
+<!-- 18 СЦЕНАРИЙ 2 — встреча с Петром -->
+<section class="slide">
+  <span class="slide-num">18 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 3 · сценарий 2</span>
+    <h2>А если ты сам не сказал <span class="acc">«запомни»</span>?</h2>
+
+    <div class="scenario">
+      <div class="scenario-tag">Ты в разговоре проболтался: «Анна, моя сестра, в августе родит — надо подарок»</div>
+      <div class="scenario-q">Никто не говорил «запомни». Что произойдёт?</div>
+      <div class="scenario-flow">
+        <div class="sc-step"><span class="sc-bullet">1</span><span class="sc-text"><b>Mem0 слушает фоном</b> — анализирует каждое твоё сообщение через дешёвую LLM (≈$0.0001 за сообщение).</span></div>
+        <div class="sc-step"><span class="sc-bullet">2</span><span class="sc-text">Решает: «<em>тут есть persistent факты — родственная связь, событие, дата</em>». Извлекает: <code>{entity:Анна, relation:sister, event:roды, date:2026-08}</code>.</span></div>
+        <div class="sc-step"><span class="sc-bullet">3</span><span class="sc-text"><b>Кладёт в Qdrant</b> с тегом <code>family</code>. В MEMORY.md не пишет — это персональное, не клиентское.</span></div>
+        <div class="sc-step"><span class="sc-bullet">4</span><span class="sc-text">Через 3 месяца ты пишешь: «<em>что у меня в семье в этом году?</em>». Бот ищет в Qdrant по тегу <code>family</code> → <b>находит Анну и роды</b>.</span></div>
+      </div>
+    </div>
+
+    <p class="lede" style="margin-top:32px"><strong>Это и есть «секретарь-стенограф».</strong> Ты не диктуешь — он сам конспектирует. Через год у тебя в Qdrant сотни фактов, которых ты бы вручную никогда не записал.</p>
+  </div>
+  <div class="slide-foot"><span>Slide 18 · Сценарий «Анна»</span><span>↓</span></div>
+</section>
+
+<!-- 19 ЧАСТЬ 4 — Obsidian -->
+<section class="slide">
+  <span class="slide-num">19 / 27</span>
+  <div class="slide-inner">
+    <span class="tag violet">Часть 4 · 15 минут · опционально</span>
+    <h2>Vault как <span class="violet">4-й слой памяти</span></h2>
+    <p class="lede">Подключаем твою библиотеку — гайдлайны, базы клиентов, фреймворки. Бот читает оттуда когда говоришь «<strong>напиши пост в моём стиле</strong>».</p>
+
+    <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-left:3px solid var(--red);border-radius:8px;padding:18px 24px;margin-top:30px;max-width:900px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;font-size:18px;color:var(--red);text-transform:uppercase;margin-bottom:6px">⚠️ Реальность 2026</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.6">QMD (поисковый движок Obsidian) <strong style="color:var(--text)">не работает на VPS без GPU</strong> (Issue #8786 — query 3:40, timeouts). Делаем по-другому: vault живёт <strong style="color:var(--text)">на твоём Mac</strong>, на VPS приходит зеркало через Syncthing/git.</div>
+    </div>
+
+    <div class="points" style="margin-top:24px">
+      <div class="point opt"><div class="point-num">4.1</div><div class="point-body"><div class="point-title">Vault на Mac → Syncthing → VPS</div><div class="point-desc">Поиск/индексирование крутятся на твоём Mac. VPS получает готовое зеркало.</div></div></div>
+      <div class="point opt"><div class="point-num">4.2</div><div class="point-body"><div class="point-title">Vault коммитится в приватный GitHub</div><div class="point-desc">Совмещение с бэкапом из Части 5. Один git-репо на всё.</div></div></div>
+      <div class="point opt"><div class="point-num">4.3</div><div class="point-body"><div class="point-title">obsidianclaw plugin</div><div class="point-desc">Чат с агентом прямо в Obsidian — для длинных текстов и документов удобнее чем Telegram.</div></div></div>
+      <div class="point opt"><div class="point-num">4.4</div><div class="point-body"><div class="point-title">Smart Connections</div><div class="point-desc">Локальные эмбеддинги — semantic search по vault бесплатно, без отправки наружу.</div></div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 19 · Часть 4</span><span>↓</span></div>
+</section>
+
+<!-- 20 ЧАСТЬ 5 — БЭКАП — почему важно -->
+<section class="slide">
+  <span class="slide-num">20 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 5 · 15 минут · страховка</span>
+    <h2>А если VPS <span class="red">сгорит</span>?</h2>
+    <p class="lede big">Хостер потерял диск. Атака на сервер. Случайно <code style="font-family:'JetBrains Mono',monospace;font-size:18px;background:var(--card);padding:2px 8px;border-radius:4px;color:var(--lime)">rm -rf</code> в неправильной папке. Накопил памяти 3 месяца — в одну секунду всё в ноль. Решение — каждый час делать снимок и складывать в безопасное место.</p>
+
+    <div class="analogy">
+      <div class="analogy-emoji">📸</div>
+      <div class="analogy-body">
+        <div class="analogy-label">Аналогия из жизни</div>
+        <div class="analogy-text">Это как <strong>фотографировать свою комнату каждый час и отправлять копию в облако</strong>. Если в комнате пожар — у тебя есть последняя фотография. Восстановить можно за 5 минут: купил мебель такую же, расставил по фото — всё как было.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 20 · Часть 5</span><span>↓</span></div>
+</section>
+
+<!-- 21 ЧАСТЬ 5 — как это устроено -->
+<section class="slide">
+  <span class="slide-num">21 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 5 · схема</span>
+    <h2>Как это <span class="acc">устроено</span></h2>
+
+    <div class="stack-diagram">
+      <div class="stack-box vps">
+        <div class="stack-icon">🖥</div>
+        <div class="stack-info">
+          <div class="stack-name">VPS — где живёт OpenClaw</div>
+          <div class="stack-desc">~/.openclaw/workspace + Qdrant + Mem0 + конфиги</div>
+        </div>
+        <div class="stack-arrow">cron */60</div>
+      </div>
+      <div class="stack-conn">↓ git push (auto/cron branch)</div>
+      <div class="stack-box gh">
+        <div class="stack-icon">📦</div>
+        <div class="stack-info">
+          <div class="stack-name">GitHub — приватный репо</div>
+          <div class="stack-desc">workspace + vault + openclaw.json (зашифрован)</div>
+        </div>
+        <div class="stack-arrow">push protection</div>
+      </div>
+      <div class="stack-conn" style="color:var(--violet)">↓ git pull (когда захочешь)</div>
+      <div class="stack-box mac">
+        <div class="stack-icon">💻</div>
+        <div class="stack-info">
+          <div class="stack-name">Твой Mac — Obsidian</div>
+          <div class="stack-desc">Видишь всё что бот «думал» за неделю</div>
+        </div>
+        <div class="stack-arrow">obsidian</div>
+      </div>
+    </div>
+
+    <div class="points" style="margin-top:32px">
+      <div class="point crit new"><div class="point-num">5.1</div><div class="point-body"><div class="point-title">Приватный GitHub-репо для ~/.openclaw/</div><div class="point-desc">Off-site backup всего: SOUL, MEMORY, конфиги, Qdrant snapshots</div></div></div>
+      <div class="point crit new"><div class="point-num">5.2</div><div class="point-body"><div class="point-title">gitleaks pre-commit + GitHub push protection</div><div class="point-desc">Двойная защита: даже если случайно закоммитил токен — gitleaks отрежёт, GitHub отрежёт</div></div></div>
+      <div class="point crit new"><div class="point-num">5.3</div><div class="point-body"><div class="point-title">git-crypt для openclaw.json</div><div class="point-desc">Файл с токенами шифруется ПРЯМО В РЕПО — содержимое нечитаемо без ключа</div></div></div>
+      <div class="point crit new"><div class="point-num">5.4</div><div class="point-body"><div class="point-title">Cron автокоммит в ветку auto/cron</div><div class="point-desc">Каждый час сам коммитит и пушит. История main чистая, cron-шум в отдельной ветке</div></div></div>
+      <div class="point warn new"><div class="point-num">5.5</div><div class="point-body"><div class="point-title">Runbook восстановления</div><div class="point-desc">Документ «VPS сгорел → ssh → git clone → 1 команда → агент жив» — пишем заранее</div></div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 21 · Часть 5 · Стек</span><span>↓</span></div>
+</section>
+
+<!-- 22 ЧАСТЬ 6 — Гигиена -->
+<section class="slide">
+  <span class="slide-num">22 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 6 · 10 минут</span>
+    <h2>Гигиена + <span class="acc">Amnesia test</span></h2>
+    <p class="lede">Бот теперь помнит — учим его <strong>забывать правильно</strong>. И финальный тест что вся система реально работает.</p>
+
+    <div class="points">
+      <div class="point warn"><div class="point-num">6.1</div><div class="point-body"><div class="point-title">Daily logs архивация &gt;30 дней</div><div class="point-desc">Заметки старше месяца уходят в <code>archive/</code>. Поиск всё видит, но автозагрузка не засоряется.</div></div></div>
+      <div class="point warn"><div class="point-num">6.2</div><div class="point-body"><div class="point-title">Weekly digest по понедельникам 10:00</div><div class="point-desc">Heartbeat сам собирает важное из дневных логов и переносит в <code>MEMORY.md</code>.</div></div></div>
+      <div class="point warn"><div class="point-num">6.3</div><div class="point-body"><div class="point-title">Backup tar+gpg перед openclaw update</div><div class="point-desc">Перед каждым обновлением — снапшот всей памяти. На случай если новая версия сломает схему.</div></div></div>
+      <div class="point crit"><div class="point-num">6.4</div><div class="point-body"><div class="point-title">Amnesia test (3 теста)</div><div class="point-desc">1) После <code>/reset</code> бот помнит «Иван — CTO Acme» 2) Находит твой стиль постов в vault 3) Пишет черновик и коммитит в GitHub.</div></div></div>
+    </div>
+
+    <div style="margin-top:36px;background:linear-gradient(135deg,rgba(34,197,94,0.06),rgba(200,255,0,0.04));border:1px solid rgba(34,197,94,0.25);border-radius:12px;padding:28px 32px;max-width:900px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:32px;color:var(--text);text-transform:uppercase;line-height:1.05;margin-bottom:8px">🎉 Воркшоп 2 пройден</div>
+      <div style="font-size:14.5px;color:var(--muted);line-height:1.6">Все 3 теста прошли — у тебя бот <strong style="color:var(--text)">с настоящей памятью</strong>, защитой от раздувания и автоматическим бэкапом. Можно идти на В3.</div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 22 · Часть 6</span><span>↓</span></div>
+</section>
+
+<!-- 23 СДАЧА -->
+<section class="slide">
+  <span class="slide-num">23 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Часть 7 · 5 минут</span>
+    <h2>Сдача · <span class="acc">7 артефактов</span> спринт-боту</h2>
+    <p class="lede">Один пост в <code style="font-family:'JetBrains Mono',monospace;font-size:14px;background:var(--bg);padding:2px 8px;border-radius:4px;color:var(--lime)">@ai_comandos_bot</code> с 7 сообщениями подряд. Никаких подписей, расчётов, шаблонов.</p>
+
+    <div class="submission">
+      <div class="sub-item"><div class="sub-num">№ 1</div><div class="sub-icon">🎙</div><div class="sub-title">Голосовой ответ от бота</div><div class="sub-from">из Части 0 — TTS</div></div>
+      <div class="sub-item"><div class="sub-num">№ 2</div><div class="sub-icon">📊</div><div class="sub-title">/usage full с cache hit ≥60%</div><div class="sub-from">из Части 0 — caching</div></div>
+      <div class="sub-item"><div class="sub-num">№ 3</div><div class="sub-icon">🔍</div><div class="sub-title">/context list после compaction</div><div class="sub-from">из Части 2 — защита</div></div>
+      <div class="sub-item"><div class="sub-num">№ 4</div><div class="sub-icon">🧠</div><div class="sub-title">Бот вспомнил факт через 24ч</div><div class="sub-from">из Части 3 — Mem0</div></div>
+      <div class="sub-item"><div class="sub-num">№ 5</div><div class="sub-icon">📦</div><div class="sub-title">GitHub-репо с автокоммитами</div><div class="sub-from">из Части 5 — бэкап</div></div>
+      <div class="sub-item"><div class="sub-num">№ 6</div><div class="sub-icon">✅</div><div class="sub-title">Amnesia-test passed</div><div class="sub-from">из Части 6 — тест</div></div>
+      <div class="sub-item" style="grid-column:span 3"><div class="sub-num">№ 7 — финальный</div><div class="sub-icon">🎉</div><div class="sub-title">Вердикт «Воркшоп 2 пройден» от Аудитора</div><div class="sub-from">из Закладки 03 в гайде — независимая проверка</div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 23 · Сдача</span><span>↓</span></div>
+</section>
+
+<!-- 24 СТОИМОСТЬ -->
+<section class="slide">
+  <span class="slide-num">24 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Сколько это стоит</span>
+    <h2>Доплата к расходам <span class="acc">~$3 / месяц</span></h2>
+    <p class="lede">Не путай со стоимостью VPS из В1. Это только <strong>дополнительные сервисы</strong> которые добавляются в В2.</p>
+
+    <div class="price-block">
+      <div class="price-card"><div class="price-name">OpenAI TTS (голос)</div><div class="price-val">$1.5</div><div class="price-unit">в месяц</div></div>
+      <div class="price-card"><div class="price-name">OpenAI Embeddings</div><div class="price-val">$1</div><div class="price-unit">в месяц</div></div>
+      <div class="price-card"><div class="price-name">Cohere Reranker</div><div class="price-val">$0.5</div><div class="price-unit">в месяц</div></div>
+      <div class="price-card price-total"><div class="price-name">ИТОГО</div><div class="price-val">$3</div><div class="price-unit">в месяц</div></div>
+    </div>
+
+    <p class="lede" style="margin-top:32px;font-size:18px;color:var(--muted)">Бесплатно: Qdrant (open-source), Mem0 SDK (open-source), GitHub приватный репо (Free tier до 2GB), Syncthing.</p>
+
+    <div class="analogy" style="margin-top:32px">
+      <div class="analogy-emoji">💡</div>
+      <div class="analogy-body">
+        <div class="analogy-label">Сравни с альтернативами</div>
+        <div class="analogy-text">Notion AI — $20/мес. ChatGPT Plus — $20/мес. Mem0 cloud — $25/мес.<br>А у тебя — <strong>$3/мес за всё вместе</strong> и под полным контролем на твоём VPS.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 24 · Бюджет</span><span>↓</span></div>
+</section>
+
+<!-- 25 ГЛОССАРИЙ -->
+<section class="slide">
+  <span class="slide-num">25 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">Глоссарий простыми словами</span>
+    <h2>Если что-то <span class="acc">непонятно</span></h2>
+    <p class="lede">Чтобы ты не запоминал «непонятные слова» — все термины собрали с переводом «как для друга на кухне».</p>
+
+    <div class="glossary">
+      <div class="gloss-item"><div class="gloss-term">Embeddings</div><div class="gloss-eli5">Превращение текста в <b>число</b>. Каждое слово → длинный набор цифр. Похожие смыслы → близкие числа.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Vector DB</div><div class="gloss-eli5"><b>База данных для чисел</b> (тех самых embeddings). Умеет искать «похожие» — это и есть semantic search.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Compaction</div><div class="gloss-eli5"><b>Сжатие середины разговора</b>. 100 сообщений → 1 абзац-конспект. Старое забыто, важное сохранено.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Hybrid search</div><div class="gloss-eli5">Поиск <b>двумя способами одновременно</b> — по точным словам (BM25) + по смыслу (vectors). Лучшее из двух миров.</div></div>
+      <div class="gloss-item"><div class="gloss-term">TTS / STT</div><div class="gloss-eli5">TTS = <b>текст→голос</b> (бот говорит). STT = <b>голос→текст</b> (бот слышит, это Whisper из В1).</div></div>
+      <div class="gloss-item"><div class="gloss-term">Cron</div><div class="gloss-eli5">Расписание для VPS. «Каждый час делай это» / «Каждый понедельник в 10:00 делай то».</div></div>
+      <div class="gloss-item"><div class="gloss-term">git-crypt</div><div class="gloss-eli5">Шифровальщик файлов. Кладёшь токены в репо — они <b>не читаются</b> без ключа. Безопасно.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Reranker</div><div class="gloss-eli5"><b>Второй фильтр поиска</b>. Qdrant выдал 50 результатов — reranker отсортировал по реальной релевантности, оставил топ-5.</div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 25 · Глоссарий</span><span>↓</span></div>
+</section>
+
+<!-- 26 РЕЗУЛЬТАТ -->
+<section class="slide">
+  <span class="slide-num">26 / 27</span>
+  <div class="slide-inner">
+    <span class="tag">После 125 минут</span>
+    <h2>У тебя бот <span class="acc">мирового уровня</span></h2>
+
+    <div class="results">
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">Говорит голосом</div><div class="result-desc">TTS включён — короткие реплики звучат как живой человек</div></div></div>
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">4 слоя памяти параллельно</div><div class="result-desc">Workspace files + Mem0 + Qdrant + Vault — каждый за своё</div></div></div>
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">Сам выдёргивает факты</div><div class="result-desc">Mem0 auto-capture слушает диалоги — не надо говорить «запомни»</div></div></div>
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">Длинные диалоги не убивают</div><div class="result-desc">Compaction + pruning — стабильная работа месяцами</div></div></div>
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">Каждый час бэкапится в GitHub</div><div class="result-desc">Токены зашифрованы git-crypt, gitleaks ловит утечки</div></div></div>
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">VPS сгорит — 5 минут восстановление</div><div class="result-desc">Runbook: ssh → clone → команда → агент жив</div></div></div>
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">Amnesia test пройден</div><div class="result-desc">После /reset бот помнит вчерашний разговор</div></div></div>
+      <div class="result"><div class="result-check">✓</div><div class="result-info"><div class="result-title">Доплата всего ~$3/мес</div><div class="result-desc">Дешевле чем Notion AI или ChatGPT Plus, и под твоим контролем</div></div></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>Slide 26 · Результат</span><span>↓</span></div>
+</section>
+
+<!-- 27 CTA -->
+<section class="slide cta">
+  <span class="slide-num">27 / 27</span>
+  <div class="slide-inner">
+    <span class="tag" style="justify-content:center;display:flex">Готов?</span>
+    <h1>Время <span class="acc">помнить</span></h1>
+    <p class="cta-sub">125 минут — и у тебя бот, который реально <strong>знает тебя</strong>. Не просто отвечает — <strong>помнит вчерашний разговор</strong>, <strong>говорит голосом</strong> и <strong>не теряется</strong> если что-то сломалось.</p>
+    <a class="cta-btn" href="https://t.me/ai_comandos" target="_blank">
+      <span>Поехали в @ai_comandos</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="cta-handle">@ai_comandos · Дмитрий Попов · AI Бизнес Стратег</div>
+  </div>
+</section>
+
+</body>
+</html>

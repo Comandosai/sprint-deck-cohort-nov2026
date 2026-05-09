@@ -537,6 +537,96 @@ tmux new -s onboard
 
 ---
 
+## 🛡️ ЗАЩИТА ОТ РАЗДУВАНИЯ КОНТЕКСТА (для Воркшопа 2 «Память»)
+
+**Источник:** `knowledge-base/blocks/блок-06-память.md` + `knowledge-base/pro/PRO-02-hidden-features.md`
+
+В OpenClaw защита от разрастания контекста сделана **5 слоями**. После Воркшопа 1 работают 2 из 5 (по дефолту). Остальные 3 — включаем в Воркшоп 2 (Память) когда уже знаем как пишутся `~/.openclaw/openclaw.json`-секции и зачем.
+
+### Как это работает (понимание для будущей презентации В2)
+
+| # | Слой | Что делает | Дефолт в 2026.4.x | Когда включаем |
+|---|---|---|---|---|
+| 1 | **Compaction** (`compaction`) | На пороге `softThresholdTokens: 40000` Haiku 4.5 суммаризирует **середину** диалога, голову/хвост сохраняет (cache hit не теряется) | ✅ работает | — |
+| 2 | **Bootstrap caps** (`bootstrapMaxChars: 12000` / `bootstrapTotalMaxChars: 60000`) | Защита от раздутого SOUL.md — режется автоматически | ✅ работает | — |
+| 3 | **Pre-compaction memoryFlush** | Перед сжатием **сохраняет durable facts** в `memory/YYYY-MM-DD.md` — важное не теряется | ❌ opt-in | Воркшоп 2 (Память) |
+| 4 | **continuation-skip** (`agents.defaults.contextInjection: "continuation-skip"`) | На продолжающихся ходах не инжектит SOUL/USER/AGENTS заново — **экономия 8–12k токенов** на длинных диалогах | ⚠️ дефолт `"always"` | Воркшоп 2 (Память) |
+| 5 | **/queue drop:summarize** (`agents.defaults.queue`) | При флуде сообщениями старые **суммаризируются** вместо потери | ❌ opt-in | Воркшоп 2 (Память) или В3 |
+
+### Что добавить в openclaw.json в В2
+
+```jsonc
+{
+  "memory": {
+    "compaction": {
+      "softThresholdTokens": 40000,
+      "hardThresholdTokens": 80000,
+      "strategy": "summarize-middle",
+      "preserveHeadTokens": 4000,
+      "preserveTailTokens": 8000,
+      "summarizerModel": "claude-haiku-4-5",
+      "summaryRatio": 0.15,
+      "preserveTags": ["decision", "fact", "action-required"]
+    }
+  },
+  "agents": {
+    "defaults": {
+      "contextInjection": "continuation-skip",
+      "compaction": {
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": 4000,
+          "model": "anthropic/claude-haiku-4-6",
+          "systemPrompt": "Сохрани durable facts в memory/YYYY-MM-DD.md. Если ничего важного — NO_REPLY."
+        }
+      },
+      "queue": {
+        "debounceMs": 2000,
+        "cap": 25,
+        "drop": "summarize"
+      }
+    }
+  }
+}
+```
+
+### Подвохи (упомянуть на В2)
+
+- **issue #54408**: pre-compaction memory flush может «протекать» в основную сессию как user message и инициировать compaction loop. Включаешь → мониторь логи первые сутки.
+- **`drop: summarize`** = дополнительный LLM-вызов на каждый дроп. На спокойном бот-канале незаметно; на высоконагруженном (>50 msg/час) — увеличит стоимость.
+- **`continuation-skip`** ломает редко-используемые плагины которые читают SOUL.md в каждом ходе. Если плагин жалуется — переключи на `always` или whitelist'ни.
+
+### Что сказать когорте на В1 финале
+
+Одной фразой в Tab 05 (Homework) или в записи воркшопа:
+
+> «Ваш бот сейчас уже защищён от раздувания контекста — если разговор перевалит за 40k токенов, он автоматически сожмёт середину дешёвой моделью и сохранит важное. Полную систему памяти с факт-флешом и cross-session retrieval будем включать на Воркшопе 2».
+
+Это успокаивает («бот не сожрёт деньги на длинном диалоге») и продаёт В2 одновременно.
+
+### Локация в стандарте
+
+Добавить в `standards/workshop-2-standard.md` (когда будет создан):
+- **L.1** ❗ `compaction.softThresholdTokens: 40000` явно прописан
+- **L.2** ❗ `contextInjection: "continuation-skip"` включён
+- **L.3** ⚠️ `compaction.memoryFlush.enabled: true`
+- **L.4** ⚠️ `preserveTags: [decision, fact, action-required]`
+- **L.5** 💡 `queue.drop: "summarize"`
+
+### Связь с другими защитами (полная карта защит на В1+В2)
+
+| Что | Где | Уровень | Воркшоп |
+|---|---|---|---|
+| Spending limit | OpenRouter $30/мес | Hard cap провайдера | В1 (есть) |
+| Watchdog kill-switch | `~/.openclaw/scripts/watchdog.sh` cron */30 | $3/час → стоп daemon + alert | В1 (есть) |
+| Каскад моделей (primary дешёвая) | `openclaw.json` | Бытовая защита | В1 (есть) |
+| Compaction (40k/80k) | `memory.compaction` | Контекстная защита | В1 (по дефолту) |
+| memoryFlush | `agents.defaults.compaction.memoryFlush` | Защита знаний при сжатии | **В2** |
+| continuation-skip | `agents.defaults.contextInjection` | Экономия токенов | **В2** |
+| /queue drop:summarize | `agents.defaults.queue` | Защита от флуда | **В2** или В3 |
+
+---
+
 ## 🎬 ЛОГ СЕССИИ 2 МАЯ 2026 — что узнали
 
 Реальные сложности при прохождении гайда (4-часовая сессия Дмитрия на VPS Timeweb Москва):

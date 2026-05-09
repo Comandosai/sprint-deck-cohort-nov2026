@@ -50,7 +50,7 @@
   .prelude-item strong{color:var(--text);font-weight:500;}
 
   /* ТАБЫ */
-  .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:32px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px;}
+  .tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:32px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px;}
   .tab{background:transparent;border:1px solid transparent;border-radius:10px;padding:18px 16px;cursor:pointer;text-align:left;transition:all 0.25s;display:flex;flex-direction:column;gap:6px;}
   .tab:hover{background:rgba(255,255,255,0.02);}
   .tab.active{background:var(--bg);border-color:var(--border);}
@@ -60,6 +60,7 @@
   .tab[data-tab="2"].active .tab-num{color:var(--green);}
   .tab[data-tab="3"].active .tab-num{color:var(--orange);}
   .tab[data-tab="4"].active .tab-num{color:#a78bfa;}
+  .tab[data-tab="5"].active .tab-num{color:#ef4444;}
   .tab-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.05;letter-spacing:0.01em;}
   .tab-desc{font-size:11px;color:var(--muted);line-height:1.4;}
 
@@ -103,6 +104,64 @@
   .panel-violet .cbtn{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.25);color:#a78bfa;}
   .panel-violet .cbtn:hover{background:rgba(167,139,250,0.18);}
   .panel-violet .pcode .v{color:#a78bfa;}
+
+  /* Красный (5 закладка — Домашка) */
+  .panel-red .pcard:hover{border-color:rgba(239,68,68,0.28);}
+  .panel-red .pcard-badge{color:#ef4444;}
+  .panel-red .pcard-tool{color:#ef4444;}
+  .panel-red .pb{border-color:rgba(239,68,68,0.22);}
+  .panel-red .pbar{background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.15);}
+  .panel-red .cbtn{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);color:#ef4444;}
+  .panel-red .cbtn:hover{background:rgba(239,68,68,0.18);}
+  .panel-red .pcode .v{color:#ef4444;}
+
+  /* Карточки задач домашки (Tab 05) */
+  .hw-tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:16px 0;}
+  .hw-task{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;transition:border-color 0.25s;}
+  .hw-task:hover{border-color:rgba(239,68,68,0.32);}
+  .hw-task-tag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#ef4444;}
+  .hw-task-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:20px;font-weight:800;text-transform:uppercase;color:var(--text);line-height:1.05;}
+  .hw-task-desc{font-size:13px;color:var(--muted);line-height:1.5;}
+  .hw-task-desc strong{color:var(--text);font-weight:500;}
+  .hw-task-examples{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);line-height:1.45;}
+  .hw-task-examples li{list-style:none;padding-left:14px;position:relative;}
+  .hw-task-examples li::before{content:'›';position:absolute;left:0;color:#ef4444;font-weight:700;}
+  .hw-task-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--subtle);margin-top:auto;padding-top:6px;border-top:1px solid var(--border);}
+  .hw-task-meta span{color:var(--text);}
+  .hw-task-meta b{color:#ef4444;font-weight:600;}
+
+  /* Чек-лист доказательств */
+  .hw-proof{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin:16px 0;}
+  .hw-proof-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#ef4444;margin-bottom:10px;}
+  .hw-proof ol{list-style:none;counter-reset:proof;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+  .hw-proof li{counter-increment:proof;font-size:13.5px;color:var(--muted);line-height:1.5;padding-left:30px;position:relative;}
+  .hw-proof li::before{content:counter(proof);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#ef4444;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;}
+  .hw-proof li strong{color:var(--text);font-weight:500;}
+
+  /* Шаблон поста */
+  .hw-template{background:var(--bg);border:1px dashed rgba(239,68,68,0.35);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;color:var(--muted);white-space:pre-wrap;margin:10px 0;}
+  .hw-template .v{color:#ef4444;}
+
+  /* Мокап вердикта от Аудитора — пример как должен выглядеть скриншот */
+  .verdict-preview{background:linear-gradient(135deg,rgba(34,197,94,0.04),rgba(13,14,15,1));border:1px solid rgba(34,197,94,0.3);border-radius:14px;padding:22px 26px;margin:16px 0;position:relative;overflow:hidden;}
+  .verdict-preview::before{content:'ПРИМЕР ВЫВОДА';position:absolute;top:10px;right:14px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;color:rgba(34,197,94,0.5);text-transform:uppercase;}
+  .vp-header{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:30px;font-weight:800;text-transform:uppercase;letter-spacing:0.01em;color:var(--text);line-height:1.05;margin-bottom:14px;}
+  .vp-header .em{font-size:24px;margin-right:8px;}
+  .vp-intro{font-size:13.5px;color:var(--muted);margin-bottom:8px;}
+  .vp-list{list-style:none;padding:0;margin:0 0 14px;counter-reset:vp;}
+  .vp-list li{counter-increment:vp;font-size:13.5px;color:var(--muted);line-height:1.7;padding-left:24px;position:relative;}
+  .vp-list li::before{content:counter(vp) '.';position:absolute;left:0;color:var(--text);font-weight:600;}
+  .vp-list code{background:var(--card);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--lime);}
+  .vp-list strong{color:var(--text);font-weight:500;}
+  .vp-note{font-size:12.5px;color:var(--subtle);line-height:1.6;margin-bottom:18px;padding:10px 14px;background:rgba(34,197,94,0.04);border-left:2px solid rgba(34,197,94,0.4);border-radius:4px;}
+  .vp-note strong{color:var(--text);font-weight:500;}
+  .vp-table-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);margin:0 0 10px;}
+  .vp-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:18px;}
+  .vp-table th{background:var(--card);border:1px solid var(--border);padding:8px 12px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);}
+  .vp-table td{border:1px solid var(--border);padding:7px 12px;color:var(--muted);}
+  .vp-table td:nth-child(2),.vp-table td:nth-child(3){text-align:center;width:80px;}
+  .vp-verdict{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:26px;font-weight:800;text-transform:uppercase;letter-spacing:0.01em;color:var(--lime);line-height:1.05;margin-top:6px;}
+  .vp-verdict .em{font-size:22px;margin-right:8px;}
 
   /* Карточки KB (для закладки 04) */
   .kb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:14px 0;}
@@ -327,6 +386,9 @@
   .footer-tg{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--lime);text-decoration:none;}
   .footer-meta{font-size:11px;color:var(--subtle);width:100%;}
 
+  @media (max-width:1100px){
+    .tabs{grid-template-columns:repeat(3,1fr);}
+  }
   @media (max-width:720px){
     .topbar{padding:0 18px;}
     .tabs{grid-template-columns:1fr;}
@@ -372,24 +434,29 @@
       <span class="tab-desc">VPS, API-ключи, Telegram, Antigravity — что собрать заранее</span>
     </button>
     <button class="tab" data-tab="1" onclick="goTab(1)">
-      <span class="tab-num">01 · Antigravity + Терминал</span>
+      <span class="tab-num">01 · В Antigravity</span>
       <span class="tab-title">Установка</span>
       <span class="tab-desc">11 шагов: AI делает рутину → ты проходишь onboard → AI доделывает</span>
     </button>
     <button class="tab" data-tab="2" onclick="goTab(2)">
-      <span class="tab-num">02 · Telegram-бот</span>
+      <span class="tab-num">02 · В Telegram</span>
       <span class="tab-title">Самопроверка</span>
-      <span class="tab-desc">8 запросов прямо боту — отдаёт сырые артефакты состояния системы</span>
+      <span class="tab-desc">8 запросов прямо боту — отдаёт сырые артефакты состояния</span>
     </button>
     <button class="tab" data-tab="3" onclick="goTab(3)">
-      <span class="tab-num">03 · Новый чат AI</span>
+      <span class="tab-num">03 · В новом чате</span>
       <span class="tab-title">Контроль</span>
-      <span class="tab-desc">Один большой промпт независимому аудитору — вердикт по 30 критериям</span>
+      <span class="tab-desc">Один промпт независимому аудитору — вердикт по 30 критериям</span>
     </button>
     <button class="tab" data-tab="4" onclick="goTab(4)">
       <span class="tab-num">04 · Если упало</span>
       <span class="tab-title">Консультант</span>
-      <span class="tab-desc">AI-эксперт с базой знаний 2МБ — открывается в новом чате, отвечает за 30 секунд</span>
+      <span class="tab-desc">AI-эксперт с базой знаний 2 МБ — отвечает за 30 секунд</span>
+    </button>
+    <button class="tab" data-tab="5" onclick="goTab(5)">
+      <span class="tab-num">05 · Финал</span>
+      <span class="tab-title">Домашка</span>
+      <span class="tab-desc">5 заданий → артефакты + вердикт «ПРОЙДЕН» спринт-боту</span>
     </button>
   </div>
 
@@ -398,7 +465,7 @@
   <!-- ============================================================ -->
   <div class="panel panel-blue active" id="panel-0">
 
-    <div class="notice info"><div class="ni">ℹ️</div>Эту страницу проходим <strong>до</strong> старта Воркшопа 1. Цель — собрать VPS, API-ключи, Telegram-бот и Antigravity, чтобы на воркшопе не отвлекаться. Время: <strong>30–60 минут</strong>. Деньги: <strong>~700–1500 ₽</strong> разовых трат на месяц вперёд (VPS + MiniMax-подписка).</div>
+    <div class="notice info"><div class="ni">ℹ️</div>Эту страницу проходим <strong>до</strong> старта Воркшопа 1. Цель — собрать VPS, API-ключи, Telegram-бот и Antigravity, чтобы на воркшопе не отвлекаться. Время: <strong>30–60 минут</strong>. Деньги: <strong>~1700–2200 ₽</strong> разовых трат на месяц вперёд (VPS 4 vCPU + MiniMax-подписка $10).</div>
 
     <!-- A. VPS -->
     <h2 class="pf-section-title"><span class="num">A</span>VPS — где будет жить твой сотрудник</h2>
@@ -406,16 +473,16 @@
     <p class="pcard-desc" style="margin-bottom:14px;">Сервер в облаке, на котором OpenClaw работает <strong>24/7</strong>. Не зависит от твоего ноутбука и интернета дома. На воркшопе тебе понадобятся всего <strong>две вещи</strong>: <code>IP-адрес</code> и <code>root-пароль</code> — придут на email от хостера сразу после оплаты.</p>
 
     <div class="vps-checklist">
-      <div class="vps-checklist-title">Минимальные требования</div>
+      <div class="vps-checklist-title">Минимальные требования (проверено в реальном спринте)</div>
       <ul>
-        <li><strong>2 vCPU</strong></li>
-        <li><strong>4 GB RAM</strong> (не меньше 2)</li>
-        <li><strong>20–40 GB SSD</strong></li>
+        <li><strong>4 vCPU</strong> <span style="color:rgba(239,68,68,0.85);">(на 2 vCPU бот отвечает 30–50 сек — мучение)</span></li>
+        <li><strong>8 GB RAM</strong> (минимум 4)</li>
+        <li><strong>30–40 GB SSD</strong></li>
         <li><strong>Ubuntu 24.04 LTS</strong></li>
         <li><strong>KVM</strong> (НЕ OpenVZ — ломает swap)</li>
         <li><strong>Публичный IPv4</strong></li>
         <li><strong>Трафик</strong> от 1 TB/мес</li>
-        <li><strong>Datacenter в Европе</strong></li>
+        <li><strong>Datacenter в Европе</strong> или Москве</li>
       </ul>
     </div>
 
@@ -425,30 +492,30 @@
       <div class="host gold">
         <div class="host-rank">🥇</div>
         <div class="host-tag">Лучший выбор · Германия</div>
-        <div class="host-name">Hetzner CX22</div>
-        <div class="host-spec">2 vCPU · 4 GB · 40 GB SSD · 20 TB/мес</div>
+        <div class="host-name">Hetzner CX32</div>
+        <div class="host-spec">4 vCPU · 8 GB · 80 GB SSD · 20 TB/мес</div>
         <div class="host-pros"><span class="ok">Лучшее соотношение цена/качество, отличная сеть</span><br><span class="bad">Только зарубежная карта (Wise / Revolut)</span></div>
-        <div class="host-price">€4.51 <span style="font-size:14px;color:var(--muted);font-style:normal;">/мес ≈ 470 ₽</span></div>
+        <div class="host-price">€7.05 <span style="font-size:14px;color:var(--muted);font-style:normal;">/мес ≈ 740 ₽</span></div>
         <a href="https://www.hetzner.com/cloud" class="host-link" target="_blank" rel="noopener">hetzner.com/cloud →</a>
       </div>
 
       <div class="host">
         <div class="host-rank">🥈</div>
         <div class="host-tag">Россия · карта РФ</div>
-        <div class="host-name">Timeweb Cloud-2</div>
-        <div class="host-spec">2 vCPU · 4 GB · 60 GB SSD</div>
+        <div class="host-name">Timeweb Cloud-3</div>
+        <div class="host-spec">4 vCPU · 8 GB · 80 GB SSD</div>
         <div class="host-pros"><span class="ok">Оплата картой РФ, KVM, почасовая тарификация</span><br><span class="ok">Можно остановить/удалить за 1 клик</span></div>
-        <div class="host-price">449 ₽ <span style="font-size:14px;color:var(--muted);font-style:normal;">/мес</span></div>
+        <div class="host-price">~999 ₽ <span style="font-size:14px;color:var(--muted);font-style:normal;">/мес</span></div>
         <a href="https://timeweb.cloud/" class="host-link" target="_blank" rel="noopener">timeweb.cloud →</a>
       </div>
 
       <div class="host">
         <div class="host-rank">🥉</div>
         <div class="host-tag">Россия · альтернатива</div>
-        <div class="host-name">Beget VPS-3</div>
-        <div class="host-spec">2 vCPU · 4 GB · 32 GB SSD</div>
+        <div class="host-name">Beget VPS-4</div>
+        <div class="host-spec">4 vCPU · 8 GB · 60 GB SSD</div>
         <div class="host-pros"><span class="ok">Понятный интерфейс, оплата картой РФ</span><br><span class="bad">Чуть дороже Timeweb</span></div>
-        <div class="host-price">695 ₽ <span style="font-size:14px;color:var(--muted);font-style:normal;">/мес</span></div>
+        <div class="host-price">~1190 ₽ <span style="font-size:14px;color:var(--muted);font-style:normal;">/мес</span></div>
         <a href="https://beget.com/ru/vps" class="host-link" target="_blank" rel="noopener">beget.com →</a>
       </div>
     </div>
@@ -2080,6 +2147,159 @@ knowledge-base/
     <div class="final" style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(96,165,250,0.05));border-color:rgba(167,139,250,0.25);">
       <div class="final-title">База знаний <span class="acc" style="color:#a78bfa;">всегда под рукой</span></div>
       <div class="final-desc">Ты не один с этим. 20 блоков ресерча + 7 known-issues от реальной отладки + интернет = ответ на любой вопрос за 30 секунд.</div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ЗАКЛАДКА 5 — ДОМАШКА                                           -->
+  <!-- ============================================================ -->
+  <div class="panel panel-red" id="panel-5">
+
+    <div class="notice info" style="border-color:rgba(239,68,68,0.25);background:rgba(239,68,68,0.04);"><div class="ni" style="color:#ef4444;">🎓</div><span><strong>Финал Воркшопа 1.</strong> 5 коротких заданий: <strong>голос → картинка → решение → дерзкая самопрезентация → вердикт от Аудитора</strong>. Всё отправляешь спринт-боту, не в общий чат. Время: <strong>15–20 минут</strong>. Главное — получить зелёный «🎉 ВОРКШОП 1 ПРОЙДЕН» от Аудитора (Шаг 5).</span></div>
+
+    <!-- ШАГ 1 — ГОЛОС -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">1</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Шаг 1 · Голос</div>
+          <div class="pcard-title">Поговори с ботом голосом</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Открой бота в Telegram, зажми кнопку <strong>микрофона</strong> и запиши <strong>любое голосовое</strong> 5–15 секунд. Например: «Привет, расскажи короткий анекдот про программистов» или «Подскажи 3 идеи на ужин». Отпусти — Telegram отправит голосовое.</p>
+      <div class="rbox"><div class="rtitle">Что произойдёт</div><div class="rrow">Бот <strong>распознает</strong> твоё голосовое (Whisper)</div><div class="rrow">Через 5–20 секунд <strong>ответит голосом</strong> (TTS)</div><div class="rrow"><strong>📸 Скриншот:</strong> чтобы было видно <strong>твою голосовую дорожку</strong> и <strong>голосовой ответ бота</strong></div></div>
+      <div class="notice tip" style="margin-top:10px;border-color:rgba(239,68,68,0.18);background:rgba(239,68,68,0.04);"><div class="ni">💡</div>Если бот ответил <strong>текстом, а не голосом</strong> — значит при установке Voice был отключён. Не страшно: используй текстовый ответ как скриншот, в подписи укажи «голос текстом — TTS не настроен».</div>
+    </div>
+
+    <!-- ШАГ 2 — КАРТИНКА -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">2</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Шаг 2 · Картинка</div>
+          <div class="pcard-title">Попроси нарисовать что-нибудь</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Скопируй и отправь боту. <strong>Тему картинки придумай свою</strong> — что вдохновляет, что любишь, что прикольно увидеть.</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в Telegram-бот</span><button class="cbtn" onclick="cp(this,'hw2')">📋 Копировать</button></div><pre class="pcode" id="hw2">/image нарисуй [придумай свою тему — кот в космосе / неоновый закат / робот-самурай / что угодно]</pre></div>
+      <div class="rbox"><div class="rtitle">Что произойдёт</div><div class="rrow">Картинка придёт за <strong>5–15 секунд</strong></div><div class="rrow"><strong>🎨 Сохрани картинку</strong> — отправишь её спринт-боту</div></div>
+    </div>
+
+    <!-- ШАГ 3 — РЕШЕНИЕ -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">3</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Шаг 3 · Решение задачи</div>
+          <div class="pcard-title">Дай боту реальную задачу</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Скопируй и отправь. Бот <strong>сам задаст 5 уточняющих вопросов</strong> по очереди и в конце выдаст <strong>персональный план</strong>.</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в Telegram-бот</span><button class="cbtn" onclick="cp(this,'hw3')">📋 Копировать</button></div><pre class="pcode" id="hw3">/premium Помоги составить план развития на месяц. Сначала задай мне 5 коротких вопросов чтобы понять контекст, потом составь план на основе моих ответов. Вопросы задавай по одному и жди мой ответ.</pre></div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:14px 0 0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#ef4444;margin-bottom:8px;">Какие вопросы задаст бот <span style="color:var(--subtle);font-weight:400;letter-spacing:0;text-transform:none;font-style:italic;">(примерно)</span></div>
+        <ol style="padding-left:18px;font-size:13.5px;color:var(--muted);line-height:1.8;margin:0;">
+          <li>Какая у тебя главная цель на ближайший месяц?</li>
+          <li>Сколько часов в неделю готов на это тратить?</li>
+          <li>Что уже пробовал и что не сработало?</li>
+          <li>Какой бюджет на этот месяц?</li>
+          <li>По чему будешь измерять успех?</li>
+        </ol>
+        <p style="font-size:12.5px;color:var(--subtle);margin:10px 0 0;line-height:1.5;">Отвечай по одному. После 5-го ответа бот соберёт <strong style="color:var(--text);">персональный план</strong>.</p>
+      </div>
+
+      <div class="rbox"><div class="rtitle">Что произойдёт</div><div class="rrow">Бот <strong>сам подумает</strong> 15–40 секунд</div><div class="rrow">Задаст <strong>5 вопросов по очереди</strong></div><div class="rrow">Выдаст <strong>план на месяц</strong></div><div class="rrow"><strong>📸 Сделай скриншот</strong> финального плана</div></div>
+    </div>
+
+    <!-- ШАГ 4 — ДЕРЗКАЯ САМОПРЕЗЕНТАЦИЯ -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">4</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Шаг 4 · Самопрезентация</div>
+          <div class="pcard-title">Пусть бот сам себя продаст</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Скопируй и отправь боту. Он напишет <strong>яркое представление о себе</strong> с юмором, дерзостью и хвастовством — то, что ты <strong>скопируешь и отправишь спринт-боту</strong> как финальную сдачу.</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в Telegram-бот</span><button class="cbtn" onclick="cp(this,'hw4')">📋 Копировать</button></div><pre class="pcode" id="hw4">Напиши яркое самопредставление о себе для общего чата спринта по AI. Стиль — с юмором, лёгкой дерзостью, хвастовством, можно с подколами. Расскажи: как тебя зовут, кто тебя сегодня собрал (моё имя), что умеешь круче всех в когорте, и почему меня будут все ненавидеть за то что я выбрал тебя. 5–7 предложений, добавь эмодзи, в конце — провокационный вопрос остальным участникам спринта. Без слова «хозяин», говори «я работаю с [имя]» или «меня собрал [имя]».</pre></div>
+      <div class="rbox"><div class="rtitle">Что произойдёт</div><div class="rrow">Бот напишет <strong>дерзкое представление</strong> от своего лица</div><div class="rrow"><strong>📋 Скопируй текст</strong> ответа целиком</div><div class="rrow">Если получилось скучно — попроси «<em>сделай злее и смешнее</em>», бот перепишет</div></div>
+    </div>
+
+    <!-- ШАГ 5 — ВЕРДИКТ ОТ АУДИТОРА -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">5</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Шаг 5 · Вердикт</div>
+          <div class="pcard-title">Получи зелёный «ПРОЙДЕН» от Аудитора</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Открой <strong>Закладку 03 «Контроль»</strong>, прогони её по инструкции — Аудитор в новом чате независимо проверит твою установку по 30 критериям и выдаст вердикт. <strong>Когда увидишь «🎉 ВОРКШОП 1 ПРОЙДЕН» — сделай скриншот.</strong></p>
+
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#ef4444;margin:18px 0 6px;">Как должен выглядеть вердикт <span style="color:var(--subtle);font-weight:400;letter-spacing:0;text-transform:none;font-style:italic;">— ориентируйся на этот пример</span></div>
+
+      <!-- ВИЗУАЛЬНЫЙ МОКАП ВЕРДИКТА — для ориентира -->
+      <div class="verdict-preview">
+        <div class="vp-header"><span class="em">🎉</span>Воркшоп 1 пройден</div>
+        <div class="vp-intro">Все три факта в порядке:</div>
+        <ol class="vp-list">
+          <li><strong>Новая сессия</strong> <code>f5c2d535-...</code> — резолв модели свежий ✅</li>
+          <li><strong>Model:</strong> <code>minimax/MiniMax-M2.7</code> — именно с заглавными, ровно как требует C.3 ✅</li>
+          <li><code>model.completed</code> за <code>~1603ms</code> — это и есть полный круг отработки модели на запросе. <strong>1.6 секунды</strong> — в 17× быстрее старого deepseek (28 сек) и сильно ниже норматива в 5 сек ✅</li>
+        </ol>
+        <div class="vp-note">Критерий <strong>C.10 закрыт</strong>, <strong>D.6 закрыт с большим запасом</strong>. Stream-ready в этой версии OpenClaw трэйсится в <code style="color:var(--lime);">config-audit.jsonl</code>, лезть туда не надо — <code style="color:var(--lime);">model.completed</code> это эквивалент по смыслу.</div>
+        <div class="vp-table-title">Финальная сводка</div>
+        <table class="vp-table">
+          <thead><tr><th>Из прошлого аудита</th><th>Было</th><th>Стало</th></tr></thead>
+          <tbody>
+            <tr><td>C.3 primary = MiniMax</td><td>❌</td><td>✅</td></tr>
+            <tr><td>C.4 fallback = deepseek-flash</td><td>❌</td><td>✅ <span style="color:var(--subtle);">(после правки конфига)</span></td></tr>
+            <tr><td>C.10 реальный ответ от MiniMax</td><td>❌</td><td>✅</td></tr>
+            <tr><td>D.6 ≤5 сек</td><td>❌ <span style="color:var(--subtle);">(28s)</span></td><td>✅ <span style="color:var(--subtle);">(1.6s)</span></td></tr>
+            <tr><td>F.4 watchdog</td><td>❌</td><td>✅ <span style="color:var(--subtle);">(v2 на OpenRouter API)</span></td></tr>
+            <tr><td>B.4 doctor</td><td>⚠️</td><td>✅ <span style="color:var(--subtle);">(Errors: 0)</span></td></tr>
+          </tbody>
+        </table>
+        <div class="vp-verdict"><span class="em">🎉</span>Вердикт: Воркшоп 1 пройден</div>
+      </div>
+
+      <p class="pcard-desc" style="font-size:12.5px;margin-top:12px;color:var(--subtle);">У тебя могут быть другие цифры (другая сессия, другая модель, другой ms). <strong style="color:var(--text);">Главное — финальная строка «🎉 Вердикт: Воркшоп 1 пройден»</strong>. Если у Аудитора другой вердикт (🟡 «почти готово» или ❌ «есть проблемы») — иди в <strong>Закладку 04 «Консультант»</strong>, чините и прогоните Аудитора заново, пока не получится зелёный «пройден».</p>
+
+      <div class="rbox"><div class="rtitle">Что произойдёт</div><div class="rrow">Аудитор пройдётся по 30 критериям и выдаст таблицу</div><div class="rrow">В конце — финальный <strong>вердикт</strong> зелёным шрифтом</div><div class="rrow"><strong>📸 Скриншот вердикта</strong> — это твой пропуск на Воркшоп 2</div></div>
+    </div>
+
+    <!-- СДАЧА -->
+    <div class="pcard" style="border-color:rgba(239,68,68,0.25);background:linear-gradient(135deg,rgba(239,68,68,0.04),transparent);">
+      <div class="pcard-head">
+        <div class="pcard-badge" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);">✓</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Сдача · Спринт-бот @ai_comandos_bot</div>
+          <div class="pcard-title">Отправь всё спринт-боту</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Зайди к спринт-боту в Telegram (имя бота Дмитрий пришлёт перед стартом, пока используй <code>@ai_comandos_bot</code> как placeholder) и отправь <strong>5 сообщений подряд</strong>:</p>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:0 0 0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#ef4444;margin-bottom:10px;">Что отправить (по одному сообщению на каждое)</div>
+        <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;font-size:13.5px;color:var(--muted);line-height:1.5;counter-reset:sub;">
+          <li style="counter-increment:sub;padding-left:30px;position:relative;"><span style="position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#ef4444;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;">1</span><strong style="color:var(--text);">Скриншот из Шага 1</strong> — где видно твоё голосовое и голосовой ответ бота</li>
+          <li style="counter-increment:sub;padding-left:30px;position:relative;"><span style="position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#ef4444;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;">2</span><strong style="color:var(--text);">Картинка из Шага 2</strong> — как картинка, не как скриншот</li>
+          <li style="counter-increment:sub;padding-left:30px;position:relative;"><span style="position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#ef4444;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;">3</span><strong style="color:var(--text);">Скриншот плана из Шага 3</strong> — финальный план который собрал бот после 5 вопросов</li>
+          <li style="counter-increment:sub;padding-left:30px;position:relative;"><span style="position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#ef4444;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;">4</span><strong style="color:var(--text);">Текст самопрезентации из Шага 4</strong> — то что бот написал о себе для участников спринта</li>
+          <li style="counter-increment:sub;padding-left:30px;position:relative;"><span style="position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.4);color:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;">5</span><strong style="color:var(--text);">📸 Скриншот вердикта от Аудитора</strong> — где зелёным написано «🎉 Воркшоп 1 пройден» (это и есть твой пропуск на Воркшоп 2)</li>
+        </ol>
+      </div>
+
+      <p class="pcard-desc" style="margin:14px 0 0;font-size:12.5px;color:var(--subtle);">Спринт-бот примет 5 сообщений и отметит у Дмитрия что Воркшоп 1 ты сдал. <strong style="color:var(--text);">Никаких подписей, расчётов, шаблонов</strong> — просто 5 сообщений подряд.</p>
+    </div>
+
+    <div class="notice tip" style="margin-top:14px;border-color:rgba(239,68,68,0.18);background:rgba(239,68,68,0.04);"><div class="ni">🆘</div>Если на любом шаге бот молчит, путается или выдаёт ошибку — <strong>не парься, не дёргай AI-установщика</strong>. Открой Закладку <strong>04 «Консультант»</strong>, опиши симптом — он подскажет за 30 секунд.</div>
+
+    <div class="final" style="background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(200,255,0,0.04));border-color:rgba(239,68,68,0.25);">
+      <div class="final-title">Это <span class="acc" style="color:#ef4444;">первый день</span> с твоим сотрудником</div>
+      <div class="final-desc">У тебя на руках бот, который <strong>слышит голосом</strong>, <strong>рисует</strong>, <strong>думает над задачей</strong>, <strong>сам себя дерзко продаёт</strong> и <strong>прошёл независимый аудит</strong>. На Воркшопе 2 он научится <strong>помнить</strong> разговоры — каждый следующий диалог станет умнее предыдущего.</div>
     </div>
 
   </div>
