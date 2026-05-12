@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Воркшоп 2 — Установка · COMANDOS AI</title>
+<style>
+  html,body{margin:0;padding:0;background:#111827;font-family:Arial,sans-serif;color:#ffffff;}
+  .page{max-width:980px;margin:24px auto;padding:24px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;color:#9ca3af;font-size:13px;flex-wrap:wrap;gap:12px;}
+  .copy-btn{background:#c8ff00;color:#000;border:none;border-radius:6px;padding:13px 24px;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:0.04em;}
+  .copy-btn:hover{filter:brightness(0.95);}
+  .copy-btn.copied{background:#86efac;}
+  .helper{margin:0 0 16px;color:#9ca3af;font-size:12.5px;line-height:1.6;}
+  .helper code{background:#1f2937;padding:2px 6px;border-radius:3px;color:#e5e7eb;font-size:11.5px;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <span><strong style="color:#c8ff00;">●</strong> COMANDOS AI · Воркшоп 2 · Закладка 01 — Установка</span>
+    <button class="copy-btn" onclick="copyFrag()">📋 Скопировать → Ctrl+V в Google Docs</button>
+  </div>
+  <p class="helper">Жми кнопку → открой Google Docs (новый или существующий) → <code>Ctrl+V</code> (Win) или <code>⌘+V</code> (Mac). Форматирование сохранится.</p>
+
+<div id="frag" style="background:#ffffff;color:#000000;padding:52px 60px;border-radius:6px;">
+
+<!-- ========== ТИТУЛЬНЫЙ БЛОК ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+  <tr><td style="padding:0;">
+    <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; text-transform:uppercase; letter-spacing:.14em; color:#aaaaaa;">COMANDOS AI · @ai_comandos · Воркшоп 2</p>
+    <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:26pt; font-weight:700; color:#000000; line-height:1.1;">Установка — память и защита контекста</p>
+    <p style="margin:0 0 18px; font-family:Arial,sans-serif; font-size:11pt; line-height:1.7; color:#555555;">9 промптов AI-агенту в Antigravity (или Cursor / Claude Code / любой AI-чат в папке проекта). После каждого AI отчитывается какие критерии стандарта В2 закрыл. На выходе — бот с постоянной памятью Mem0+Qdrant, защитой от раздувания контекста и автобэкапом в GitHub.</p>
+  </td></tr>
+</table>
+
+<!-- ========== СТАТИСТИКА ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr>
+    <td style="width:25%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">9</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">промптов</p>
+    </td>
+    <td style="width:25%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">~2 ч</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">время прохода</p>
+    </td>
+    <td style="width:25%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #c8ff00;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">50+</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">критериев</p>
+    </td>
+    <td style="width:25%; padding:0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">~$3</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">в месяц на токены</p>
+    </td>
+  </tr>
+</table>
+
+<!-- ========== СЕКЦИЯ: ПРОМПТ #0 ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+  <tr>
+    <td style="width:5px; background:#000000; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">НАЧАЛО · ОДИН РАЗ</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:16pt; font-weight:700; color:#000000; line-height:1.1;">Промпт #0 — контекст для AI</p>
+    </td>
+  </tr>
+</table>
+
+<!-- ===== ПРОМПТ #0 ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ #0 · ОДИН РАЗ В НАЧАЛЕ</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Контекст + git pull свежего стандарта</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 5 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">AI сначала <strong>обновляет репо</strong> (там лежит стандарт В2), читает его и подтверждает что у него есть инструменты. Только после этого даём Промпт 1.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+  <tr><td style="padding:0;">
+    <p style="margin:0; font-family:Arial,sans-serif; font-size:11.5pt; font-weight:700; color:#000000;">
+      <span style="color:#888888; font-weight:400; font-size:9pt;">→ &nbsp;</span>Скопируй и отправь в новый чат AI
+      &nbsp;&nbsp;<span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#7c3aed; background:#f5f3ff; padding:3px 8px; border:1px solid #ddd6fe; border-radius:3px;">Antigravity / AI-чат</span>
+    </p>
+  </td></tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ #0 — копируй целиком</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Помоги мне пройти Воркшоп 2 спринта по AI-сотруднику OpenClaw. В1 пройден, бот в Telegram отвечает. В2 = постоянная память (Mem0+Qdrant), защита контекста, бэкап в GitHub, доделки В1.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ПЕРЕД НАЧАЛОМ — обновить локальный репо проекта:<br>1. cd в папку проекта (где .env)<br>2. git pull origin main — там свежий standards/workshop-2-standard.md (источник истины В2)<br>3. Прочитай standards/workshop-2-standard.md ЦЕЛИКОМ — это твой чек-лист. После каждого моего промпта отчитывайся какие критерии (A.1, B.3, C.5 и т.д.) ты закрыл.<br>4. Прочитай standards/workshop-1-standard.md раздел C — это каскад моделей. НЕ выдумывай новые slugs.<br>5. Прочитай .env — узнаешь VPS_IP, SSH-ключ, ключи API.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ТВОИ ИНСТРУМЕНТЫ — определи сам и используй всё что доступно:<br>- Bash + ssh ~/.ssh/clawd_ed25519 clawd@$VPS_IP 'команда' — для one-shot SSH-команд<br>- Тяжёлые команды (tar/npm/update) — `ssh ... 'nohup cmd > /tmp/log.log 2>&amp;1 &amp;'` чтобы сессия не разорвалась<br>- Read/Edit/Write — для локальных файлов на Mac<br>- Если SSH недоступен — давай мне команды для копипаста, я выполняю сам и возвращаю вывод</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ПРАВИЛА (из workshop-2-standard.md, секция «Известные ограничения»):<br>1. После любой правки openclaw.json — `openclaw doctor --fix &amp;&amp; openclaw gateway restart &amp;&amp; chmod 600 ~/.openclaw/openclaw.json` (баг #18866)<br>2. Anthropic-модели в стеке НЕТ напрямую (Max ban). Если нужна Haiku — только через `openrouter/anthropic/...`<br>3. После каждой настройки — конкретная проверка с реальным выводом команды<br>4. issue #54408 (memoryFlush leak), #74813 (continuation-skip), #30894 (heartbeat.model) — учитывай fallback'и</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ПЕРВЫМ ДЕЛОМ:<br>1. git pull<br>2. Прочитай standards/workshop-2-standard.md (раздел A–G)<br>3. Проверь SSH через `ssh -i ~/.ssh/clawd_ed25519 clawd@$VPS_IP 'openclaw doctor --deep'`<br>4. Отчитайся: какие пункты стандарта В2 уже закрыты с В1, какие предстоит делать.</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">После этого жди Промпт 1.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">AI делает git pull, читает стандарт В2, проверяет SSH, отчитывается о текущем состоянии — что уже работает с В1, что предстоит закрыть.</span>
+  </td></tr>
+</table>
+
+<!-- ========== СЕКЦИЯ: 9 ПРОМПТОВ ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+  <tr>
+    <td style="width:5px; background:#000000; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">9 ПРОМПТОВ · ЛОГИЧЕСКИЕ БЛОКИ</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:16pt; font-weight:700; color:#000000; line-height:1.1;">От доделок В1 до финального теста памяти</p>
+    </td>
+  </tr>
+</table>
+
+<!-- ===== ПРОМПТ 1 — ДОДЕЛКИ В1 ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 1 · ДОДЕЛКИ В1 · РАЗДЕЛ G СТАНДАРТА</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Закрой раздел G стандарта (доделки В1)</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 15 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Раздел <strong>G</strong> стандарта — 9 пунктов с В1 которые могли остаться недоделанными. Закрой все ❗-пункты.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 1 — копируй в AI-чат</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 1: Закрой раздел G стандарта (доделки В1).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Все ❗-пункты G.1, G.3, G.4, G.6, G.8 + желательные G.2, G.5, G.7 + опциональный G.9.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Конкретно:<br>- G.1 Heartbeat реально на gemini-2.5-flash-lite — проверка через `openclaw logs --grep heartbeat --tail 30`<br>- G.2 Prompt caching включён, cache hit ≥60% после прогрева 5 одинаковых запросов<br>- G.3 Нет timestamps вида YYYY-MM-DD в SOUL.md/USER.md/IDENTITY.md (они инвалидируют кэш)<br>- G.4 chmod 600 на openclaw.json (after doctor)<br>- G.5 Watchdog проверяет права openclaw.json ежедневно (если 644 → alert + auto-chmod)<br>- G.6 Привычка: после правки конфига — doctor --fix → gateway restart → chmod 600<br>- G.7 /context list и /usage full работают в Telegram<br>- G.8 Сверка моделей с OpenRouter — все slugs в openclaw.json живые<br>- G.9 ackReaction "👀" в Telegram channel</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">После — restart gateway, chmod 600. Отчёт: ✅/⚠️/❌ по каждому из G.1–G.9 с цитатой команды.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">AI отчитывается по 9 пунктам G — что закрыто, с цитатой команды для каждого.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 2 — АРХИТЕКТУРА ПАМЯТИ ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 2 · АРХИТЕКТУРА ПАМЯТИ · РАЗДЕЛ A</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Workspace files — 3 уровня памяти</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 10 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">3-уровневая структура файлов (личность / операции / знания) + MEMORY.md скелет + папка memory/ + проверка дублирующих плагинов.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 2 — копируй в AI-чат</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 2: Закрой раздел A стандарта (архитектура памяти).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">A.1 — разложи файлы workspace по 3 уровням (личность / операции / знания)<br>A.2 — создай MEMORY.md с 5 жёсткими секциями (Предпочтения / Активные клиенты / Ключевые решения / Контакты / Фреймворки). Заполни 👤 и 📇 на основе фактов из истории В1 (если есть в ~/.openclaw/sessions/), если нет — оставь _&lt;empty&gt;_, НЕ ВЫДУМЫВАЙ.<br>A.3 — держи MEMORY.md ≤200 строк<br>A.4 — создай папку memory/ + шаблон _template.md<br>A.5 — создай файл memory/$(date +%Y-%m-%d).md с одной строкой<br>A.6 — `openclaw skills list | grep -iE "mem|memory"` ≤2 строки. Если больше — отчитайся, я выберу.<br>A.7 — в openclaw.json инжект MEMORY.md один раз при старте сессии (НЕ на каждое сообщение).</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">После — restart, chmod 600. Покажи `tree ~/.openclaw/workspace/`. Отчёт по A.1–A.7.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">tree показывает 3 группы файлов раздельно, MEMORY.md создан с пустыми секциями.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 3 — ЗАЩИТА КОНТЕКСТА ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 3 · ЗАЩИТА КОНТЕКСТА · РАЗДЕЛ B</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Compaction + memoryFlush + pruning</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 15 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">11 пунктов раздела B — compaction + memoryFlush + contextPruning + continuation-skip + проверочный тест трёх сообщений подряд.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 3 — копируй в AI-чат</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 3: Закрой раздел B стандарта (защита контекста).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Все пункты B.1–B.11. Конкретно из стандарта:<br>- B.1–B.6: compaction enabled, softThreshold 40000, hardThreshold 80000, summarize-middle, <strong style="background:#fef9c3; color:#92400e;">summarizerModel: "openrouter/moonshotai/kimi-k2.6"</strong> (НЕ Anthropic-Haiku напрямую!), preserveTags [decision, fact, action-required]<br>- B.7–B.8: memoryFlush enabled, model тот же openrouter/moonshotai/kimi-k2.6. Учти issue #54408 — мониторь логи первые сутки на «Pre-compaction memory flush...» в Telegram-чате; если увидишь — отключи enabled: false.<br>- B.9: contextPruning.mode "cache-ttl"<br>- B.10: contextInjection "continuation-skip" (учти #74813 — fallback на "always" если бот забывает контекст)<br>- B.11: тест 3 сообщений подряд — бот помнит факт из первого</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">После — restart, chmod 600. Отчёт ✅/⚠️/❌ по B.1–B.11.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">Compaction настроен на Kimi K2.6 (через OpenRouter), 3-сообщенческий тест проходит — бот помнит факт из первого сообщения после двух следующих.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 4 — Qdrant + Mem0 + Privacy ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 4 · ПОСТОЯННАЯ ПАМЯТЬ · РАЗДЕЛ C</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Qdrant + Mem0 + Privacy guard</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 25 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Самый большой блок — 16 пунктов C: Qdrant в Docker, Mem0 SDK, hybrid search, reranker, privacy guard. <strong>Внимательно проверь порт Qdrant — только на 127.0.0.1, никогда на 0.0.0.0.</strong></p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 4 — копируй в AI-чат</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 4: Закрой раздел C стандарта (постоянная память + privacy).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">C.1–C.4 — Qdrant: docker compose с qdrant/qdrant:v1.12.4 (фиксированная версия, НЕ :latest), порты ТОЛЬКО на <strong style="background:#fef9c3; color:#92400e;">127.0.0.1:6333/6334</strong>, restart unless-stopped, healthcheck.<br>КРИТИЧНО: проверь `ss -tlnp | grep 6333` → 127.0.0.1, НЕ 0.0.0.0. Иначе векторная БД с памятью открыта в интернет.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">C.5–C.6 — Mem0 SDK: `openclaw skills install mem0` или pip install. Конфиг: vector_store qdrant://127.0.0.1:6333, collection openclaw_main.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">C.7 — embedder: спроси меня перед выбором: «text-embedding-3-small (OpenAI, ~$1/мес, твои данные у них) ИЛИ локальный bge-m3 через Ollama (приватно, медленнее)?». Дождись моего ответа.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">C.8–C.11 — hybrid search: vec/BM25 0.7/0.3, MMR lambda 0.7, temporalDecay halfLifeDays 30, reranker bge-reranker-v2-m3 локально.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">C.12 — autoCapture true, dedupe_threshold 0.92.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">C.13–C.16 — privacy guard: detect-secrets pre-write hook + regex (sk-/ghp-/AKIA/JWT/password/СНИЛС/ИНН/credit). Fallback на LLM-classifier через openrouter/google/gemini-2.5-flash-lite (только когда regex не сработал). blockOnDetect: true.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Импортируй MEMORY.md как seed в Qdrant (каждая секция = одна запись).</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">После — restart, chmod 600. Тест: `openclaw memory recall "пробный факт"`. Покажи мне ✅/⚠️/❌ по C.1–C.16.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">Qdrant healthy на 127.0.0.1:6333, Mem0 active, 5 privacy-тестов проходят (regex ловит секреты до записи).</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 5 — ТЕСТ AUTO-CAPTURE ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 5 · ТЕСТ AUTO-CAPTURE · D.1 СТАНДАРТА</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Память реально запоминает (5-минутный тест)</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 10 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Главное доказательство что Mem0+Qdrant реально запоминает — через 5 минут, без команды «запомни». Факты <strong>любые твои собственные</strong> — никаких хардкод-Иванов.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 5 — копируй в AI-чат + Telegram</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 5: Закрой D.1 стандарта (auto-capture тест 5 минут).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ПЕРЕД ТЕСТОМ убедись:<br>- В Mem0 конфиге autoCapture: true (Промпт 4 C.12)<br>- privacy guard включён, но не блокирует обычные факты</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Спроси меня: «Расскажи боту 3 любых факта про себя — про работу/клиента, про семью, про планы или что угодно. Любые имена, цифры, даты. Просто перечисли мне здесь в чате что ты ему сказал — буду проверять что он именно ЭТО запомнил.»</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Когда я перечислю тебе 3 факта — запиши их у себя (в этом чате) и подожди подтверждения «отправил боту в Telegram, прошло 5 минут».</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">После моего подтверждения — попроси меня в Telegram спросить бота 3 проверочных вопроса по моим фактам (один вопрос на факт, без слов «запомни» или «вспомни»). Если бот ответил по сути на все 3 — D.1 закрыт, auto-capture работает.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Если не помнит — диагностируй:<br>- логи event memory.write были?<br>- Mem0 запросил Qdrant? (curl http://127.0.0.1:6333/collections/openclaw_main/points/count)<br>- privacy guard не блокировал?</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Скажи когда готов принимать мои 3 факта.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">Бот через 5 минут отвечает по сути на 3 проверочных вопроса по фактам, которые ты ему ввёл — D.1 стандарта закрыт.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 6 — git-crypt + ключ в менеджер ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 6 · БЭКАП ЧАСТЬ 1 · E.1–E.7</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">git init + crypt + ключ в менеджер паролей</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 15 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;"><strong>Шифрование ДО первого пуша.</strong> Это самая опасная часть воркшопа — если запушить открытый openclaw.json даже в приватный репо, можно потерять токены.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 6 — копируй в AI-чат</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 6: Закрой E.1–E.7 стандарта (git init + .gitignore + git-crypt + ключ).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.2 — `cd ~/.openclaw &amp;&amp; git init -b main`. Сразу .gitignore (полный список из стандарта E.2): openclaw.json, *.token, *.key, secrets/**, .env, qdrant/storage/**, tmp/, logs/, *.ogg, agents/*/sessions/cache/.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.3 — ПЕРВЫЙ И ЕДИНСТВЕННЫЙ коммит сейчас: только .gitignore + пустой README.md. НИКАКИХ других коммитов до завершения этого промпта (баг утечки токенов).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.4–E.5 — `git-crypt init`. .gitattributes:<br>openclaw.json filter=git-crypt diff=git-crypt<br>*.token filter=git-crypt diff=git-crypt<br>secrets/** filter=git-crypt diff=git-crypt<br>.env filter=git-crypt diff=git-crypt</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.6 — Тестовый коммит, проверка `git-crypt status` → openclaw.json: encrypted: YES.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.7 — `git-crypt export-key ~/openclaw-gitcrypt.key &amp;&amp; chmod 600 ~/openclaw-gitcrypt.key`.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">⚠️⚠️⚠️ КРИТИЧНО — СТОП. Дай мне 3 шага для сохранения ключа:<br>1. На Mac: `set -a &amp;&amp; source .env &amp;&amp; set +a &amp;&amp; scp -i ~/.ssh/clawd_ed25519 clawd@$VPS_IP:~/openclaw-gitcrypt.key ~/Documents/openclaw-key-backup-$(date +%F).key`<br>2. Я открою файл в TextEdit, скопирую содержимое, создам новую запись в моём менеджере паролей (1Password / Apple Keychain / Bitwarden) с заголовком "openclaw git-crypt key" и paste'ом содержимого. Убежусь что облачная синхронизация менеджера включена.<br>3. Удалю файл с диска: `shred -u ~/Documents/openclaw-key-backup-*.key &amp;&amp; ssh ... 'shred -u ~/openclaw-gitcrypt.key'`</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Дай эти 3 команды/шага. Жди моего подтверждения «ключ в менеджере паролей с синхронизацией» прежде чем переходить к Промпту 7.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">git-crypt status → encrypted: YES, ключ только в твоём менеджере паролей с iCloud/cloud sync. На VPS и Mac ключ удалён shred.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 7 — GitHub + cron + RECOVERY ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 7 · БЭКАП ЧАСТЬ 2 · E.8–E.14</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">GitHub + Push Protection + cron + RECOVERY</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 15 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Удалённый репо + защиты + автокоммит каждый час + runbook восстановления.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 7 — копируй в AI-чат + браузер</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 7: Закрой E.8–E.14 стандарта (GitHub + cron + RECOVERY).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.8 — `gitleaks` pre-commit hook (pre-commit + .gitleaks.toml с allowlist для git-crypted файлов).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.1, E.9 — `gh auth login` → создай ПРИВАТНЫЙ репо: `gh repo create openclaw-backup --private --source=. --push`. Дважды проверь: `gh repo view --json visibility` → PRIVATE. На GitHub в Settings → Code security → включи Push Protection (дай мне URL).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.10–E.13 — Cron автокоммит. Скрипт ~/.openclaw/scripts/openclaw-autocommit.sh с whitelist путей (НЕ `git add -A`!). Cron `0 * * * *` с flock. Ветка auto/cron, daily squash в main `0 23 * * *`.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">E.14 — ~/.openclaw/RECOVERY.md с 3 сценариями: VPS сгорел / git-crypt ключ потерян / бот не отвечает. Включи команды восстановления (git clone, git-crypt unlock из менеджера паролей, openclaw doctor + restart).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Через 1 час проверь `git log --oneline auto/cron | head -3` — должен быть свежий коммит. Это E.12.</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Отчёт ✅/⚠️/❌ по E.8–E.14. Когда коммит появится — запомни URL репо, он понадобится в «Сдаче».</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">Cron каждый час пушит на ветку auto/cron в твоём приватном GitHub-репо. URL репо запомни — пригодится в Сдаче.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 8 — ГИГИЕНА ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 8 · ГИГИЕНА · РАЗДЕЛ F</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">4 cron-задачи — архивация, дайджест, бэкап</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 10 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Архивация старых memory-файлов + еженедельный дайджест в MEMORY.md + ручной pre-update backup. Все ⚠️ — не блокеры, но сильно облегчают жизнь через 2-3 месяца.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 8 — копируй в AI-чат</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 8: Закрой раздел F стандарта (гигиена памяти).</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">F.1 — archive-memory.sh: find memory/ -mtime +30 → archive/. Cron `0 3 * * 0`.<br>F.2 — В memorySearch.paths добавь archive/ (старое в поиске).<br>F.3 — Weekly digest cron `0 10 * * 1` (понедельник 10:00 МСК). Модель: openrouter/moonshotai/kimi-k2.6 (та же что для compaction). Промпт digest'а: «Прочитай файлы memory/ за прошлые 7 дней. Суммируй: 3-5 ключевых тем, 5 фактов, 3 решения, action items на следующую неделю. Допиши в MEMORY.md под секцию '## Week of YYYY-MM-DD'.»<br>F.4 — pre-update-backup.sh: tar+gpg всей ~/.openclaw/ + Qdrant snapshot. Запускается ВРУЧНУЮ перед каждым `openclaw update`.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Запусти один тестовый прогон archive-memory.sh — должно работать. pre-update-backup.sh — тестовый прогон без openclaw update, должен создать .tgz.gpg в ~/.openclaw/backups/.</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Отчёт ✅/⚠️/❌ по F.1–F.4.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">3 cron-задачи стоят, тестовые прогоны прошли, в ~/.openclaw/backups/ появился .tgz.gpg.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ПРОМПТ 9 — AMNESIA TEST + REPORT-W2.md ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ 9 · ФИНАЛ · D.2 + САМООТЧЁТ</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Amnesia test (память после /reset) + REPORT-W2.md</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 10 мин</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Финальный тест памяти после <strong>/reset</strong> + самоотчёт основного AI по всем критериям В2. После — переходим на Закладку «Аудитор».</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #374151; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f3f4f6;"><td style="padding:6px 13px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#6b7280;">ПРОМПТ 9 — копируй в AI-чат + Telegram</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Промпт 9: Закрой D.2 стандарта (amnesia test) + сделай самоотчёт.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ШАГ 1 — Amnesia test (используем те же факты что я ввёл в Промпте 5):</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ПЕРЕД ТЕСТОМ — убедись что мои факты из Промпта 5 в Qdrant: `curl http://127.0.0.1:6333/collections/openclaw_main/points/count`. Должно быть ≥3.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Сделай Qdrant snapshot для отката: `curl -X POST http://127.0.0.1:6333/collections/openclaw_main/snapshots`.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Скажи мне «отправь /reset боту в Telegram, потом задай те же 3 проверочных вопроса что и в Промпте 5». Бот должен ответить по сути на все 3 — память пережила полный сброс контекста.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Если не помнит — диагностируй (MEMORY.md загружается? Mem0 запрашивает Qdrant? логи memory_search?). Если совсем сломано — восстанови из snapshot.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ШАГ 2 — Самоотчёт ~/.openclaw/REPORT-W2.md:<br>Пройдись по ВСЕМ критериям стандарта В2 (A.1–G.9), для каждого ✅/⚠️/❌ с цитатой команды/файла. Это самоотчёт основного AI — Аудитор будет читать его в новом чате и независимо проверять каждое утверждение.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Подсчёт: сколько ❗ закрыто из стандарта (минимум для зачёта — все ❗ из A–E + критичные G.1, G.3, G.4, G.6, G.8).</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ШАГ 3 — Финальное сообщение:<br>Скажи мне дословно: «Установка завершена. Открывай в гайде закладку „Аудитор", запускай независимую проверку в новом чате. Когда получишь вердикт — переходи на закладку „Сдача · Домашка" и собирай 5 доказательств в Telegram-боте.»</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:9px 14px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Результат: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">Бот после /reset отвечает на 3 проверочных вопроса по твоим фактам из Промпта 5 — D.2 закрыт. Создан ~/.openclaw/REPORT-W2.md с проходом по всем критериям A.1–G.9.</span>
+  </td></tr>
+</table>
+
+<!-- ========== CTA БЛОК ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+  <tr>
+    <td style="background:#0d0e0f; border-radius:6px; padding:44px 48px;">
+      <p style="margin:0 0 6px; font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.18em; color:#555555;">COMANDOS AI &nbsp;·&nbsp; @ai_comandos</p>
+      <p style="margin:0 0 16px; font-family:Arial,sans-serif; font-size:24pt; font-weight:700; color:#ffffff; line-height:1.15;">Установка завершена</p>
+      <p style="margin:0 0 28px; font-family:Arial,sans-serif; font-size:10pt; color:#9ca3af; line-height:1.75;">Дальше — две закладки в этом гайде. <strong style="color:#c8ff00;">«Аудитор»</strong> прогонит независимую проверку в новом чате AI. <strong style="color:#c8ff00;">«Сдача · Домашка»</strong> — соберёшь 5 доказательств напрямую через Telegram-бота за 10 минут.</p>
+      <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;"><tr>
+        <td style="background:#c8ff00; border-radius:4px; padding:14px 36px;">
+          <p style="margin:0; font-family:Arial,sans-serif; font-size:11pt; font-weight:700; color:#000000;">Подписаться → t.me/ai_comandos</p>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<script>
+function copyFrag(){
+  const el = document.getElementById('frag');
+  const range = document.createRange();
+  range.selectNode(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  try{ document.execCommand('copy'); }catch(e){}
+  sel.removeAllRanges();
+  const btn = document.querySelector('.copy-btn');
+  btn.classList.add('copied');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Скопировано — открой Google Docs и Ctrl+V';
+  setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = orig; }, 2400);
+}
+</script>
+</body>
+</html>

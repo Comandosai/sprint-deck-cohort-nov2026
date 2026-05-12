@@ -61,6 +61,13 @@
   .tab[data-tab="3"].active .tab-num{color:var(--orange);}
   .tab[data-tab="4"].active .tab-num{color:#a78bfa;}
   .tab[data-tab="5"].active .tab-num{color:#ef4444;}
+  .tab[data-tab="6"].active .tab-num{color:#06b6d4;}
+  .panel-cyan{border-color:rgba(6,182,212,0.18)}
+  .banner-v12{background:linear-gradient(135deg,rgba(6,182,212,0.08),rgba(13,14,15,1));border:1px solid rgba(6,182,212,0.3);border-radius:8px;padding:14px 18px;margin:0 0 22px;color:var(--muted);font-size:13.5px;line-height:1.7}
+  .banner-v12 strong{color:#06b6d4;font-weight:600}
+  .banner-v12 .badge{display:inline-block;background:#06b6d4;color:#0d0e0f;font-size:10.5px;font-weight:700;letter-spacing:0.08em;padding:3px 9px;border-radius:3px;text-transform:uppercase;margin-right:8px;vertical-align:1px}
+  .banner-v12 ul{margin:8px 0 0;padding-left:18px}
+  .banner-v12 li{margin-bottom:4px}
   .tab-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.05;letter-spacing:0.01em;}
   .tab-desc{font-size:11px;color:var(--muted);line-height:1.4;}
 
@@ -458,6 +465,19 @@
       <span class="tab-title">Домашка</span>
       <span class="tab-desc">5 заданий → артефакты + вердикт «ПРОЙДЕН» спринт-боту</span>
     </button>
+    <button class="tab" data-tab="6" onclick="goTab(6)">
+      <span class="tab-num">06 · NEW</span>
+      <span class="tab-title">🩹 Патчи v1.3</span>
+      <span class="tab-desc">Tailscale (рекомендуется) или базовый SSH-hardening — для тех кто прошёл В1 до 12 мая</span>
+    </button>
+  </div>
+
+  <div class="banner-v12">
+    <span class="badge">v1.3 · 12 мая</span><strong>SSH-защита — Tailscale рекомендуется, базовый hardening как fallback</strong>
+    <ul>
+      <li>🟢 <strong>Не начинал или в начале</strong> → иди обычным путём. Промпт 4 встроит базовый hardening (A.11-A.14). Хочешь полную защиту — после В1 открой Закладку «🩹 Патчи v1.3» и сделай A.1 Tailscale (5 мин).</li>
+      <li>🔴 <strong>Уже закончил В1 до 12 мая</strong> → Закладка «🩹 Патчи v1.3». Выбери ОДИН вариант: <strong>A.1 Tailscale</strong> (SSH невидим в интернете) или <strong>A.2 Базовый</strong> (смена порта + passauth off + fail2ban 24h).</li>
+    </ul>
   </div>
 
   <!-- ============================================================ -->
@@ -931,7 +951,7 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
           <div class="pcard-title">Защитить VPS</div>
         </div>
       </div>
-      <p class="pcard-desc">Юзер <strong>clawd</strong>, passwordless sudo (ДО блокировки root!), ufw rate-limit, fail2ban, swap 4GB, linger. Закрывает <strong>A.1-A.10</strong>.</p>
+      <p class="pcard-desc">Юзер <strong>clawd</strong>, passwordless sudo (ДО блокировки root!), ufw rate-limit, fail2ban, swap 4GB, linger + <span style="color:var(--lime)"><strong>SSH-hardening v1.2</strong></span> (порт≠22, password auth off, bantime 24h, MaxStartups). Закрывает <strong>A.1-A.14</strong>.</p>
       <div class="notice wrn"><div class="ni">⚠️</div><strong>Критично:</strong> passwordless sudo для clawd сделать ДО блокировки root SSH. Иначе можно потерять доступ к VPS навсегда.</div>
       <div class="pb">
         <div class="pbar"><span class="plang">antigravity · chat</span><button class="cbtn" onclick="cp(this,'p4')">📋 Копировать</button></div>
@@ -950,14 +970,27 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
 
 4. Скопировать ключ из /root/.ssh/authorized_keys в /home/clawd/.ssh/
 5. Заблокировать root SSH (PermitRootLogin no, PasswordAuthentication no)
-6. ufw: deny incoming, allow outgoing, limit 22/tcp, enable
-7. fail2ban: install, enable, start
+6. ufw: deny incoming, allow outgoing, enable. ПОКА allow 22/tcp limit — поменяем после шага 11.
+7. fail2ban: install, enable, start с bantime ≥ 86400 (24h), maxretry 3, findtime 600 в /etc/fail2ban/jail.local
 8. Swap 4GB через /swapfile + /etc/fstab
 9. unattended-upgrades + Automatic-Reboot=false
 10. loginctl enable-linger clawd
 
-После — обнови .env: VPS_USER=root → VPS_USER=clawd.
-Покажи какие критерии A.1-A.10 закрыл.</div>
+11. (v1.2 КРИТИЧНО A.11-A.14) SSH-hardening — порядок строгий, не отрежь меня от VPS:
+    a. Выбери NEW_PORT в диапазоне 10000-60000 (echo $((RANDOM % 50000 + 10000)))
+    b. sudo ufw allow $NEW_PORT/tcp (открой новый порт ДО)
+    c. sudo sed -i "s/^#*Port 22/Port $NEW_PORT/" /etc/ssh/sshd_config
+    d. echo "MaxStartups 5:30:10" | sudo tee -a /etc/ssh/sshd_config
+    e. echo "MaxSessions 5" | sudo tee -a /etc/ssh/sshd_config
+    f. sudo sshd -t (проверка синтаксиса). sudo systemctl reload sshd.
+    g. СКАЖИ МНЕ СТОП. Я во втором терминале проверю ssh -p $NEW_PORT.
+    h. После моего «работает» — sudo ufw delete allow 22/tcp.
+    i. Обнови .env: добавь SSH_PORT=$NEW_PORT. Скажи мне обновить Mac ~/.ssh/config: Port $NEW_PORT.
+
+После — обнови .env: VPS_USER=root → VPS_USER=clawd, SSH_PORT=$NEW_PORT.
+Покажи какие критерии A.1-A.14 закрыл (вывод grep -E "^Port|^Password|^MaxSt|^MaxSess" /etc/ssh/sshd_config + sudo fail2ban-client get sshd bantime).
+
+⚠️ ЗАМЕТКА: A.11-A.14 это БАЗОВЫЙ минимум (security-by-obscurity + key auth + rate limit). НАСТОЯЩАЯ защита — A.15 Tailscale: закрывает порт 22 из публичного интернета полностью. После Промпта 11 (финал В1) → открой Закладку 06 «🩹 Патчи v1.3» → Промпт A.1 Tailscale (5 минут, $0, Win/Mac/Linux). Без A.15 атаки на SSH продолжатся, просто будет меньше шума.</div>
       </div>
     </div>
 
@@ -2304,6 +2337,171 @@ knowledge-base/
 
   </div>
 
+  <!-- ============================================================ -->
+  <!-- TAB 6 — ПАТЧИ v1.2                                              -->
+  <!-- ============================================================ -->
+  <div class="panel panel-cyan" id="panel-6">
+
+    <div class="banner-v12" style="margin-bottom:18px"><span class="badge">v1.3 · 12 мая</span><strong>SSH-защита — догнать до v1.3</strong>. Если ты прошёл В1 до 12 мая, твой VPS открыт по дефолтному порту 22 и уязвим под брут-форс. История: участник когорты 2 дня терпел атаку с десятков IP, fail2ban не справился, сервер забивался connections, AI-агент не мог достучаться.</div>
+
+    <h2>Выбери <span class="acc" style="color:#06b6d4;">ОДИН</span> вариант</h2>
+    <p class="hero-sub">Если ты ещё не проходил В1 — патч НЕ НУЖЕН, в Промпте 4 Установки уже встроен базовый hardening (A.11-A.14). Хочешь полную защиту — добавь сверху A.1 Tailscale.</p>
+
+    <div class="notice wrn" style="background:rgba(6,182,212,0.05);border-color:rgba(6,182,212,0.25);margin-top:14px">
+      <div class="ni">🛡</div>
+      <div>
+        <strong style="color:#06b6d4">A.1 — Tailscale (рекомендуется)</strong> закрывает SSH из публичного интернета полностью. Брут-форсить нечего. Win/Mac/Linux одинаково, 5 минут, $0. <strong>Истинная защита.</strong><br>
+        <strong>A.2 — Базовый</strong> меняет порт, отключает password auth, поднимает fail2ban bantime. Снижает шум атак в 100×, но не закрывает корень. Подходит если ты не хочешь Tailscale-аккаунт.
+      </div>
+    </div>
+
+    <!-- ===== A.1 TAILSCALE ===== -->
+    <div class="pcard" style="margin-top:18px;border-left-color:#06b6d4">
+      <div class="pcard-head">
+        <div class="pcard-badge" style="color:#06b6d4;background:rgba(6,182,212,0.12);border-color:rgba(6,182,212,0.3)">A.1</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:#06b6d4">🥇 Рекомендуется · 10 минут · Win/Mac/Linux</div>
+          <div class="pcard-title">Tailscale — SSH невидим в интернете</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Tailscale = бесплатная zero-trust VPN. VPS виден только устройствам в твоей Tailscale-сети (Mac, Win-PC, телефон). Снаружи интернета — порт 22 закрыт полностью. Брут-форс физически невозможен.</p>
+      <div class="notice tip" style="border-color:rgba(6,182,212,0.2);background:rgba(6,182,212,0.04);margin:10px 0"><div class="ni">📱</div><strong>Сначала на устройстве (Mac/Win/iPhone/Android):</strong><br>
+      • <strong>Mac:</strong> App Store → найди «Tailscale» → установи → открой → Sign in с Google/GitHub<br>
+      • <strong>Windows:</strong> <code>tailscale.com/download/windows</code> → .exe → установи → tray-icon → Login → Google/GitHub<br>
+      • <strong>iPhone/Android:</strong> App Store / Google Play → «Tailscale» → войди тем же аккаунтом<br>
+      Важно: тот же аккаунт Google/GitHub что используешь — все твои устройства попадают в одну сеть.</div>
+      <p class="pcard-desc" style="margin-top:14px"><strong>Дальше — отдай этот промпт AI-агенту в папке проекта:</strong></p>
+      <div class="pb">
+        <div class="pbar"><span class="plang">antigravity · chat</span><button class="cbtn" onclick="cp(this,'pa1')">📋 Копировать</button></div>
+        <div class="pcode" id="pa1">Промпт A.1: Закрой SSH из публичного интернета через Tailscale (A.15 стандарта W1 v1.3).
+
+ПРЕДУСЛОВИЕ: я уже установил Tailscale-клиент на своём Mac/Windows и залогинился через Google/GitHub. Скажу тебе свой логин когда понадобится — а ты только VPS настраиваешь.
+
+ДЕЙСТВУЙ ПОСЛЕДОВАТЕЛЬНО (порядок критичен — не отрежь меня от SSH):
+
+1. Подключись по текущему SSH (как обычно). Установи Tailscale на VPS:
+   curl -fsSL https://tailscale.com/install.sh | sh
+
+2. Запусти tailscale up с флагом для серверов:
+   sudo tailscale up --ssh=false --accept-routes
+   ВЫВЕДЕТСЯ ССЫЛКА (типа https://login.tailscale.com/a/abc...). СКАЖИ МНЕ ЭТУ ССЫЛКУ — я открою в браузере и авторизую устройство в своём аккаунте.
+
+3. Жди моего подтверждения «авторизовал VPS». После моего OK — узнай Tailscale-IP VPS:
+   tailscale ip -4
+   Это адрес вида 100.X.X.X — запомни.
+
+4. Покажи мне этот 100.X.X.X-адрес + скажи мне обновить ~/.ssh/config на Mac:
+   Host clawd-vps-tail
+     HostName <100.X.X.X>
+     User clawd
+     IdentityFile ~/.ssh/clawd_ed25519
+     Port <текущий SSH порт, если меняли в v1.2 — иначе 22>
+
+5. СКАЖИ МНЕ СТОП. Я открою второй терминал и проверю:
+   ssh clawd-vps-tail "echo OK"
+   Если работает — скажу «работает».
+
+6. ТОЛЬКО ПОСЛЕ моего «работает» — закрываем SSH в публичном интернете:
+   sudo ufw delete allow <SSH_PORT>/tcp
+   (это удалит правило для текущего порта — публичный SSH становится недоступен)
+   sudo ufw status (должно показать что SSH-порта в публичных allow больше нет)
+
+7. Опционально (для параноиков) — заставь sshd слушать ТОЛЬКО на tailscale0 интерфейсе:
+   echo "ListenAddress <100.X.X.X>" | sudo tee -a /etc/ssh/sshd_config
+   echo "ListenAddress 127.0.0.1" | sudo tee -a /etc/ssh/sshd_config
+   sudo sshd -t && sudo systemctl reload sshd
+
+8. ВНЕШНЯЯ ПРОВЕРКА: я с телефона (вне Tailscale) пробую ssh <PUBLIC_IP> -p <SSH_PORT> → должен быть timeout/refused. Если кто-то отвечает — A.15 НЕ ЗАКРЫТ.
+
+9. Обнови мой .env:
+   - VPS_HOST=<100.X.X.X> (Tailscale-IP, заменяет публичный для SSH)
+   - VPS_PUBLIC_IP=<старый публичный> (для веб-доступа к боту, если есть)
+
+10. Допиши в ~/.openclaw/RECOVERY.md:
+    "## A.15 SSH через Tailscale
+    - VPS Tailscale-IP: 100.X.X.X
+    - Если Tailscale сломался — открой панель https://login.tailscale.com/admin/machines, проверь статус VPS
+    - Альтернативный доступ через провайдера: web-консоль VPS (Hetzner/DigitalOcean/etc) → залогиньтесь как root → перезапустите tailscaled"
+
+Отчёт ✅/⚠️/❌ по A.15 с проверкой `tailscale status` + внешний nmap.</div>
+      </div>
+      <div class="rbox" style="margin-top:14px;background:rgba(6,182,212,0.04);border-color:rgba(6,182,212,0.2)"><div class="rtitle" style="color:#06b6d4">✅ Результат A.1</div><div class="rrow">SSH работает только из твоей Tailscale-сети. Снаружи интернета порт filtered/closed. Брут-форсить нечего. Подключение из любой точки мира пока Tailscale-клиент запущен на твоём устройстве.</div></div>
+    </div>
+
+    <!-- ===== A.2 БАЗОВЫЙ ===== -->
+    <div class="pcard" style="margin-top:14px">
+      <div class="pcard-head">
+        <div class="pcard-badge">A.2</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">🥉 Базовый · 10 минут · Если не хочешь Tailscale</div>
+          <div class="pcard-title">SSH-hardening (A.11-A.14 стандарта W1 v1.2)</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Меняет SSH-порт с 22 на случайный, отключает password auth, fail2ban bantime до 24h, MaxStartups/MaxSessions. <strong>Снижает атаки в 100×, но не закрывает корень.</strong> Используй если категорически не хочешь Tailscale-аккаунт.</p>
+      <div class="notice wrn" style="border-color:rgba(6,182,212,0.18);background:rgba(6,182,212,0.04)"><div class="ni">⚠️</div><strong>Порядок строгий — не отрежь себя от SSH.</strong> Сначала открой новый порт в ufw, проверь работу из второго терминала, ТОЛЬКО потом закрывай 22.</div>
+      <div class="pb">
+        <div class="pbar"><span class="plang">antigravity · chat</span><button class="cbtn" onclick="cp(this,'pa2')">📋 Копировать</button></div>
+        <div class="pcode" id="pa2">Промпт A.2: Закрой A.11-A.14 стандарта W1 v1.2 (SSH-hardening, базовый).
+
+КОНТЕКСТ: участник когорты 2 дня терпел брут-форс на порт 22. fail2ban с дефолтным bantime=3600 не справился — атакующие ротировали IP, забивали MaxStartups, AI-агент не мог достучаться. После смены порта + passauth off + bantime 24h атака прекратилась за час.
+
+ДЕЙСТВУЙ ПОСЛЕДОВАТЕЛЬНО (порядок критичен — не отрежь меня от SSH):
+
+1. Выбери NEW_PORT в диапазоне 10000-60000:
+   NEW_PORT=$((RANDOM % 50000 + 10000))
+   echo "NEW_PORT=$NEW_PORT"
+
+2. СНАЧАЛА открой NEW_PORT в ufw (на случай если sshd перезагрузится):
+   sudo ufw allow $NEW_PORT/tcp
+   sudo ufw status
+
+3. ПОТОМ правь sshd_config с бэкапом:
+   sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak.$(date +%F)
+   sudo sed -i "s/^#*Port 22/Port $NEW_PORT/" /etc/ssh/sshd_config
+   sudo sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+   sudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+   echo "MaxStartups 5:30:10" | sudo tee -a /etc/ssh/sshd_config
+   echo "MaxSessions 5" | sudo tee -a /etc/ssh/sshd_config
+
+4. sudo sshd -t (проверка синтаксиса). Если OK: sudo systemctl reload sshd
+
+5. СКАЖИ МНЕ СТОП. Я открою второе окно терминала на Mac и проверю:
+   ssh -i ~/.ssh/clawd_ed25519 -p $NEW_PORT clawd@$VPS_IP "echo OK"
+   Скажу тебе работает или нет.
+
+6. Если работает — закрывай 22:
+   sudo ufw delete allow 22/tcp
+   sudo ufw status
+
+7. Подтяни fail2ban (bantime 24h):
+   sudo tee -a /etc/fail2ban/jail.local &lt;&lt;EOF
+   [sshd]
+   enabled = true
+   port = $NEW_PORT
+   bantime = 86400
+   findtime = 600
+   maxretry = 3
+   EOF
+   sudo systemctl restart fail2ban
+   sudo fail2ban-client status sshd
+
+8. Обнови мой .env: добавь строку SSH_PORT=$NEW_PORT. Скажи мне обновить также Mac ~/.ssh/config: "Port $NEW_PORT" в блоке clawd-vps.
+
+9. Отчёт ✅/⚠️/❌ по A.11-A.14:
+   - grep -E "^Port|^PasswordAuth|^MaxSt|^MaxSess|^PermitRoot" /etc/ssh/sshd_config
+   - sudo ufw status
+   - sudo fail2ban-client get sshd bantime
+   - sudo fail2ban-client status sshd</div>
+      </div>
+    </div>
+
+    <div class="final" style="margin-top:36px;background:linear-gradient(135deg,rgba(6,182,212,0.08),rgba(13,14,15,1));border-color:rgba(6,182,212,0.3)">
+      <div class="final-title">После патча — <span class="acc" style="color:#06b6d4;">перепрогон Аудитора</span></div>
+      <div class="final-desc">Открой Закладку 03 «Контроль», скопируй промпт аудитора в новый чат AI. Аудитор по стандарту v1.3 проверит либо <strong>A.15 Tailscale</strong> (если ты выбрал A.1), либо <strong>A.11-A.14</strong> (если A.2). Финальная строка «🎉 ВОРКШОП 1 ПРОЙДЕН (v1.3)» — новый скрин для спринт-бота, замени им старый.</div>
+    </div>
+
+  </div>
+
   <!-- CTA -->
   <div class="cta">
     <div class="cta-tag">Хочешь больше</div>
@@ -2326,7 +2524,7 @@ knowledge-base/
   <div class="footer">
     <div class="footer-brand"><strong>Дмитрий Попов</strong> · AI Бизнес Стратег</div>
     <a class="footer-tg" href="https://t.me/ai_comandos" target="_blank">@ai_comandos</a>
-    <div class="footer-meta">Спринт OpenClaw · 1 ноября 2026 · Цифровые сотрудники</div>
+    <div class="footer-meta">Спринт OpenClaw · 1 ноября 2026 · Цифровые сотрудники · v1.3 patches 12 мая (Tailscale)</div>
   </div>
 
 </div>

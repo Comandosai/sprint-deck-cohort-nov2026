@@ -1,5 +1,6 @@
 # Стандарт готовности — Воркшоп 2
 
+> Версия: v1.1 (2026-05-12). Добавлены C.17 (Memory Search Protocol), D.4 (trajectory.jsonl-проверка), E.15 (autocommit whitelist), F.5 (watchdog `*/15`) — после полевых отчётов когорты Nov-2026.
 > Что должно быть настроено у участника после Воркшопа 2.
 > Это **источник истины** — все промпты ссылаются на этот документ.
 > AI-исполнитель и аудитор используют его как чек-лист.
@@ -83,16 +84,18 @@
 | C.14 | Privacy guard pre-write hook блокирует регексы (sk-/ghp-/AKIA/JWT/password/СНИЛС/ИНН/credit card) | ❗ |
 | C.15 | Privacy guard fallback LLM-classifier на `openrouter/google/gemini-2.5-flash-lite` (только если regex не сработал) | ⚠️ |
 | C.16 | `blockOnDetect: true` — пароли/токены БЛОКИРУЮТСЯ на запись (НЕ маскируются) | ❗ |
+| C.17 | **Memory Search Protocol** — в `workspace/AGENTS.md` обязательная секция «звать memory_search/mem0-search перед фактологическими ответами». Дублирующий буллет в SOUL.md. Без этого LLM не зовёт mem0-skill, идёт в web_search и фабрикует — D.2 проходит формально через injection. | ❗ |
 
 ---
 
-## D. Финальный тест памяти — auto-capture + amnesia
+## D. Финальный тест памяти — auto-capture + amnesia + tool_call
 
 | # | Критерий | Уровень |
 |---|---|---|
-| D.1 | Auto-capture тест (5 минут): после 3 фактов в Telegram («Иван — CTO Acme бюджет 50k», «сестра Анна роды август», «Грузия 10 дней») бот помнит их без команды «запомни» | ❗ |
-| D.2 | Amnesia test: после `/reset` → вопрос «Кто такой Иван?» → бот отвечает с фактами из Qdrant (CTO/Acme/50k/15 мая) | ❗ |
+| D.1 | Auto-capture тест (5 минут): после 3 любых фактов в Telegram бот помнит их без команды «запомни». Факты выбирает участник сам — не хардкод. | ❗ |
+| D.2 | Amnesia test: после `/reset` → вопросы по тем же 3 фактам → бот отвечает по сути из Qdrant | ❗ |
 | D.3 | Бонус-домашка через 4 часа: те же 3 факта проверяются повторно — бот помнит после паузы | ⚠️ |
+| D.4 | **Trajectory tool_call check**: в `agents/main/sessions/<id>.trajectory.jsonl` на каждый D.1/D.2/D.3 вопрос есть `tool_call: memory_search` или `exec → mem0-search.js`. Если 0 calls — D НЕ ПРОЙДЕН независимо от точности ответа (бот мог взять из startupContext, не из retrieval). Команда: `tail -200 ~/.openclaw/agents/main/sessions/$(ls -t ~/.openclaw/agents/main/sessions/ \| head -1)/trajectory.jsonl \| grep -cE "memory_search\|mem0-search"` ≥ 3. | ❗ |
 
 ---
 
@@ -114,10 +117,11 @@
 | E.12 | Через 1 час после установки cron: `git log --oneline auto/cron \| head -3` → есть свежий auto-commit | ❗ |
 | E.13 | Daily merge `auto/cron → main` --squash в 23:00 | ⚠️ |
 | E.14 | `RECOVERY.md` написан с 3 сценариями (VPS сгорел / ключ потерян / бот не отвечает) | ⚠️ |
+| E.15 | **Autocommit whitelist** — `~/.openclaw/scripts/openclaw-autocommit.sh` использует ЯВНЫЙ список путей (`stage_workspace_if_exists`), НЕ `git add .` / `git add -A`. Blocklist для `openclaw.json`, `auth-profiles.json`, `secrets/**`, `.env`, `*.token`, `*.key` — abort если попали в индекс. Защита от утечки `agents/main/agent/auth-profiles.json` с plaintext API-ключами. | ❗ |
 
 ---
 
-## F. Гигиена памяти
+## F. Гигиена памяти + permission watchdog
 
 | # | Критерий | Уровень |
 |---|---|---|
@@ -125,6 +129,7 @@
 | F.2 | `memorySearch.paths` включает `archive/` (старое не выпадает из поиска) | ⚠️ |
 | F.3 | Weekly digest cron `0 10 * * 1` (понедельник 10:00 МСК) — Kimi читает 7 дней memory/ → дописывает в MEMORY.md | ⚠️ |
 | F.4 | `pre-update-backup.sh` — tar+gpg всей `~/.openclaw/` + Qdrant snapshot перед каждым `openclaw update` | ⚠️ |
+| F.5 | **Permission-watchdog cron `*/15 * * * *`** (не `17 4 * * *` раз в сутки!) — каждые 15 мин проверяет `chmod 600` на openclaw.json/SOUL.md/auth-profiles.json/secrets/. При 644 → auto-chmod + Telegram alert. Drift-окно ≤15 мин вместо 24h. Защита от регрессии #18866 после случайного `doctor --fix`. | ❗ |
 
 ---
 
@@ -181,8 +186,13 @@
 - ❌ `heartbeat.rateLimit` / `skipWhenBusy` / `fallbacks` → не поддерживается
 - ⚠️ Issue #54408 — `memoryFlush` иногда «протекает» в основную сессию. При обнаружении — отключи `memoryFlush.enabled: false`, потеря только B.7/B.8.
 - ⚠️ Issue #74813 — `continuation-skip` иногда ломается после compaction. Симптом: бот забывает контекст внутри одной сессии. Fallback: переключи `contextInjection: "always"`.
-- ⚠️ Issue #18866 — `doctor --fix` сбрасывает права на 644. Всегда после `chmod 600`.
+- ⚠️ Issue #18866 — `doctor --fix` сбрасывает права на 644. Всегда после `chmod 600`. **F.5 watchdog ловит это каждые 15 мин.**
 - ⚠️ Issue #30894 — `heartbeat.model` иногда молча игнорится. Проверка через логи.
+- ⚠️ Issue #4645 — OpenClaw ≥2026.5.0 ужесточил dangerous-code-detection. Mem0 SDK install (паттерн «env vars + outbound network») требует флаг `--dangerously-force-unsafe-install`. Это known compat-shift, не баг.
+
+### MiniMax M2.7 — поведенческая особенность
+
+MiniMax по характеру выводит chain-of-thought наружу и повторяет вопрос пользователя. Это **не баг конфига** — лечится только агрессивным SOUL.md (anti-verbosity секция). Если после правил SOUL.md модель продолжает болтать — рассмотри переключение primary на `openrouter/anthropic/claude-haiku-4.5` (платно токенами, но чистый вывод) или на DeepSeek (если есть подписка).
 
 ---
 

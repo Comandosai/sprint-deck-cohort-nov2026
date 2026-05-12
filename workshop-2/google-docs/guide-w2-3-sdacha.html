@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Воркшоп 2 — Сдача · Домашка · COMANDOS AI</title>
+<style>
+  html,body{margin:0;padding:0;background:#111827;font-family:Arial,sans-serif;color:#ffffff;}
+  .page{max-width:980px;margin:24px auto;padding:24px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;color:#9ca3af;font-size:13px;flex-wrap:wrap;gap:12px;}
+  .copy-btn{background:#c8ff00;color:#000;border:none;border-radius:6px;padding:13px 24px;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:0.04em;}
+  .copy-btn:hover{filter:brightness(0.95);}
+  .copy-btn.copied{background:#86efac;}
+  .helper{margin:0 0 16px;color:#9ca3af;font-size:12.5px;line-height:1.6;}
+  .helper code{background:#1f2937;padding:2px 6px;border-radius:3px;color:#e5e7eb;font-size:11.5px;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <span><strong style="color:#c8ff00;">●</strong> COMANDOS AI · Воркшоп 2 · Закладка 03 — Сдача · Домашка</span>
+    <button class="copy-btn" onclick="copyFrag()">📋 Скопировать → Ctrl+V в Google Docs</button>
+  </div>
+  <p class="helper">Жми кнопку → открой Google Docs (новый или существующий) → <code>Ctrl+V</code> (Win) или <code>⌘+V</code> (Mac). Форматирование сохранится.</p>
+
+<div id="frag" style="background:#ffffff;color:#000000;padding:52px 60px;border-radius:6px;">
+
+<!-- ========== ТИТУЛЬНЫЙ БЛОК ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+  <tr><td style="padding:0;">
+    <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; text-transform:uppercase; letter-spacing:.14em; color:#aaaaaa;">COMANDOS AI · @ai_comandos · Воркшоп 2</p>
+    <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:26pt; font-weight:700; color:#000000; line-height:1.1;">Сдача · Домашка В2</p>
+    <p style="margin:0 0 18px; font-family:Arial,sans-serif; font-size:11pt; line-height:1.7; color:#555555;">5 доказательств в спринт-бот <strong>@ai_comandos_bot</strong>. Никаких bash-команд, никаких VPS-логинов — только скриншоты ответов твоего собственного бота в Telegram + одна ссылка. Время сдачи: ~10 минут.</p>
+  </td></tr>
+</table>
+
+<!-- ========== СТАТИСТИКА ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr>
+    <td style="width:25%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">5</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">доказательств</p>
+    </td>
+    <td style="width:25%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">4</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">скрина из Telegram</p>
+    </td>
+    <td style="width:25%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #c8ff00;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">~10 мин</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">сдача целиком</p>
+    </td>
+    <td style="width:25%; padding:0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">0</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">SSH в VPS</p>
+    </td>
+  </tr>
+</table>
+
+<!-- ========== СЕКЦИЯ: 5 ДОКАЗАТЕЛЬСТВ ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+  <tr>
+    <td style="width:5px; background:#000000; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">5 ДОКАЗАТЕЛЬСТВ · ВСЁ ЧЕРЕЗ TELEGRAM</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:16pt; font-weight:700; color:#000000; line-height:1.1;">Что собираем и куда отправляем</p>
+    </td>
+  </tr>
+</table>
+
+<!-- ===== ДОКАЗАТЕЛЬСТВО №1 — ПАМЯТЬ ПОСЛЕ /reset ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ДОКАЗАТЕЛЬСТВО №1 · TELEGRAM · СКРИН</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">🧠 Память выжила /reset</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ ~3 минуты</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;"><strong>Шаг 1.</strong> Если в течение В2 ты уже рассказывал боту про свою работу, семью, планы, клиентов — переходи сразу к Шагу 2. Если не успел — пошли боту <strong>3 любых факта про себя</strong> (любые имена, цифры, даты — какие хочешь) и подожди 60 секунд, чтобы auto-capture сохранил их в Mem0+Qdrant.</p>
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;"><strong>Шаг 2.</strong> Сбрось контекст — отправь команду в свой Telegram-бот:</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #2563eb; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#eff6ff;"><td style="padding:6px 13px; border-bottom:1px solid #bfdbfe;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#2563eb;">КОМАНДА В TELEGRAM-БОТ</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:10pt; color:#1f2937; line-height:1.65;">/reset</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;"><strong>Шаг 3.</strong> Подожди 5 секунд (бот должен подтвердить сброс) и отправь боту:</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:18px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #2563eb; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#eff6ff;"><td style="padding:6px 13px; border-bottom:1px solid #bfdbfe;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#2563eb;">СООБЩЕНИЕ В TELEGRAM-БОТ</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Перечисли все факты которые я тебе говорил о себе за этот спринт. Используй mem0_search чтобы достать их из своей долговременной памяти. Ответь буллетами, без воды.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:11px 16px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">📸 Скриншот №1 — что должно быть видно: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">твой <code style="background:#dcfce7;padding:1px 4px;">/reset</code> и подтверждение бота, твой вопрос «перечисли факты...», ответ бота со списком <strong>твоих собственных</strong> фактов (минимум 2-3 пункта). Это главное достижение В2 — память пережила полный сброс контекста (D.1, D.2 стандарта).</span>
+  </td></tr>
+</table>
+
+<!-- ===== ДОКАЗАТЕЛЬСТВО №2 — Mem0/Qdrant/compaction ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ДОКАЗАТЕЛЬСТВО №2 · TELEGRAM · СКРИН</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">🔍 Бот видит свою инфраструктуру памяти</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ ~1 минута</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Отправь боту одно сообщение и сделай скрин его ответа.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:18px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #2563eb; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#eff6ff;"><td style="padding:6px 13px; border-bottom:1px solid #bfdbfe;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#2563eb;">СООБЩЕНИЕ В TELEGRAM-БОТ</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Сделай мне технический отчёт о своей памяти, в 4-5 строк:</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">1. Сколько фактов у тебя в Mem0+Qdrant обо мне (используй mem0_count или mem0_search)<br>2. Какая стратегия compaction — mode, keepRecentTokens, maxHistoryShare (прочитай ~/.openclaw/openclaw.json, секция compaction)<br>3. Какая embedding-модель у Mem0 (text-embedding-3-small или другая — посмотри в конфиге Mem0)<br>4. Жив ли Qdrant: ответь "qdrant: up" если контейнер работает, иначе "qdrant: down"</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Сухой отчёт, без вступления.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:11px 16px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">📸 Скриншот №2 — что должно быть видно: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">ответ бота с конкретными цифрами и значениями: количество фактов в Mem0, mode/keepRecentTokens из openclaw.json, имя embedding-модели, статус Qdrant (up). Это доказывает что инфраструктура памяти настроена и доступна боту изнутри.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ДОКАЗАТЕЛЬСТВО №3 — git log ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ДОКАЗАТЕЛЬСТВО №3 · TELEGRAM · СКРИН</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">📦 Автобэкап реально пушится в GitHub</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ ~1 минута</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Отправь боту команду — он сам прогонит git log и вернёт результат в чат.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:18px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #2563eb; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#eff6ff;"><td style="padding:6px 13px; border-bottom:1px solid #bfdbfe;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#2563eb;">СООБЩЕНИЕ В TELEGRAM-БОТ</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Покажи мне последние 5 автокоммитов своего бэкапа: запусти у себя</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">cd ~/.openclaw &amp;&amp; git log auto/cron --oneline -5</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">И отдельной строкой выведи URL приватного GitHub-репо в который ты пушишь:</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">git remote get-url origin</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Никаких пояснений — только вывод обеих команд.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:11px 16px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">📸 Скриншот №3 — что должно быть видно: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">список из 5 коммитов с короткими хешами и сообщениями (видно что они сделаны cron'ом) + URL твоего приватного GitHub-репо. Это доказывает что cron реально запускается каждый час и реально пушит в GitHub.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ДОКАЗАТЕЛЬСТВО №4 — GitHub URL ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ДОКАЗАТЕЛЬСТВО №4 · ТЕКСТ В СПРИНТ-БОТ</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">🔗 Ссылка на твой приватный GitHub-репо</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ 30 секунд</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">В отличие от первых трёх — это <strong>не скриншот</strong>, а обычное текстовое сообщение спринт-боту <strong>@ai_comandos_bot</strong>:</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #c8ff00; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#fffbeb;"><td style="padding:6px 13px; border-bottom:1px solid #fde68a;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#b45309;">ШАБЛОН СООБЩЕНИЯ — В СПРИНТ-БОТ @ai_comandos_bot</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Доказательство №4 — мой приватный GitHub-репо для бэкапа OpenClaw:</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">https://github.com/<strong style="background:#fef9c3; color:#92400e;">MYUSER</strong>/comandos-openclaw-backup</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:0 0 9px; font-family:Arial,sans-serif; font-size:9.5pt; color:#888888; font-style:italic;">
+  Замени <strong style="background:#fef08a; color:#713f12; font-style:normal; padding:0 2px;">MYUSER</strong> на свой ник в GitHub. Репо <strong style="font-style:normal;">приватный</strong> — никто не увидит твой контент, проверка только что репо существует и привязан к твоему аккаунту.
+</p>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:11px 16px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Что это доказывает: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">У тебя есть персональный бэкап в твоём собственном GitHub-аккаунте (а не на чужом VPS). Это страховка от потери — если VPS умрёт сегодня ночью, ты ничего не теряешь.</span>
+  </td></tr>
+</table>
+
+<!-- ===== ДОКАЗАТЕЛЬСТВО №5 — АУДИТОР ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ДОКАЗАТЕЛЬСТВО №5 · ФИНАЛЬНОЕ · СКРИН AI-ЧАТА</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">🎉 Вердикт от независимого Аудитора</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ ~3 минуты</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Это единственное доказательство которое делается <strong>не из Telegram</strong>, а из Antigravity (или любого другого AI-чата):</p>
+<p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">1. Открой Закладку 02 «Аудитор» этого гайда</p>
+<p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">2. Скопируй один большой промт</p>
+<p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">3. Открой <strong>новый чат</strong> в Antigravity (важно — новый, не тот в котором шла установка) и вставь промт</p>
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">4. AI прочитает стандарт В2, проверит твоё состояние и выдаст вердикт</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:11px 16px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">📸 Скриншот №5 — что должно быть видно: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">финальная строка вердикта <strong>🎉 ВОРКШОП 2 ПРОЙДЕН</strong> (если все ❗ закрыты) или <strong>🟡 ПОЧТИ ГОТОВО</strong> (если ❗ закрыты, но есть ⚠️). Делается в Antigravity — простой скриншот окна с ответом AI.</span>
+  </td></tr>
+</table>
+
+<!-- ========== СЕКЦИЯ: КУДА ОТПРАВЛЯТЬ ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:16px; margin-top:14px;">
+  <tr>
+    <td style="width:5px; background:#000000; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ФИНАЛ — 5 СООБЩЕНИЙ ПОДРЯД</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:16pt; font-weight:700; color:#000000; line-height:1.1;">Куда отправлять — спринт-бот @ai_comandos_bot</p>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">Открой Telegram, найди спринт-бота <strong>@ai_comandos_bot</strong> и отправь <strong>5 сообщений подряд</strong>:</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-radius:4px; padding:0;">
+      <table cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#f9fafb;">
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.1em; width:120px;">Сообщение 1</td>
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:10pt; color:#1f2937;">📸 скриншот №1 — память после <code style="background:#f3f4f6;padding:1px 4px;">/reset</code></td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.1em;">Сообщение 2</td>
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:10pt; color:#1f2937;">📸 скриншот №2 — Mem0 / Qdrant / compaction отчёт</td>
+        </tr>
+        <tr style="background:#f9fafb;">
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.1em;">Сообщение 3</td>
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:10pt; color:#1f2937;">📸 скриншот №3 — git log + URL бэкапа</td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.1em;">Сообщение 4</td>
+          <td style="border-bottom:1px solid #e5e7eb; padding:10px 14px; font-family:Arial,sans-serif; font-size:10pt; color:#1f2937;">🔗 текст-ссылка №4 — твой приватный GitHub-репо</td>
+        </tr>
+        <tr style="background:#f9fafb;">
+          <td style="padding:10px 14px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.1em;">Сообщение 5</td>
+          <td style="padding:10px 14px; font-family:Arial,sans-serif; font-size:10pt; color:#1f2937;">📸 скриншот №5 — вердикт Аудитора 🎉</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:11px 16px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">✓ Что произойдёт: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">На каждое из 5 сообщений спринт-бот ответит подтверждением «Доказательство N/5 принято». Если что-то не зачлось — он подскажет что переснять. После 5/5 — финальное «🎉 Воркшоп 2 принят».</span>
+  </td></tr>
+</table>
+
+<!-- ========== CTA БЛОК ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+  <tr>
+    <td style="background:#0d0e0f; border-radius:6px; padding:44px 48px;">
+      <p style="margin:0 0 6px; font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.18em; color:#555555;">COMANDOS AI &nbsp;·&nbsp; @ai_comandos</p>
+      <p style="margin:0 0 16px; font-family:Arial,sans-serif; font-size:24pt; font-weight:700; color:#ffffff; line-height:1.15;">Это первый день с настоящей памятью</p>
+      <p style="margin:0 0 28px; font-family:Arial,sans-serif; font-size:10pt; color:#9ca3af; line-height:1.75;">У тебя бот, который <strong style="color:#c8ff00;">помнит между сессиями</strong>, <strong style="color:#c8ff00;">защищён от раздувания контекста</strong> и <strong style="color:#c8ff00;">бэкапится в GitHub каждый час</strong>. На Воркшопе 3 он научится сам действовать — утренний брифинг, проактивные напоминания, голос (опц).</p>
+      <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;"><tr>
+        <td style="background:#c8ff00; border-radius:4px; padding:14px 36px;">
+          <p style="margin:0; font-family:Arial,sans-serif; font-size:11pt; font-weight:700; color:#000000;">Подписаться → t.me/ai_comandos</p>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<script>
+function copyFrag(){
+  const el = document.getElementById('frag');
+  const range = document.createRange();
+  range.selectNode(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  try{ document.execCommand('copy'); }catch(e){}
+  sel.removeAllRanges();
+  const btn = document.querySelector('.copy-btn');
+  btn.classList.add('copied');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Скопировано — открой Google Docs и Ctrl+V';
+  setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = orig; }, 2400);
+}
+</script>
+</body>
+</html>

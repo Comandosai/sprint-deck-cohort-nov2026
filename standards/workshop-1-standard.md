@@ -1,5 +1,7 @@
 # Стандарт готовности — Воркшоп 1
 
+> Версия: v1.3 (2026-05-12). Добавлен **A.15 Tailscale/VPN — настоящая защита SSH** (SSH невидим в публичном интернете). A.11-A.14 остаются как минимум для тех кто оставляет SSH публичным.
+> v1.2 (2026-05-12): A.11-A.14 SSH-hardening после брут-форс инцидента.
 > Что должно быть настроено у участника после Воркшопа 1.
 > Это **источник истины** — все промпты ссылаются на этот документ.
 > AI и аудитор используют его как чек-лист.
@@ -28,6 +30,16 @@
 | A.8 | Node.js v22.X через nvm под clawd: `node --version` → `v22.X` | ❗ |
 | A.9 | Linger включён: `loginctl show-user clawd \| grep Linger` → `Linger=yes` | ❗ |
 | A.10 | unattended-upgrades с Automatic-Reboot=false | ⚠️ |
+| A.11 | SSH порт ≠ 22 (случайный 10000-60000): `grep ^Port /etc/ssh/sshd_config` → не 22. ufw разрешает только новый порт. | ❗ |
+| A.12 | Password auth выключен: `grep PasswordAuthentication /etc/ssh/sshd_config` → `no`. Только ключи. | ❗ |
+| A.13 | fail2ban bantime ≥ 86400 (24h), maxretry 3, findtime 600: `cat /etc/fail2ban/jail.local` или `sudo fail2ban-client get sshd bantime` → ≥86400 | ❗ |
+| A.14 | `MaxStartups 5:30:10` и `MaxSessions 5` в sshd_config (защита от исчерпания connections под брут-форсом) | ⚠️ |
+| A.15 | **SSH недоступен из публичного интернета** — VPN-туннель (Tailscale / WireGuard / Cloudflare Tunnel) ИЛИ IP-whitelist в ufw. Проверка: `nmap -p <SSH_PORT> <PUBLIC_IP>` с внешней машины → `filtered` или `closed`, не `open`. | ❗ |
+
+⚠️ **Иерархия защит:**
+- **A.15** — настоящая защита. SSH вообще не торчит в интернет — брут-форсить нечего. Рекомендуем **Tailscale** (5 мин установка, $0, кросс-платформенный Mac/Win/Linux/iOS/Android). Альтернативы: WireGuard (DIY), Cloudflare Tunnel (нужен домен), статичный IP whitelist в ufw.
+- **A.11-A.14** — минимальный baseline для тех кто **отказывается** от VPN/туннеля. Это security-by-obscurity + key-auth + rate-limit. Защищает от 90% бот-трафика, **но не от целевой атаки**. Arch Wiki прямо говорит: «A port change... will reduce the number of log entries but will not eliminate them.»
+- Контекст: в когорте Nov-2026 был зафиксирован 2-дневный брут-форс на порт 22, fail2ban с `bantime=3600` не справился — атакующие ротировали IP, забивали MaxStartups. После A.11-A.14 атака прекратилась за час. Но если бы стояло A.15 (Tailscale) — атаки бы не было вообще.
 
 ---
 

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Воркшоп 2 — Аудитор · COMANDOS AI</title>
+<style>
+  html,body{margin:0;padding:0;background:#111827;font-family:Arial,sans-serif;color:#ffffff;}
+  .page{max-width:980px;margin:24px auto;padding:24px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;color:#9ca3af;font-size:13px;flex-wrap:wrap;gap:12px;}
+  .copy-btn{background:#c8ff00;color:#000;border:none;border-radius:6px;padding:13px 24px;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:0.04em;}
+  .copy-btn:hover{filter:brightness(0.95);}
+  .copy-btn.copied{background:#86efac;}
+  .helper{margin:0 0 16px;color:#9ca3af;font-size:12.5px;line-height:1.6;}
+  .helper code{background:#1f2937;padding:2px 6px;border-radius:3px;color:#e5e7eb;font-size:11.5px;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <span><strong style="color:#c8ff00;">●</strong> COMANDOS AI · Воркшоп 2 · Закладка 02 — Аудитор</span>
+    <button class="copy-btn" onclick="copyFrag()">📋 Скопировать → Ctrl+V в Google Docs</button>
+  </div>
+  <p class="helper">Жми кнопку → открой Google Docs (новый или существующий) → <code>Ctrl+V</code> (Win) или <code>⌘+V</code> (Mac). Форматирование сохранится.</p>
+
+<div id="frag" style="background:#ffffff;color:#000000;padding:52px 60px;border-radius:6px;">
+
+<!-- ========== ТИТУЛЬНЫЙ БЛОК ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+  <tr><td style="padding:0;">
+    <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:9pt; font-weight:700; text-transform:uppercase; letter-spacing:.14em; color:#aaaaaa;">COMANDOS AI · @ai_comandos · Воркшоп 2</p>
+    <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:26pt; font-weight:700; color:#000000; line-height:1.1;">Аудитор — независимая проверка</p>
+    <p style="margin:0 0 18px; font-family:Arial,sans-serif; font-size:11pt; line-height:1.7; color:#555555;">Один большой промпт в <strong>новый чат AI</strong> (не тот в котором шла установка!). AI прочитает стандарт В2, сравнит твоё состояние с критериями и выдаст один из трёх вердиктов: 🎉 пройден / 🟡 почти / ❌ есть проблемы. Скриншот вердикта = Доказательство №5 для сдачи.</p>
+  </td></tr>
+</table>
+
+<!-- ========== СТАТИСТИКА ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr>
+    <td style="width:33%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">1</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">промпт целиком</p>
+    </td>
+    <td style="width:33%; padding:0 24px 0 0; vertical-align:top; border-top:3px solid #c8ff00;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">~3 мин</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">время аудита</p>
+    </td>
+    <td style="width:34%; padding:0; vertical-align:top; border-top:3px solid #000000;">
+      <p style="margin:12px 0 4px; font-family:Arial,sans-serif; font-size:28pt; font-weight:700; color:#000000; line-height:1;">50+</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:9pt; text-transform:uppercase; letter-spacing:.1em; color:#aaaaaa;">критериев проверки</p>
+    </td>
+  </tr>
+</table>
+
+<!-- ========== СЕКЦИЯ: ПРОМПТ АУДИТОРА ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+  <tr>
+    <td style="width:5px; background:#000000; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">КАК ЗАПУСТИТЬ</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:16pt; font-weight:700; color:#000000; line-height:1.1;">3 шага до вердикта</p>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:24px;"><tr><td style="padding:0;">
+<p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;"><strong>1.</strong> Открой новый чат с любым AI (Antigravity / Cursor / Claude Code) <strong>в той же папке проекта</strong>, где лежит .env и standards/.</p>
+<p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;"><strong>2.</strong> Скопируй промпт ниже и вставь целиком.</p>
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;"><strong>3.</strong> Жди вердикта. AI прочитает <code style="background:#f3f4f6;padding:1px 4px;">~/.openclaw/REPORT-W2.md</code> (самоотчёт основного AI) и проверит его командами против стандарта.</p>
+</td></tr></table>
+
+<!-- ===== ОСНОВНОЙ ПРОМПТ АУДИТОРА ===== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+  <tr>
+    <td style="width:5px; background:#c8ff00; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">ПРОМПТ АУДИТОРА · НОВЫЙ ЧАТ AI · В ПАПКЕ ПРОЕКТА</p>
+      <p style="margin:0 0 8px; font-family:Arial,sans-serif; font-size:20pt; font-weight:700; color:#000000; line-height:1.1;">Промпт целиком — копируй и вставляй</p>
+      <table cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#f0fdf4; border:1px solid #86efac; border-radius:20px; padding:4px 13px;">
+          <span style="font-family:Arial,sans-serif; font-size:9pt; font-weight:700; color:#15803d;">⏱ ~3 минуты на вердикт</span>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">⚠️ Важно — это <strong>новый чат</strong>, не тот в котором шла установка. Иначе будет bias.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="border:1px solid #e5e7eb; border-top:2.5px solid #b45309; border-radius:4px; padding:0;">
+      <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <tr style="background:#fffbeb;"><td style="padding:6px 13px; border-bottom:1px solid #fde68a;">
+          <span style="font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:#b45309;">ПРОМПТ АУДИТОРА — копируй ВЕСЬ блок</span>
+        </td></tr>
+        <tr style="background:#fafafa;"><td style="padding:13px 15px;">
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Ты — независимый аудитор настройки OpenClaw после Воркшопа 2. Я только что прошёл воркшоп с другим AI-агентом, и теперь хочу независимую проверку.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ПОДГОТОВКА:<br>1. cd в папку проекта (где .env)<br>2. git pull origin main<br>3. Прочитай standards/workshop-2-standard.md — это твой источник истины (50+ критериев в разделах A–G).<br>4. Прочитай ~/.openclaw/REPORT-W2.md — это самоотчёт основного AI который тебе устанавливал OpenClaw.<br>5. Если есть SSH — запусти команды проверки самостоятельно. Если нет — давай мне команды для копипаста.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ТВОЯ ЗАДАЧА:<br>1. Пройдись по КАЖДОМУ критерию стандарта В2 (A.1...G.9) и определи статус:<br>&nbsp;&nbsp;&nbsp;✅ Соответствует (с цитатой команды + вывода)<br>&nbsp;&nbsp;&nbsp;⚠️ Частично/неясно<br>&nbsp;&nbsp;&nbsp;❌ Не соответствует<br>&nbsp;&nbsp;&nbsp;❓ Невозможно проверить (нет данных)</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">2. Сделай таблицу: | Пункт | Уровень (❗⚠️💡) | Статус | Доказательство |</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">3. Подсчитай: ❗ ✅ из всего ❗, ❗ ❌ из всего ❗, ⚠️ всего, 💡 всего.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">4. Для каждого ❌ или ⚠️ — конкретный план доделки: что не так + точная команда фикса.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">5. ВЕРДИКТ:<br>&nbsp;&nbsp;&nbsp;🎉 ВОРКШОП 2 ПРОЙДЕН — все ❗ A–E + критичные G.1/G.3/G.4/G.6/G.8 закрыты<br>&nbsp;&nbsp;&nbsp;🟡 ПОЧТИ ГОТОВО — все ❗ закрыты но много ⚠️<br>&nbsp;&nbsp;&nbsp;❌ ЕСТЬ КРИТИЧЕСКИЕ ПРОБЛЕМЫ — есть нерешённые ❗</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">6. Рекомендация что доделать ДО Воркшопа 3.</p>
+          <p style="margin:0 0 9px; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">ВАЖНО:<br>- НЕ доверяй REPORT-W2.md на слово — проверяй фактическим выводом команд<br>- Если git-crypt status показал unencrypted → ❌ для E.6<br>- Если в логах amnesia-test бот сказал «не помню» → ❌ для D.2<br>- Если в logs heartbeat использует primary вместо gemini-flash-lite → ❌ для G.1<br>- Если порт qdrant 0.0.0.0 (а не 127.0.0.1) → ❌ для C.3 (это security blocker!)<br>- Будь строг. Лучше ⚠️ сейчас чем сюрприз на В3.</p>
+          <p style="margin:0; font-family:'Courier New',Courier,monospace; font-size:9.5pt; color:#1f2937; line-height:1.65;">Готов? Делай аудит.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!-- ========== СЕКЦИЯ: ПРИМЕР ВЕРДИКТА ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:16px; margin-top:14px;">
+  <tr>
+    <td style="width:5px; background:#000000; padding:0;"></td>
+    <td style="padding:2px 0 2px 18px;">
+      <p style="margin:0 0 4px; font-family:Arial,sans-serif; font-size:8.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:#aaaaaa;">КАК ВЫГЛЯДИТ ЗЕЛЁНЫЙ ВЕРДИКТ</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:16pt; font-weight:700; color:#000000; line-height:1.1;">Эталонная финальная строка</p>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:22px;">
+  <tr>
+    <td style="background:#0d0e0f; border:1px solid #c8ff00; border-radius:6px; padding:24px 28px;">
+      <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:18pt; font-weight:700; color:#c8ff00; line-height:1.2;">🎉 Воркшоп 2 пройден</p>
+      <p style="margin:0 0 10px; font-family:Arial,sans-serif; font-size:11pt; color:#9ca3af; line-height:1.7;">Все критичные пункты A–E + G закрыты. Бот помнит, защищён, бэкапится.</p>
+      <p style="margin:0 0 14px; font-family:'Courier New',Courier,monospace; font-size:10.5pt; color:#86efac; line-height:1.7;">❗ ✅: 28/28 &nbsp; · &nbsp; ⚠️ ✅: 14/15 &nbsp; · &nbsp; 💡: 2/3</p>
+      <p style="margin:0; font-family:Arial,sans-serif; font-size:13pt; font-weight:700; color:#c8ff00;">🎉 ВЕРДИКТ: ВОРКШОП 2 ПРОЙДЕН</p>
+    </td>
+  </tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:14px;"><tr><td style="padding:0;">
+<p style="margin:0; font-family:Arial,sans-serif; font-size:10.5pt; line-height:1.75; color:#444444;">У тебя могут быть <strong>другие цифры</strong> — главное чтобы финальная строка была именно «🎉 ВЕРДИКТ: ВОРКШОП 2 ПРОЙДЕН». Если 🟡 «почти готово» или ❌ — иди в главный чат, доделай по плану аудитора, прогоняй заново до зелёного.</p>
+</td></tr></table>
+
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin-bottom:36px;">
+  <tr><td style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:4px; padding:11px 16px;">
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; font-weight:700; color:#15803d;">📸 Это будет Доказательство №5 для Сдачи: </span>
+    <span style="font-family:Arial,sans-serif; font-size:9.5pt; color:#166534;">Скриншот этого вердикта (с финальной строкой «🎉 ВОРКШОП 2 ПРОЙДЕН») — пятое из пяти доказательств. Сдашь его в Telegram спринт-боту вместе с остальными четырьмя.</span>
+  </td></tr>
+</table>
+
+<!-- ========== CTA БЛОК ========== -->
+<table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+  <tr>
+    <td style="background:#0d0e0f; border-radius:6px; padding:44px 48px;">
+      <p style="margin:0 0 6px; font-family:Arial,sans-serif; font-size:8pt; font-weight:700; text-transform:uppercase; letter-spacing:.18em; color:#555555;">COMANDOS AI &nbsp;·&nbsp; @ai_comandos</p>
+      <p style="margin:0 0 16px; font-family:Arial,sans-serif; font-size:24pt; font-weight:700; color:#ffffff; line-height:1.15;">Получил 🎉 — иди на «Сдачу»</p>
+      <p style="margin:0 0 28px; font-family:Arial,sans-serif; font-size:10pt; color:#9ca3af; line-height:1.75;">Дальше — Закладка <strong style="color:#c8ff00;">«Сдача · Домашка»</strong>. Скриншот этого вердикта это уже Доказательство №5. Осталось собрать ещё 4 через свой Telegram-бот — займёт ~10 минут.</p>
+      <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;"><tr>
+        <td style="background:#c8ff00; border-radius:4px; padding:14px 36px;">
+          <p style="margin:0; font-family:Arial,sans-serif; font-size:11pt; font-weight:700; color:#000000;">Подписаться → t.me/ai_comandos</p>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<script>
+function copyFrag(){
+  const el = document.getElementById('frag');
+  const range = document.createRange();
+  range.selectNode(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  try{ document.execCommand('copy'); }catch(e){}
+  sel.removeAllRanges();
+  const btn = document.querySelector('.copy-btn');
+  btn.classList.add('copied');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Скопировано — открой Google Docs и Ctrl+V';
+  setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = orig; }, 2400);
+}
+</script>
+</body>
+</html>
