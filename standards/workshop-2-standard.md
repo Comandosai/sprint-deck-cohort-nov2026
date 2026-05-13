@@ -1,6 +1,7 @@
 # Стандарт готовности — Воркшоп 2
 
-> Версия: v1.1 (2026-05-12). Добавлены C.17 (Memory Search Protocol), D.4 (trajectory.jsonl-проверка), E.15 (autocommit whitelist), F.5 (watchdog `*/15`) — после полевых отчётов когорты Nov-2026.
+> Версия: v1.2 (2026-05-13). Переписан под реальную схему OpenClaw 2026.5.7. B.1-B.6 теперь содержат правильные ключи compaction для 2026.5.x. C.5-C.6 заменены на актуальные `openclaw mem0 status/search` команды. C.8-C.12 пере-тагированы (часть гэпов Mem0 SDK 2.x). C.15 разделён sync/async privacy guard.
+> v1.1 (2026-05-12): C.17, D.4, E.15, F.5 — после полевых отчётов когорты Nov-2026.
 > Что должно быть настроено у участника после Воркшопа 2.
 > Это **источник истины** — все промпты ссылаются на этот документ.
 > AI-исполнитель и аудитор используют его как чек-лист.
@@ -48,19 +49,49 @@
 
 ## B. Защита контекста (compaction + pruning)
 
-| # | Критерий | Уровень |
+⚠️ **Версия схемы критична**: на OpenClaw ≥2026.5.0 ключи `softThresholdTokens/hardThresholdTokens/strategy/summarizerModel` из старого стандарта **молча игнорируются**. Реальная схема использует `mode/model/keepRecentTokens/maxHistoryShare/customInstructions`. Перед записью — сверь `openclaw config schema | grep -iE "compaction|mode|keepRecent|maxHistory|memoryFlush"`.
+
+Критерии описаны через **поведение**, а не имена полей — чтобы стандарт переживал schema-drift между версиями.
+
+| # | Критерий (поведение) | Уровень |
 |---|---|---|
-| B.1 | `agents.defaults.compaction.enabled: true` | ❗ |
-| B.2 | `agents.defaults.compaction.softThresholdTokens: 40000` (НЕ 4000 — иначе важное теряется) | ❗ |
-| B.3 | `agents.defaults.compaction.hardThresholdTokens: 80000` | ❗ |
-| B.4 | `agents.defaults.compaction.strategy: "summarize-middle"` | ❗ |
-| B.5 | `agents.defaults.compaction.summarizerModel: "openrouter/moonshotai/kimi-k2.6"` | ❗ |
-| B.6 | `preserveTags: ["decision", "fact", "action-required"]` | ⚠️ |
+| B.1 | Compaction включён в `agents.defaults.compaction` и `openclaw config validate` его принимает | ❗ |
+| B.2 | Сжимается середина истории (`mode: "summarize-middle"` в 2026.5+, `strategy: "summarize-middle"` в 2026.4) | ❗ |
+| B.3 | Последние **40000 токенов** остаются нетронутыми (`keepRecentTokens: 40000` в 2026.5+, `softThresholdTokens: 40000` в 2026.4) | ❗ |
+| B.4 | Размер сжатия ограничен (`maxHistoryShare: 0.5` в 2026.5+, `hardThresholdTokens: 80000` в 2026.4) | ❗ |
+| B.5 | Модель сжатия `openrouter/moonshotai/kimi-k2.6` (в обеих версиях — поле `model` или `summarizerModel`) | ❗ |
+| B.6 | Важные факты/решения/действия сохраняются: `customInstructions` с инструкцией сохранять `decision/fact/action-required` (2026.5+) ИЛИ `preserveTags: ["decision","fact","action-required"]` (2026.4) | ⚠️ |
 | B.7 | `agents.defaults.compaction.memoryFlush.enabled: true` (с мониторингом issue #54408) | ⚠️ |
 | B.8 | `agents.defaults.compaction.memoryFlush.model: "openrouter/moonshotai/kimi-k2.6"` | ⚠️ |
 | B.9 | `agents.defaults.contextPruning.mode: "cache-ttl"` (без этого через 2 недели бот молча перестанет отвечать) | ❗ |
 | B.10 | `agents.defaults.contextInjection: "continuation-skip"` (экономия 8–12k токенов на длинных диалогах) | ⚠️ |
 | B.11 | Тест: 3 сообщения подряд с фактом в первом — бот помнит факт в третьем | ⚠️ |
+
+**Эталонный JSON для 2026.5.x:**
+```json
+{
+  "agents": {
+    "defaults": {
+      "compaction": {
+        "mode": "summarize-middle",
+        "model": "openrouter/moonshotai/kimi-k2.6",
+        "keepRecentTokens": 40000,
+        "maxHistoryShare": 0.5,
+        "customInstructions": "Preserve decision, fact, and action-required items exactly. Summarize the middle of long conversations while keeping recent turns usable.",
+        "memoryFlush": {
+          "enabled": true,
+          "model": "openrouter/moonshotai/kimi-k2.6",
+          "softThresholdTokens": 40000
+        }
+      },
+      "contextPruning": { "mode": "cache-ttl" },
+      "contextInjection": "continuation-skip"
+    }
+  }
+}
+```
+
+Если установленная схема не принимает `summarize-middle` или `maxHistoryShare` — **не выдумывать, смотреть** `openclaw config schema` и `openclaw config validate`.
 
 ---
 
@@ -72,17 +103,17 @@
 | C.2 | Версия зафиксирована: `qdrant/qdrant:v1.12.4` (НЕ `:latest` — иначе при автоапдейте сломается формат индексов) | ❗ |
 | C.3 | Порты ТОЛЬКО на loopback: `ss -tlnp \| grep 6333` → `127.0.0.1:6333`. Никакого `0.0.0.0`! | ❗ |
 | C.4 | `restart: unless-stopped` + healthcheck в docker-compose | ⚠️ |
-| C.5 | Mem0 SDK подключён: `openclaw skills list \| grep mem0` → active | ❗ |
-| C.6 | Vector store настроен: `vector_store: qdrant://127.0.0.1:6333`, collection `openclaw_main` | ❗ |
+| C.5 | Mem0 SDK подключён: `openclaw plugins list \| grep mem0` → ready (для ≥2026.5.0). Установка: `openclaw plugins install --dangerously-force-unsafe-install @mem0/openclaw-mem0` (issue #4645). Старый `openclaw skills install mem0` — только для <2026.5.0. | ❗ |
+| C.6 | Mem0 живой, статус и поиск работают: `openclaw mem0 status --json` → ok, `openclaw mem0 search "test" --user-id tg:<id> --json` → корректный ответ. **Старая команда `openclaw memory recall` НЕ работает на 2026.5.x — использовать `mem0 status/search`**. | ❗ |
 | C.7 | Embedder: `text-embedding-3-small` (OpenAI) ИЛИ локальный `bge-m3` через Ollama | ❗ |
-| C.8 | Hybrid search активен: `vectorWeight: 0.7`, `textWeight: 0.3` (BM25), `candidateMultiplier: 4` | ❗ |
-| C.9 | MMR включён: `lambda: 0.7` | ⚠️ |
-| C.10 | TemporalDecay: `halfLifeDays: 30` (свежее весит больше) | ⚠️ |
-| C.11 | Reranker: `bge-reranker-v2-m3` (multilingual, локально) или Cohere v3 | ⚠️ |
-| C.12 | Auto-capture включён: `autoCapture: true`, `dedupe_threshold: 0.92` | ❗ |
+| C.8 | Hybrid search через `agents.defaults.memorySearch` (если поддерживается схемой): `vectorWeight: 0.7`, `textWeight: 0.3`, `candidateMultiplier: 4`. **Это настройка OpenClaw memorySearch, НЕ внутреннего Mem0-плагина — Mem0 SDK 2.x эти поля не открывает.** | ⚠️ |
+| C.9 | MMR в `memorySearch`: `lambda: 0.7` (если поддерживается схемой) | ⚠️ |
+| C.10 | TemporalDecay в `memorySearch`: `halfLifeDays: 30` (если поддерживается схемой) | ⚠️ |
+| C.11 | Reranker `bge-reranker-v2-m3` или Cohere v3 — **library limit**: Mem0 SDK 2.x не имеет штатного поля reranker. Defer to W3 или DIY-обёртка. | ⚠️ |
+| C.12 | Auto-capture: `autoCapture: true` (❗). `dedupe_threshold: 0.92` — ⚠️ требует поддержки Mem0-плагина | ❗ для autoCapture / ⚠️ для dedupe |
 | C.13 | Privacy guard: `detect-secrets` v1.5+ установлен | ❗ |
-| C.14 | Privacy guard pre-write hook блокирует регексы (sk-/ghp-/AKIA/JWT/password/СНИЛС/ИНН/credit card) | ❗ |
-| C.15 | Privacy guard fallback LLM-classifier на `openrouter/google/gemini-2.5-flash-lite` (только если regex не сработал) | ⚠️ |
+| C.14 | Privacy guard pre-write hook (`before_message_write`) блокирует regex'ы (sk-/ghp-/AKIA/JWT/password/СНИЛС/ИНН/credit card). **Sync-проверка через regex обязательна.** | ❗ |
+| C.15 | Privacy guard LLM-classifier (`openrouter/google/gemini-2.5-flash-lite`) **только для асинхронных проверок** (`before_tool_call` или фоновый scan). Внутри синхронного `before_message_write` LLM-классификатор не используется — он добавит сетевую задержку и его нельзя честно обещать. | ⚠️ |
 | C.16 | `blockOnDetect: true` — пароли/токены БЛОКИРУЮТСЯ на запись (НЕ маскируются) | ❗ |
 | C.17 | **Memory Search Protocol** — в `workspace/AGENTS.md` обязательная секция «звать memory_search/mem0-search перед фактологическими ответами». Дублирующий буллет в SOUL.md. Без этого LLM не зовёт mem0-skill, идёт в web_search и фабрикует — D.2 проходит формально через injection. | ❗ |
 
@@ -95,7 +126,7 @@
 | D.1 | Auto-capture тест (5 минут): после 3 любых фактов в Telegram бот помнит их без команды «запомни». Факты выбирает участник сам — не хардкод. | ❗ |
 | D.2 | Amnesia test: после `/reset` → вопросы по тем же 3 фактам → бот отвечает по сути из Qdrant | ❗ |
 | D.3 | Бонус-домашка через 4 часа: те же 3 факта проверяются повторно — бот помнит после паузы | ⚠️ |
-| D.4 | **Trajectory tool_call check**: в `agents/main/sessions/<id>.trajectory.jsonl` на каждый D.1/D.2/D.3 вопрос есть `tool_call: memory_search` или `exec → mem0-search.js`. Если 0 calls — D НЕ ПРОЙДЕН независимо от точности ответа (бот мог взять из startupContext, не из retrieval). Команда: `tail -200 ~/.openclaw/agents/main/sessions/$(ls -t ~/.openclaw/agents/main/sessions/ \| head -1)/trajectory.jsonl \| grep -cE "memory_search\|mem0-search"` ≥ 3. | ❗ |
+| D.4 | **Trajectory tool_call check**: в `agents/main/sessions/<id>.trajectory.jsonl` на каждый D.1/D.2/D.3 вопрос есть `tool_call: memory_search` или `exec → mem0-search.js`. Если 0 calls — D НЕ ПРОЙДЕН независимо от точности ответа (бот мог взять из startupContext, не из retrieval). Команда: `SESS=$(ls -t ~/.openclaw/agents/main/sessions/ \| head -1); tail -200 ~/.openclaw/agents/main/sessions/$SESS/trajectory.jsonl \| grep -cE "memory_search\|mem0-search"` → ожидаемо ≥1 для одиночного теста, ≥3 для трёх проверочных вопросов. | ❗ |
 
 ---
 
@@ -104,7 +135,7 @@
 | # | Критерий | Уровень |
 |---|---|---|
 | E.1 | Приватный GitHub-репо для `~/.openclaw/`: `gh repo view --json visibility` → `PRIVATE` | ❗ |
-| E.2 | `.gitignore` включает: `openclaw.json`, `*.token`, `*.key`, `secrets/**`, `.env`, `qdrant/storage/**`, `tmp/`, `logs/`, `*.ogg`, `agents/*/sessions/cache/` | ❗ |
+| E.2 | `.gitignore` РАСШИРЕННЫЙ список (минимум): `openclaw.json`, `openclaw.json.bak*`, `openclaw.json.last-good`, `*.token`, `*.key`, `secrets/**`, `.env`, `credentials/`, `agents/main/agent/auth-profiles.json`, `qdrant/storage/**`, `tmp/`, `logs/`, `*.ogg`, `agents/*/sessions/cache/`, `workspace/.git/`, `workspace/.openclaw/`, `workspace/.clawhub/`, `workspace/skills/*/node_modules/`, `workspace/skills/*/.clawhub/`, `workspace/skills/*/package-lock.json` | ❗ |
 | E.3 | Только один коммит до настройки git-crypt (не успели запушить токены в plaintext) | ❗ |
 | E.4 | `git-crypt init` выполнен | ❗ |
 | E.5 | `.gitattributes` шифрует: `openclaw.json`, `*.token`, `secrets/**`, `.env` | ❗ |
