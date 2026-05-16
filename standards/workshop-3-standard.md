@@ -1,6 +1,12 @@
 # Стандарт готовности — Воркшоп 3
 
-> Версия: v1.0 (2026-05-13). Матёрый сотрудник — видит мир и действует сам.
+> Версия: v1.0.1 (2026-05-15). Hotfix после live run:
+> - A.4 slug `openai/gpt-5` → **`openai/gpt-5.5`** (OpenClaw auto-set свежее).
+> - A.1-A.4 закрываются ОДНОЙ командой `openclaw models auth login --provider openai-codex --set-default` — отдельный Codex CLI install не нужен.
+> - A.7 ⚠️ `/model` в Telegram может показывать `openai/gpt-5` (без `.5`) если auth-profile создан, но gpt-5.5 уже работает — это OK.
+> - Google Cloud Console: Scopes → Data Access, Test Users → внутри Audience, Credentials → отдельный пункт меню.
+>
+> v1.0 (2026-05-13). Матёрый сотрудник — видит мир и действует сам.
 > Что должно быть настроено у участника после Воркшопа 3.
 > Это **источник истины** — все промпты ссылаются на этот документ.
 > AI-исполнитель и аудитор используют его как чек-лист.
@@ -36,13 +42,13 @@ Anthropic-моделей в стеке НЕТ напрямую (Max OAuth зак
 
 | # | Критерий | Уровень |
 |---|---|---|
-| A.1 | `npm i -g @openai/codex` установлен под `clawd`: `which codex` → `/home/clawd/.npm-global/bin/codex` | ❗ |
-| A.2 | OAuth flow `codex` → "Sign in with ChatGPT" пройден, токен сохранён в `~/.codex/auth.json` (chmod 600) | ❗ |
-| A.3 | В `openclaw.json` добавлен auth profile `openai-codex` (использует токен Codex CLI) | ❗ |
-| A.4 | `agents.defaults.model.primary` = `openai/gpt-5` | ❗ |
+| A.1 | OAuth flow OpenClaw → ChatGPT Plus пройден: команда `openclaw models auth login --provider openai-codex --set-default` отработала успешно (одна команда закрывает A.1-A.4) | ❗ |
+| A.2 | OAuth-токен сохранён в OpenClaw secrets, `openclaw models auth list` показывает `openai-codex:<email> (openai-codex/oauth)` | ❗ |
+| A.3 | В `openclaw.json` добавлен auth profile `openai-codex` (default) — проверка `cat ~/.openclaw/openclaw.json \| grep openai-codex` | ❗ |
+| A.4 | `agents.defaults.model.primary` = `openai/gpt-5.5` (OpenClaw сам ставит свежее, на 12 мая 2026 это GPT-5.5; если `openai/gpt-5` — тоже OK, auto-routes на 5.5) | ❗ |
 | A.5 | `agents.defaults.model.fallback` = `minimax/MiniMax-M2.7` (старый primary как запасной) | ❗ |
-| A.6 | В реальном ответе боту в Telegram модель = `openai/gpt-5` (проверка через `openclaw logs --plain --limit 30`) | ❗ |
-| A.7 | `/model` в Telegram показывает `openai/gpt-5` | ⚠️ |
+| A.6 | В реальном ответе боту в Telegram модель = `openai/gpt-5.5` (или `openai/gpt-5` если auto-routing) — проверка через `openclaw logs --plain --limit 30 \| grep -E "gpt-5"` | ❗ |
+| A.7 | `/model` в Telegram показывает `openai/gpt-5.5` (или `openai/gpt-5`) | ⚠️ |
 
 ⚠️ **Контекст A:** Codex CLI — официальный продукт OpenAI (`github.com/openai/codex`). OAuth через ChatGPT Plus/Pro/Business/Edu/Enterprise — поддерживаемый OpenAI способ авторизации агентов. Подписка $20/мес даёт доступ к GPT-5 (в ChatGPT auto-switching на GPT-5.4 Thinking при сложных запросах).
 

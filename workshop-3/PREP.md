@@ -97,45 +97,54 @@
 2. В поиске введи **«Gmail API»** → клик на результат → синяя кнопка **ENABLE**
 3. Назад в Library → поиск **«Google Calendar API»** → ENABLE
 
-### Часть 5.3 — OAuth Consent Screen
+### Часть 5.3 — OAuth Consent Screen (новое название — **Google Auth Platform**)
 
-Это публичная страница которую увидишь когда будешь авторизовать бота — что-то типа «Openclaw-bot хочет доступ к Gmail и Calendar».
+⚠️ **В новом интерфейсе Google Cloud Console (2025-2026) переименовано:** раздел «OAuth consent screen» теперь часто называется **«Google Auth Platform»**, а внутри него — пункты `Branding` / `Audience` / `Clients` / `Data Access`. Старое название «OAuth consent screen» может ещё встречаться в проектах созданных до апреля 2025.
 
-1. ☰ → «APIs & Services» → «OAuth consent screen»
-2. User Type: **External** → CREATE
-3. Заполни форму:
-   - App name: `openclaw-bot`
-   - User support email: твоя ботовая почта
-   - Developer contact: твоя ботовая почта (или личная)
-4. «Save and Continue»
+Это публичная страница которую увидишь при авторизации бота — что-то типа «Openclaw-bot хочет доступ к Gmail и Calendar».
 
-### Часть 5.4 — Scopes (разрешения)
+1. ☰ → **APIs & Services** → **OAuth consent screen** (или **Google Auth Platform** → **Branding**)
+2. Если первый раз — нажми «Get Started»
+3. App name: `openclaw-bot`
+4. User support email: твоя ботовая почта
+5. Developer contact: твоя ботовая почта
+6. User Type: **External**
+7. Save and Continue
 
-1. На странице Scopes → «Add or Remove Scopes»
-2. В фильтре введи **«gmail»** → выбери чекбоксами:
+### Часть 5.4 — Data Access (бывшие Scopes)
+
+⚠️ **Это бывшие Scopes** — название изменилось.
+
+1. В разделе OAuth consent screen / Google Auth Platform слева ищи пункт **«Data Access»** (раньше назывался «Scopes»)
+2. Нажми **«Add or Remove Scopes»**
+3. В фильтре введи **«gmail»** → выбери чекбоксами:
    - `.../auth/gmail.readonly` (читать почту)
    - `.../auth/gmail.send` (отправлять почту)
-3. В фильтре введи **«calendar»** → выбери:
+4. В фильтре введи **«calendar»** → выбери:
    - `.../auth/calendar.events.readonly` (читать события)
    - `.../auth/calendar.readonly` (читать календарь)
-4. «Update» (внизу)
-5. «Save and Continue»
+5. **Update** (внизу) → **Save**
 
-### Часть 5.5 — Test Users (КРИТИЧНО)
+### Часть 5.5 — Audience (Test Users тут!)
 
-1. На странице Test Users → «Add Users»
-2. Введи свою **ботовую почту** (ту что в Шаге 1 создал — да, ту же, на ней авторизовываться)
-3. ADD → «Save and Continue» → Back to Dashboard
+⚠️ **Test Users больше не отдельная страница** — они внутри пункта **«Audience»**.
+
+1. В разделе OAuth consent screen / Google Auth Platform слева → **«Audience»**
+2. Прокрути вниз до секции **«Test users»**
+3. **+ Add users** → введи свою **ботовую почту** (ту что в Шаге 1 создал — да, ту же, на ней будет авторизация)
+4. ADD → Save
 
 ⚠️ Без этого шага OAuth flow выдаст ошибку «access blocked». Test users нужны пока статус приложения «Testing».
 
-### Часть 5.6 — Создать OAuth Client ID
+### Часть 5.6 — Создать OAuth Client ID (Credentials — отдельный пункт меню!)
 
-1. ☰ → «APIs & Services» → «Credentials»
-2. Сверху «+ Create Credentials» → «OAuth client ID»
+⚠️ **Credentials — это ОТДЕЛЬНЫЙ пункт меню**, не внутри OAuth consent screen. Соседний с ним.
+
+1. ☰ → **APIs & Services** → **Credentials** (не внутри «OAuth consent screen» — рядом!)
+2. Сверху **«+ Create Credentials»** → **«OAuth client ID»**
 3. Application type: **Desktop app**
 4. Name: `openclaw-bot-desktop`
-5. CREATE
+5. **CREATE**
 6. Появится модалка с **Client ID** и **Client Secret** → нажми **«Download JSON»** → файл `client_secret_XXXX.json` уйдёт в Downloads
 
 ### Часть 5.7 — Запиши значения

@@ -265,45 +265,53 @@
         <li>Назад в Library → «Google Calendar API» → ENABLE</li>
       </ol>
 
-      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.3 — OAuth Consent Screen</h5>
+      <div class="notice wrn" style="margin:14px 0"><div class="ni">⚠️</div><span><strong>Интерфейс Google Cloud Console обновился</strong> (2025-2026). В новых проектах раздел «OAuth consent screen» часто называется <strong>«Google Auth Platform»</strong>, а внутри него отдельные пункты: <code>Branding</code> / <code>Audience</code> / <code>Clients</code> / <code>Data Access</code>. Шаги ниже учитывают и старый и новый интерфейс.</span></div>
+
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.3 — OAuth Consent Screen / Branding</h5>
       <ol>
-        <li>☰ → APIs &amp; Services → OAuth consent screen</li>
-        <li>User Type: <strong>External</strong> → CREATE</li>
+        <li>☰ → <strong>APIs &amp; Services</strong> → <strong>OAuth consent screen</strong> (или <strong>Google Auth Platform → Branding</strong>)</li>
+        <li>Если первый раз — Get Started</li>
         <li>App name: <code>openclaw-bot</code></li>
         <li>User support email + Developer contact: твоя ботовая почта</li>
+        <li>User Type: <strong>External</strong></li>
         <li>Save and Continue</li>
       </ol>
 
-      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.4 — Scopes</h5>
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.4 — Data Access (бывшие Scopes!)</h5>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:8px"><strong>Это бывшие Scopes</strong> — название изменилось на «Data Access».</p>
       <ol>
-        <li>На странице Scopes → Add or Remove Scopes</li>
+        <li>В разделе OAuth consent screen / Google Auth Platform слева ищи пункт <strong>«Data Access»</strong></li>
+        <li><strong>Add or Remove Scopes</strong></li>
         <li>В фильтре «gmail» → отметь чекбоксами:
           <ul><li><code>.../auth/gmail.readonly</code></li><li><code>.../auth/gmail.send</code></li></ul>
         </li>
         <li>В фильтре «calendar» → отметь:
           <ul><li><code>.../auth/calendar.events.readonly</code></li><li><code>.../auth/calendar.readonly</code></li></ul>
         </li>
-        <li>Update → Save and Continue</li>
+        <li>Update → Save</li>
       </ol>
 
-      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.5 — Test Users (без этого OAuth не сработает!)</h5>
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.5 — Audience (Test Users внутри!)</h5>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:8px"><strong>Test Users больше не отдельная страница</strong> — они внутри пункта «Audience». Без них OAuth выдаст «access blocked».</p>
       <ol>
-        <li>На странице Test Users → Add Users</li>
-        <li>Введи свою <strong>ботовую почту</strong></li>
-        <li>ADD → Save and Continue → Back to Dashboard</li>
+        <li>В разделе OAuth consent screen / Google Auth Platform слева → <strong>«Audience»</strong></li>
+        <li>Прокрути вниз до секции <strong>«Test users»</strong></li>
+        <li><strong>+ Add users</strong> → введи свою <strong>ботовую почту</strong></li>
+        <li>ADD → Save</li>
       </ol>
 
-      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.6 — Создать OAuth Client ID</h5>
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.6 — Credentials (ОТДЕЛЬНЫЙ пункт меню!)</h5>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:8px"><strong>Credentials — это отдельный пункт меню</strong>, НЕ внутри OAuth consent screen. Соседний.</p>
       <ol>
-        <li>☰ → APIs &amp; Services → Credentials</li>
-        <li>+ Create Credentials → OAuth client ID</li>
+        <li>☰ → <strong>APIs &amp; Services</strong> → <strong>Credentials</strong> (рядом с OAuth consent screen — не внутри!)</li>
+        <li>Сверху <strong>+ Create Credentials</strong> → <strong>OAuth client ID</strong></li>
         <li>Application type: <strong>Desktop app</strong></li>
         <li>Name: <code>openclaw-bot-desktop</code> → CREATE</li>
-        <li>В модалке нажми <strong>Download JSON</strong> → файл <code>client_secret_XXXX.json</code> сохранится в Downloads</li>
+        <li>В модалке нажми <strong>Download JSON</strong> → файл <code>client_secret_XXXX.json</code> в Downloads</li>
         <li>Открой файл в TextEdit и сохрани в заметках:
           <ul>
-            <li><code>GOOGLE_OAUTH_CLIENT_ID=</code> (значение поля <code>client_id</code>)</li>
-            <li><code>GOOGLE_OAUTH_CLIENT_SECRET=</code> (значение поля <code>client_secret</code>)</li>
+            <li><code>GOOGLE_OAUTH_CLIENT_ID=</code> (значение <code>client_id</code>)</li>
+            <li><code>GOOGLE_OAUTH_CLIENT_SECRET=</code> (значение <code>client_secret</code>)</li>
           </ul>
         </li>
         <li><strong>Сам файл client_secret_XXXX.json НЕ удаляй</strong> — он понадобится на В3</li>
@@ -388,54 +396,79 @@
 
     <h2>8 промптов · <span class="acc">логические блоки</span></h2>
 
-    <!-- ПРОМПТ 1 — Codex CLI OAuth (РУКАМИ В ТЕРМИНАЛЕ) -->
+    <!-- ПРОМПТ 1 — OpenClaw OAuth с ChatGPT Plus (РУКАМИ В ТЕРМИНАЛЕ) -->
     <div class="pcard">
       <div class="pcard-head">
         <div class="pcard-badge">1</div>
         <div class="pcard-info">
-          <div class="pcard-tool">Codex CLI OAuth · РУКАМИ в Mac Terminal · 15 мин</div>
-          <div class="pcard-title">GPT-5 как primary через ChatGPT Plus</div>
+          <div class="pcard-tool">OpenClaw OAuth · РУКАМИ в Mac Terminal · 10 мин</div>
+          <div class="pcard-title">GPT-5.5 как primary через ChatGPT Plus</div>
         </div>
       </div>
-      <p class="pcard-desc">Это <strong>единственный шаг руками</strong> на В3. Codex CLI требует интерактивный TTY для OAuth — Antigravity не справится. Делаешь в Mac Terminal через SSH. Дальше всё AI сам.</p>
+      <p class="pcard-desc">Это <strong>единственный шаг руками</strong> на В3. OAuth требует интерактивный TTY — Antigravity не справится. Делаешь в Mac Terminal через SSH. Одна команда OpenClaw сама подхватит токен, привяжет провайдер, обновит каскад моделей и поставит <code>openai/gpt-5.5</code> как primary автоматически.</p>
 
-      <div class="notice wrn"><div class="ni">⚠️</div><span>Codex CLI — <strong>официальный продукт OpenAI</strong> (<code>github.com/openai/codex</code>). OAuth через ChatGPT Plus — поддерживаемый способ авторизации. Не пиратство.</span></div>
+      <div class="notice tip"><div class="ni">💡</div><span><strong>Одна команда вместо четырёх.</strong> OpenClaw умеет ChatGPT-OAuth из коробки — не нужно ставить Codex CLI отдельно, нет двух OAuth flow. Просто <code>openclaw models auth login --provider openai-codex --set-default</code>.</span></div>
 
-      <p class="pcard-desc"><strong>Шаг A — SSH на VPS с флагом -t (для TTY):</strong></p>
-      <div class="pb"><div class="pbar"><span class="ptag">Mac Terminal · в папке проекта</span><button class="cbtn" onclick="cp(this,'p1a')">📋 Копировать</button></div><pre class="pcode" id="p1a">set -a && source .env && set +a && ssh -t -i $SSH_KEY_PATH clawd@$VPS_IP</pre></div>
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг A — SSH на VPS (флаг <code>-t</code> ОБЯЗАТЕЛЕН для TTY):</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">Mac Terminal · в папке проекта</span><button class="cbtn" onclick="cp(this,'p1a')">📋 Копировать</button></div><pre class="pcode" id="p1a">set -a && source .env && set +a && ssh -t -i ~/.ssh/clawd_ed25519 clawd@$VPS_IP</pre></div>
+      <p class="pcard-desc" style="margin-top:8px;font-size:13px">Если ключ называется иначе — посмотри <code>ls ~/.ssh/</code> и подставь имя. Если в <code>.env</code> нет <code>VPS_IP</code> — добавь строку <code>VPS_IP=твой.ip.адрес</code>.</p>
+      <p class="pcard-desc" style="margin-top:8px;font-size:13px"><strong>✅ Как понять что ты на VPS:</strong> приглашение поменяется с <code>username@Mac %</code> на <code>clawd@&lt;имя-vps&gt;:~$</code>. Без <code>-t</code> SSH войдёт и сразу выйдет без сессии.</p>
 
-      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг B — Установить Codex CLI под clawd:</strong></p>
-      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1b')">📋 Копировать</button></div><pre class="pcode" id="p1b">npm i -g @openai/codex
-which codex
-codex --version</pre></div>
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг B — поправь nvm warning (если есть):</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1b')">📋 Копировать</button></div><pre class="pcode" id="p1b">sed -i '/^prefix=/d' ~/.npmrc 2>/dev/null; nvm use 22</pre></div>
+      <p class="pcard-desc" style="margin-top:8px;font-size:13px">Это убирает конфликт между <code>~/.npmrc</code> и nvm. Если warning не было — команда ничего не сломает.</p>
 
-      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг C — OAuth flow:</strong></p>
-      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1c')">📋 Копировать</button></div><pre class="pcode" id="p1c">codex</pre></div>
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг C — запусти OpenClaw OAuth flow (одна команда!):</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1c')">📋 Копировать</button></div><pre class="pcode" id="p1c">openclaw models auth login --provider openai-codex --set-default</pre></div>
 
-      <p class="pcard-desc" style="margin-top:10px;font-size:13px">Codex выдаст меню. Выбери стрелочками <strong>«Sign in with ChatGPT»</strong> → Enter. Появится URL вида <code>https://auth.openai.com/oauth/authorize?...</code>. Скопируй URL целиком.</p>
+      <p class="pcard-desc" style="margin-top:10px;font-size:13px">Команда выдаст ссылку типа <code>https://auth.openai.com/oauth/authorize?...</code> прямо в терминал. Скопируй её целиком.</p>
 
-      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг D — Авторизуйся в браузере на Mac:</strong></p>
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг D — авторизуйся в браузере на Mac:</strong></p>
       <ol class="pcard-desc" style="padding-left:22px;line-height:1.85">
-        <li>Открой Chrome/Safari на Mac, вставь URL из терминала</li>
-        <li>Залогинься своим ChatGPT Plus аккаунтом → «Continue»</li>
+        <li>Открой Chrome/Safari на Mac → вставь URL из терминала</li>
+        <li>Залогинься своим <strong>ChatGPT Plus</strong> аккаунтом → Continue</li>
         <li>Браузер редиректнёт на <code>http://localhost:1455/...</code> — страница покажет ошибку «не удалось подключиться». <strong>Это нормально.</strong></li>
-        <li><strong>Скопируй полный URL из адресной строки браузера</strong> (включая <code>?code=...&amp;state=...</code>)</li>
-        <li>Вернись в Terminal, вставь URL → Enter</li>
+        <li><strong>Скопируй полный URL из адресной строки браузера</strong> (с <code>?code=...&amp;state=...</code>)</li>
+        <li>Вернись в Terminal где висит OpenClaw → вставь URL → Enter</li>
       </ol>
 
-      <p class="pcard-desc" style="margin-top:10px;font-size:13px">Успешный результат в терминале:</p>
-      <div class="pb"><pre class="pcode" id="p1d">✓ Signed in as &lt;your-email@example.com&gt;
-Plan: ChatGPT Plus</pre></div>
+      <p class="pcard-desc" style="margin-top:10px;font-size:13px">Успешный результат:</p>
+      <div class="pb"><pre class="pcode" id="p1d">Config overwrite: /home/clawd/.openclaw/openclaw.json
+Auth profile: openai-codex:&lt;твой-email&gt; (openai-codex/oauth)
+Default model set to openai/gpt-5.5</pre></div>
 
-      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг E — Проверь токен и выйди из SSH:</strong></p>
-      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1e')">📋 Копировать</button></div><pre class="pcode" id="p1e">ls -la ~/.codex/auth.json
-chmod 600 ~/.codex/auth.json
-codex auth status
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг E — выйди из SSH:</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1e')">📋 Копировать</button></div><pre class="pcode" id="p1e">openclaw models auth list
 exit</pre></div>
 
-      <div class="rbox" style="margin-top:14px"><div class="rtitle">Что должно произойти</div><div class="rrow">Codex CLI установлен под clawd, OAuth-токен в <code>~/.codex/auth.json</code> с chmod 600, <code>codex auth status</code> → Plan: ChatGPT Plus. Закрывает A.1, A.2.</div></div>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">Что должно произойти</div><div class="rrow">Одной командой <code>openclaw models auth login</code> закрылось <strong>сразу 4 критерия</strong>: A.1 (auth setup), A.2 (OAuth токен), A.3 (auth profile openai-codex), A.4 (default model = openai/gpt-5.5).</div></div>
 
-      <div class="notice tip" style="margin-top:14px"><div class="ni">⏱</div><span><strong>Срок жизни токена — 30 дней.</strong> Обновить — та же команда <code>codex</code> → Sign in with ChatGPT. Запиши себе reminder.</span></div>
+      <div class="notice tip" style="margin-top:14px"><div class="ni">⏱</div><span><strong>Срок жизни токена — 30 дней.</strong> Обновить — та же команда. Запиши себе reminder в календаре.</span></div>
+    </div>
+
+    <!-- ПРОМЕЖУТОЧНОЕ СООБЩЕНИЕ AI-АГЕНТУ -->
+    <div class="pcard" style="border-left-color:var(--cyan);background:rgba(6,182,212,0.03)">
+      <div class="pcard-head">
+        <div class="pcard-badge" style="color:var(--cyan);background:rgba(6,182,212,0.12);border-color:rgba(6,182,212,0.3)">📩</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--cyan)">После Промпта 1 → 1 минута</div>
+          <div class="pcard-title">Сообщение AI-агенту в Antigravity</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Ты вернулся на Mac после <code>exit</code>. Открой Antigravity (там где идёт основной AI-чат В3) и скопируй это сообщение — AI продолжит с Промпта 2:</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в Antigravity AI-чат</span><button class="cbtn" onclick="cp(this,'p1msg')">📋 Копировать</button></div><pre class="pcode" id="p1msg">Codex OAuth прошёл успешно. Команда `openclaw models auth login --provider openai-codex --set-default` отработала.
+
+Auth profile создан (provider: openai-codex).
+Default model автоматически = openai/gpt-5.5 (OpenClaw подхватил свежее, не gpt-5 как в стандарте).
+
+Закрыты: A.1, A.2, A.3, A.4.
+
+Проверь A.5 — fallback должен быть minimax/MiniMax-M2.7 (если стал deepseek — поправь openclaw.json).
+A.6/A.7 — реальный ответ от gpt-5.5 в Telegram сделаем после Промпта 3.
+
+Также OpenClaw предложил native Codex web_search через `openclaw configure --section web` mode cached. Запомни — может частично заменит Brave/Tavily.
+
+Переходи к Промпту 2 (расширить .env), потом Промпт 3 (большой install).</pre></div>
     </div>
 
     <!-- ПРОМПТ 2 — РАСШИРИТЬ .env -->
