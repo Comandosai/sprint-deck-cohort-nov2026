@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Воркшоп 3 · Инструменты + Проактивность + MCP · @ai_comandos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;1,700;1,800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0e0f; --card:#181a1b; --card2:#1f2122; --border:rgba(255,255,255,0.06);
+    --text:#f0f0f0; --muted:rgba(240,240,240,0.62); --subtle:rgba(240,240,240,0.4);
+    --lime:#c8ff00; --lime-dim:rgba(200,255,0,0.1); --lime-glow:rgba(200,255,0,0.35);
+    --green:#22c55e; --orange:#f97316; --blue:#60a5fa; --red:#ef4444; --violet:#a78bfa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.014) 0,rgba(255,255,255,0.014) 1px,transparent 1px,transparent 3px)}
+
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(13,14,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;height:54px;display:flex;align-items:center;gap:14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime-glow);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.85)}}
+  .topbar .brand{color:var(--text)} .topbar .sep{color:var(--subtle)} .topbar .crumb{color:var(--muted)}
+  .topbar .right{margin-left:auto;color:var(--lime)} .topbar .right a{color:var(--lime);text-decoration:none}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:48px 32px 100px}
+
+  h1{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:clamp(48px,7vw,88px);line-height:0.96;letter-spacing:-0.005em;text-transform:uppercase;color:var(--text);margin-bottom:18px}
+  h1 .acc{color:var(--lime)}
+  h2{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:clamp(26px,4vw,40px);line-height:1.05;text-transform:uppercase;color:var(--text);margin:32px 0 14px}
+  h2 .acc{color:var(--lime)}
+  h3{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;font-size:20px;letter-spacing:0.02em;text-transform:uppercase;color:var(--lime);margin:24px 0 10px}
+  .lede{font-size:17px;color:var(--muted);max-width:860px;line-height:1.6;font-weight:300;margin-bottom:24px}
+  .lede strong{color:var(--text);font-weight:500}
+
+  .hero{background:linear-gradient(135deg,rgba(200,255,0,0.05),rgba(34,211,238,0.03));border:1px solid rgba(200,255,0,0.18);border-radius:18px;padding:36px 40px;margin-bottom:36px}
+  .hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--lime);margin-bottom:14px}
+  .hero-tag::before{content:'';width:24px;height:1px;background:var(--lime)}
+  .hero-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+  .hero-meta .item{display:flex;flex-direction:column;gap:3px}
+  .hero-meta .lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--subtle)}
+  .hero-meta .val{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--text);font-weight:500}
+  .hero-meta .val.lime{color:var(--lime)}
+
+  /* TABS */
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:32px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px}
+  .tab{background:transparent;border:1px solid transparent;border-radius:10px;padding:14px;cursor:pointer;text-align:left;transition:all 0.25s;display:flex;flex-direction:column;gap:5px;font-family:inherit}
+  .tab:hover{background:rgba(255,255,255,0.02)}
+  .tab.active{background:var(--bg);border-color:var(--border)}
+  .tab-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--subtle);text-transform:uppercase}
+  .tab[data-tab="1"].active .tab-num{color:var(--lime)}
+  .tab[data-tab="2"].active .tab-num{color:var(--orange)}
+  .tab[data-tab="3"].active .tab-num{color:var(--red)}
+  .tab[data-tab="4"].active .tab-num{color:var(--blue)}
+  .tab[data-tab="5"].active .tab-num{color:var(--green)}
+  .tab[data-tab="6"].active .tab-num{color:var(--violet)}
+  .tab-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.05}
+  .tab-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+  .panel{display:none}
+  .panel.active{display:block;animation:fadeUp 0.35s ease both}
+  @keyframes fadeUp{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
+
+  /* Block card — основной элемент */
+  .block{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:16px}
+  .block-header{display:flex;align-items:flex-start;gap:18px;margin-bottom:18px}
+  .block-icon{width:48px;height:48px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg);border:1px solid var(--border)}
+  .block-meta{flex:1}
+  .block-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;margin-bottom:4px}
+  .block-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text);line-height:1.05}
+  .block-why{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px;padding:12px 16px;background:var(--bg);border-radius:8px;border-left:2px solid var(--border)}
+  .block-why strong{color:var(--text)}
+
+  /* Шаги */
+  .steps{display:flex;flex-direction:column;gap:10px}
+  .step{display:flex;gap:14px;align-items:flex-start}
+  .step-num{width:28px;height:28px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;background:var(--bg);border:1px solid var(--border);color:var(--subtle);margin-top:1px}
+  .step-body{flex:1}
+  .step-action{font-size:14.5px;color:var(--text);font-weight:500;line-height:1.5;margin-bottom:3px}
+  .step-detail{font-size:13px;color:var(--muted);line-height:1.5}
+  .step-detail code{background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--lime)}
+  .step-detail a{color:var(--lime);text-decoration:none}
+  .step-detail a:hover{text-decoration:underline}
+
+  /* Цветные варианты блоков */
+  .block-orange .block-label{color:var(--orange)}
+  .block-orange .step-num{border-color:rgba(249,115,22,0.3);color:var(--orange)}
+  .block-red .block-label{color:var(--red)}
+  .block-red .step-num{border-color:rgba(239,68,68,0.3);color:var(--red)}
+  .block-blue .block-label{color:var(--blue)}
+  .block-blue .step-num{border-color:rgba(96,165,250,0.3);color:var(--blue)}
+  .block-green .block-label{color:var(--green)}
+  .block-green .step-num{border-color:rgba(34,197,94,0.3);color:var(--green)}
+  .block-violet .block-label{color:var(--violet)}
+  .block-violet .step-num{border-color:rgba(167,139,250,0.3);color:var(--violet)}
+
+  /* Результат блока */
+  .block-result{margin-top:18px;padding:12px 16px;border-radius:8px;border:1px solid rgba(34,197,94,0.2);background:rgba(34,197,94,0.04)}
+  .block-result-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+  .block-result-text{font-size:13.5px;color:rgba(240,240,240,0.7);line-height:1.5}
+  .block-result-text strong{color:var(--text)}
+
+  /* Notice */
+  .notice{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:13px 16px;margin:14px 0;font-size:13.5px;line-height:1.6}
+  .notice .ni{flex-shrink:0;font-size:17px}
+  .info{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.18);color:rgba(96,165,250,0.85)} .info strong{color:var(--blue)}
+  .warn{background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.2);color:rgba(249,115,22,0.85)} .warn strong{color:var(--orange)}
+  .danger{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.22);color:rgba(239,68,68,0.85)} .danger strong{color:var(--red)}
+  .tip{background:rgba(200,255,0,0.05);border:1px solid rgba(200,255,0,0.15);color:rgba(200,255,0,0.78)} .tip strong{color:var(--lime)}
+
+  /* Copy block */
+  .pb{position:relative;border:1px solid var(--border);border-radius:10px;background:var(--bg);overflow:hidden;margin:10px 0}
+  .pbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.012)}
+  .ptag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--subtle)}
+  .cbtn{background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.25);color:var(--lime);padding:5px 11px;border-radius:5px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+  .cbtn:hover{background:rgba(200,255,0,0.18);border-color:rgba(200,255,0,0.4)}
+  .cbtn.copied{background:rgba(34,197,94,0.18);border-color:rgba(34,197,94,0.4);color:var(--green)}
+  .pcode{padding:13px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;color:var(--text);white-space:pre-wrap;word-break:break-word;overflow-x:auto}
+
+  /* Level diagram */
+  .levels{display:flex;flex-direction:column;gap:6px;margin:14px 0}
+  .level{display:flex;align-items:center;gap:14px;border:1px solid var(--border);border-radius:10px;padding:12px 16px;background:var(--card2)}
+  .level-num{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:28px;font-weight:800;min-width:30px;line-height:1}
+  .level-body{flex:1}
+  .level-tool{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:2px}
+  .level-desc{font-size:12.5px;color:var(--muted)}
+  .level-badge{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap}
+  .badge-free{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+  .badge-api{background:rgba(249,115,22,0.08);color:var(--orange);border:1px solid rgba(249,115,22,0.2)}
+  .badge-heavy{background:rgba(239,68,68,0.07);color:var(--red);border:1px solid rgba(239,68,68,0.18)}
+
+  /* Cron schedule cards */
+  .cron-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+  .cron-card{border:1px solid var(--border);border-left:3px solid var(--red);border-radius:10px;padding:14px 16px;background:var(--card)}
+  .cron-time{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);font-weight:600;margin-bottom:3px}
+  .cron-name{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:17px;font-weight:700;text-transform:uppercase;color:var(--text);margin-bottom:3px}
+  .cron-desc{font-size:12.5px;color:var(--muted);line-height:1.4}
+
+  /* MCP service cards */
+  .mcp-row{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+  .mcp-card{display:flex;align-items:center;gap:14px;border:1px solid var(--border);border-radius:10px;padding:13px 16px;background:var(--card)}
+  .mcp-icon{width:36px;height:36px;flex-shrink:0;border-radius:8px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .mcp-info{flex:1}
+  .mcp-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text)}
+  .mcp-desc{font-size:12.5px;color:var(--muted)}
+  .mcp-how{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--subtle);white-space:nowrap}
+
+  /* Checklist */
+  .checks{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+  .check{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--card);font-size:13.5px;color:var(--muted);line-height:1.45}
+  .check-box{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;background:var(--bg)}
+  .check strong{color:var(--text);font-weight:500}
+  .check code{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--lime)}
+
+  .divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+
+  .final{background:linear-gradient(135deg,rgba(200,255,0,0.05),rgba(34,197,94,0.04));border:1px solid rgba(200,255,0,0.22);border-radius:14px;padding:28px 32px;margin:28px 0;text-align:center}
+  .final-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:34px;text-transform:uppercase;color:var(--text);line-height:1;margin-bottom:8px}
+  .final-title .acc{color:var(--lime)}
+  .final-desc{font-size:14px;color:var(--muted);max-width:640px;margin:0 auto;line-height:1.6}
+
+  .footer{margin-top:60px;padding:22px 0;border-top:1px solid var(--border);font-size:13px;color:var(--subtle);display:flex;gap:14px;justify-content:space-between;flex-wrap:wrap}
+  .footer a{color:var(--lime);text-decoration:none}
+
+  @media(max-width:900px){.tabs{grid-template-columns:1fr 1fr}.cron-row{grid-template-columns:1fr}}
+  @media(max-width:640px){.tabs{grid-template-columns:1fr}.wrap{padding:24px 16px 80px}.block{padding:20px 18px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="dot"></span>
+  <span class="brand">COMANDOS AI</span>
+  <span class="sep">·</span>
+  <span class="crumb">Воркшоп 3 — Инструменты + Проактивность + MCP</span>
+  <span class="right"><a href="https://t.me/ai_comandos" target="_blank" rel="noopener">@ai_comandos</a></span>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="hero-tag">Воркшоп 3 · 15 мая 2026 · v1.0</span>
+    <h1>Бот <span class="acc">работает</span>.<br>Сам. Всегда.</h1>
+    <p class="lede">После сегодня бот <strong>сам ходит в интернет</strong>, <strong>присылает брифинги по расписанию</strong>, <strong>управляет Notion и GitHub</strong> и <strong>создаёт себе новые навыки</strong> по просьбе.</p>
+    <div class="hero-meta">
+      <div class="item"><span class="lbl">Длительность</span><span class="val">90 минут</span></div>
+      <div class="item"><span class="lbl">Блоков</span><span class="val lime">4</span></div>
+      <div class="item"><span class="lbl">Нужен</span><span class="val">Бот из В1 + В2</span></div>
+      <div class="item"><span class="lbl">Доплата</span><span class="val">~$0–5 / мес</span></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="1" onclick="goTab(1)">
+      <span class="tab-num">00 · Старт</span>
+      <span class="tab-title">Что делаем</span>
+      <span class="tab-desc">Цель и план на 90 минут</span>
+    </button>
+    <button class="tab" data-tab="2" onclick="goTab(2)">
+      <span class="tab-num">01 · Интернет</span>
+      <span class="tab-title">Web Tools</span>
+      <span class="tab-desc">Поиск, страницы, реальный браузер</span>
+    </button>
+    <button class="tab" data-tab="3" onclick="goTab(3)">
+      <span class="tab-num">02 · Проактивность</span>
+      <span class="tab-title">Heartbeat + Cron</span>
+      <span class="tab-desc">Бот работает без команд</span>
+    </button>
+    <button class="tab" data-tab="4" onclick="goTab(4)">
+      <span class="tab-num">03 · MCP-серверы</span>
+      <span class="tab-title">Внешние сервисы</span>
+      <span class="tab-desc">Notion, GitHub, Tavily, Playwright</span>
+    </button>
+    <button class="tab" data-tab="5" onclick="goTab(5)">
+      <span class="tab-num">04 · Скиллы</span>
+      <span class="tab-title">Самопрограммирование</span>
+      <span class="tab-desc">Бот создаёт навыки сам</span>
+    </button>
+    <button class="tab" data-tab="6" onclick="goTab(6)">
+      <span class="tab-num">05 · Итог</span>
+      <span class="tab-title">Чеклист сдачи</span>
+      <span class="tab-desc">Что проверяем в конце</span>
+    </button>
+  </div>
+
+
+  <!-- ══════════ PANEL 1 — СТАРТ ══════════ -->
+  <div class="panel active" id="panel-1">
+
+    <h2>После <span class="acc">В1 + В2</span> у тебя есть</h2>
+    <div class="block">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num" style="color:var(--green);border-color:rgba(34,197,94,0.3)">✓</div>
+          <div class="step-body">
+            <div class="step-action">VPS с OpenClaw — бот запущен как сервис 24/7</div>
+            <div class="step-detail">Ubuntu 24.04, systemd, бот отвечает в Telegram на твои сообщения</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="color:var(--green);border-color:rgba(34,197,94,0.3)">✓</div>
+          <div class="step-body">
+            <div class="step-action">Личность и память — бот знает кто ты и помнит факты</div>
+            <div class="step-detail">SOUL.md с личностью, Mem0 + Qdrant для долгосрочной памяти</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="color:var(--green);border-color:rgba(34,197,94,0.3)">✓</div>
+          <div class="step-body">
+            <div class="step-action">Бэкап и безопасный доступ к VPS</div>
+            <div class="step-detail">Tailscale или SSH-ключ, автобэкап через git/rclone</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Сегодня добавляем <span class="acc">4 суперсилы</span></h2>
+
+    <div class="block">
+      <div class="block-header">
+        <div class="block-icon">🌐</div>
+        <div class="block-meta">
+          <div class="block-label" style="color:var(--orange)">Блок 01 · ~20 мин</div>
+          <div class="block-title">Интернет — 4 уровня</div>
+        </div>
+      </div>
+      <div class="block-why">Сейчас бот не знает что происходит в мире — его знания обрезаны датой обучения. После настройки он будет <strong>искать актуальную информацию, читать страницы и кликать в браузере</strong> — как человек.</div>
+      <div class="block-result">
+        <div class="block-result-label">Результат</div>
+        <div class="block-result-text">«Найди последние новости про Anthropic и сохрани в файл» — бот сам идёт в интернет и делает это.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-header">
+        <div class="block-icon">⏰</div>
+        <div class="block-meta">
+          <div class="block-label" style="color:var(--red)">Блок 02 · ~20 мин</div>
+          <div class="block-title">Проактивность</div>
+        </div>
+      </div>
+      <div class="block-why">Сейчас бот отвечает только когда ты его спрашиваешь. После настройки он <strong>сам просыпается каждый час</strong> и проверяет дедлайны, важные письма, здоровье сервера — и в 9:00 шлёт тебе брифинг в Telegram <strong>без единой команды</strong>.</div>
+      <div class="block-result">
+        <div class="block-result-label">Результат</div>
+        <div class="block-result-text">Завтра утром в 9:00 в Telegram придёт брифинг с твоими задачами и встречами — сам, без твоего участия.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-header">
+        <div class="block-icon">🔌</div>
+        <div class="block-meta">
+          <div class="block-label" style="color:var(--blue)">Блок 03 · ~15 мин</div>
+          <div class="block-title">MCP-серверы</div>
+        </div>
+      </div>
+      <div class="block-why">Бот подключается к реальным сервисам, которые ты уже используешь. MCP — это стандарт от Anthropic, как «розетка» для интеграций. <strong>Подключил один раз — бот работает с Notion, GitHub, Tavily</strong> прямо из чата.</div>
+      <div class="block-result">
+        <div class="block-result-label">Результат</div>
+        <div class="block-result-text">«Открой мою Notion-базу "Проекты" и покажи задачи в работе» — бот делает это без копирования ничего вручную.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-header">
+        <div class="block-icon">🧠</div>
+        <div class="block-meta">
+          <div class="block-label" style="color:var(--green)">Блок 04 · ~10 мин</div>
+          <div class="block-title">Самопрограммирование</div>
+        </div>
+      </div>
+      <div class="block-why">Бот умеет создавать новые навыки сам — по твоей просьбе в чате. Пишешь «добавь себе умение делать X» — он пишет файл навыка и подхватывает его <strong>без перезапуска</strong>. Агент становится умнее в процессе использования.</div>
+      <div class="block-result">
+        <div class="block-result-label">Результат</div>
+        <div class="block-result-text">Бот создал хотя бы один кастомный скилл по твоей просьбе и он работает.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <h3>План на 90 минут</h3>
+    <div class="pb">
+      <div class="pbar"><span class="ptag">Расписание</span></div>
+      <div class="pcode">00:00 – 00:20  Блок 01 · Интернет          Brave API + browser config
+00:20 – 00:40  Блок 02 · Проактивность     HEARTBEAT.md + 4 расписания
+00:40 – 00:55  Блок 03 · MCP-серверы       Tavily + Notion + GitHub + Playwright
+00:55 – 01:10  Блок 04 · Скиллы            Создаём первый кастомный скилл
+01:10 – 01:30  Верификация                 Проверяем всё, сдача</div>
+    </div>
+
+    <div class="notice tip">
+      <span class="ni">💡</span>
+      <span><strong>Формат:</strong> в каждом блоке — понятные шаги. Что получить, где зарегистрироваться, что вставить в конфиг. ИИ-агент в чате сам настроит большую часть по промптам из гайда.</span>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════ PANEL 2 — ИНТЕРНЕТ ══════════ -->
+  <div class="panel" id="panel-2">
+
+    <h2>Блок 01 · <span class="acc" style="color:var(--orange)">Интернет</span></h2>
+    <p class="lede">Настраиваем 4 способа работы с интернетом — от быстрого поиска до настоящего браузера на VPS.</p>
+
+    <h3>Как это работает</h3>
+    <div class="levels">
+      <div class="level">
+        <div class="level-num" style="color:var(--green)">1</div>
+        <div class="level-body">
+          <div class="level-tool">web_search — Поиск сниппетов</div>
+          <div class="level-desc">Бот ищет в Brave Search и получает заголовки + короткие выдержки. Как Google, только в чате.</div>
+        </div>
+        <div class="level-badge badge-free">Бесплатно · 2 000/мес</div>
+      </div>
+      <div class="level">
+        <div class="level-num" style="color:var(--lime)">2</div>
+        <div class="level-body">
+          <div class="level-tool">web_fetch — Скачать страницу</div>
+          <div class="level-desc">Бот скачивает полный текст страницы и читает его. Быстро, для обычных сайтов.</div>
+        </div>
+        <div class="level-badge badge-free">Бесплатно</div>
+      </div>
+      <div class="level">
+        <div class="level-num" style="color:var(--orange)">3</div>
+        <div class="level-body">
+          <div class="level-tool">Tavily MCP — AI-поиск</div>
+          <div class="level-desc">Глубокий поиск с AI-ранжированием — умнее Brave, сам отфильтровывает мусор. Подключим в Блоке 03.</div>
+        </div>
+        <div class="level-badge badge-api">API · 1 000/мес free</div>
+      </div>
+      <div class="level">
+        <div class="level-num" style="color:var(--red)">4</div>
+        <div class="level-body">
+          <div class="level-tool">browser — Настоящий Chrome на VPS</div>
+          <div class="level-desc">Когда сайт на React/Vue и web_fetch вернул пустую страницу — бот запускает Chrome, кликает, читает.</div>
+        </div>
+        <div class="level-badge badge-heavy">Тяжело · нужен Chromium</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="block block-orange">
+      <div class="block-header">
+        <div class="block-icon">🔑</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 1 · Получить Brave Search API ключ</div>
+          <div class="block-title">Регистрация на Brave</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> Brave — бесплатный поисковик без трекинга. Free tier даёт 2 000 запросов в месяц — этого хватает на одного человека. Ключ нужен, чтобы OpenClaw мог делать запросы от твоего имени.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Открой сайт и зарегистрируйся</div>
+            <div class="step-detail"><a href="https://brave.com/search/api/" target="_blank">brave.com/search/api</a> → «Get Started for Free» → регистрация через email. Карта не нужна.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Скопируй API ключ</div>
+            <div class="step-detail">После регистрации появится ключ — он начинается с <code>BSA_</code>. Скопируй его.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-action">Добавь ключ в файл .env на VPS</div>
+            <div class="step-detail">Открой файл <code>~/.openclaw/.env</code> и добавь строку: <code>BRAVE_API_KEY=BSA_твой_ключ</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block block-orange">
+      <div class="block-header">
+        <div class="block-icon">⚙️</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 2 · Настроить tools и browser в конфиге</div>
+          <div class="block-title">Конфиг openclaw.json</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> OpenClaw по умолчанию не знает, какие инструменты разрешены и какой поисковик использовать. Мы добавляем секцию <code>tools</code> — она говорит боту: «используй Brave для поиска, и вот как настроить браузер».</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Попроси агента добавить секцию tools в конфиг</div>
+            <div class="step-detail">Агент сам откроет <code>~/.openclaw/openclaw.json</code> и добавит нужный блок по промпту из гайда.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Проверь что браузер работает</div>
+            <div class="step-detail">Одна команда диагностики — <code>openclaw browser doctor --deep</code> — скажет есть ли Chromium на VPS.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-action">Если Chromium не нашёлся — запусти Docker-контейнер</div>
+            <div class="step-detail">Одна команда <code>docker run</code> поднимает Browserless — изолированный Chrome. Потом указываешь его адрес в конфиге.</div>
+          </div>
+        </div>
+      </div>
+      <div class="block-result">
+        <div class="block-result-label">Проверка</div>
+        <div class="block-result-text">Спроси бота: «найди 3 свежие новости про Anthropic». Если вернул реальные ссылки — <strong>работает</strong>.</div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════ PANEL 3 — ПРОАКТИВНОСТЬ ══════════ -->
+  <div class="panel" id="panel-3">
+
+    <h2>Блок 02 · <span class="acc" style="color:var(--red)">Проактивность</span></h2>
+    <p class="lede">Настраиваем HEARTBEAT.md — файл с проверками, который бот читает каждый час — и 4 автоматических расписания.</p>
+
+    <h3>Что бот будет делать сам</h3>
+    <div class="cron-row">
+      <div class="cron-card">
+        <div class="cron-time">09:00 · каждый день</div>
+        <div class="cron-name">Утренний брифинг</div>
+        <div class="cron-desc">Встречи дня, важные письма за ночь, погода, топ AI-новость, 3 главные задачи</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time">21:00 · каждый день</div>
+        <div class="cron-name">Вечерний дайджест</div>
+        <div class="cron-desc">Что закрыл за день, что перенёс на завтра, сколько потратил на API</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time">09:00 · понедельник</div>
+        <div class="cron-name">Недельный обзор</div>
+        <div class="cron-desc">Статистика задач за неделю, расходы, топ-3 достижения, что стоит прекратить делать</div>
+      </div>
+      <div class="cron-card">
+        <div class="cron-time">11:00 · Вт / Чт / Сб</div>
+        <div class="cron-name">Контент-напоминание</div>
+        <div class="cron-desc">Что запланировано на сегодня в контент-плане или 2 идеи поста из артефактов недели</div>
+      </div>
+    </div>
+
+    <div class="notice info">
+      <span class="ni">ℹ️</span>
+      <span><strong>Как работает heartbeat:</strong> каждые 60 минут бот просыпается в изолированной сессии, читает HEARTBEAT.md и проверяет 7 вещей. Если ничего важного нет — молчит. Если нашёл — присылает одно сообщение с буллетами.</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="block block-red">
+      <div class="block-header">
+        <div class="block-icon">📄</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 1 · Создать файл проверок</div>
+          <div class="block-title">HEARTBEAT.md</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> HEARTBEAT.md — это «инструкция для совести». Бот читает его в каждый тик и знает что проверить: дедлайны, письма, расходы API, зависшие задачи. Файл лежит в папке профиля агента.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Узнай где папка профиля агента</div>
+            <div class="step-detail">Команда: <code>openclaw config show | jq '.agentDir'</code> — покажет путь.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Попроси агента создать файл HEARTBEAT.md</div>
+            <div class="step-detail">Агент создаст шаблон с 7 проверками по промпту. Ты можешь потом добавить свои специфические проверки.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-action">Настрой heartbeat в openclaw.json</div>
+            <div class="step-detail">Добавляем секцию: каждый час, изолированная сессия, дешёвая модель, активные часы 08:00–22:00 по Москве.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block block-red">
+      <div class="block-header">
+        <div class="block-icon">🗓️</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 2 · Зарегистрировать 4 расписания</div>
+          <div class="block-title">Cron-задачи</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> Heartbeat проверяет всё каждый час, но не форматирует отчёты. Cron-задачи — это запланированные задания: в точное время бот запускает отдельную сессию, собирает нужную инфу и шлёт тебе готовое сообщение в Telegram.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Узнай свой Telegram chat_id и номера топиков</div>
+            <div class="step-detail">Напиши боту, потом открой <code>api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code> — там будет chat_id. Если используешь форум-группу — там же найдёшь topic ID.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Попроси агента зарегистрировать 4 cron-задачи</div>
+            <div class="step-detail">Агент выполнит 4 команды <code>openclaw cron add</code> с нужными расписаниями, моделью и chat_id.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-action">Протестируй — запусти утренний брифинг прямо сейчас</div>
+            <div class="step-detail">Команда <code>openclaw cron run morning-brief</code> запустит задачу немедленно, не дожидаясь 9:00.</div>
+          </div>
+        </div>
+      </div>
+      <div class="block-result">
+        <div class="block-result-label">Проверка</div>
+        <div class="block-result-text">В Telegram пришло сообщение с реальными данными — встречи, задачи, цифры. <strong>Не «всё ок», а конкретика.</strong></div>
+      </div>
+    </div>
+
+    <div class="notice warn">
+      <span class="ni">⚠️</span>
+      <span><strong>Важно про часовой пояс:</strong> VPS обычно в UTC. Без явного <code>tz: "Europe/Moscow"</code> утренний брифинг придёт в 12:00 МСК вместо 9:00. Агент прописывает это автоматически.</span>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════ PANEL 4 — MCP ══════════ -->
+  <div class="panel" id="panel-4">
+
+    <h2>Блок 03 · <span class="acc" style="color:var(--blue)">MCP-серверы</span></h2>
+    <p class="lede">Подключаем бота к 4 реальным сервисам. Один раз настроил — бот работает с ними прямо из чата.</p>
+
+    <h3>Что подключаем и зачем</h3>
+    <div class="mcp-row">
+      <div class="mcp-card">
+        <div class="mcp-icon">🔍</div>
+        <div class="mcp-info">
+          <div class="mcp-name">Tavily</div>
+          <div class="mcp-desc">AI-поиск — умнее Brave, сам анализирует источники. Нужен для глубокого исследования.</div>
+        </div>
+        <div class="mcp-how">Нужен API-ключ</div>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-icon">📝</div>
+        <div class="mcp-info">
+          <div class="mcp-name">Notion</div>
+          <div class="mcp-desc">Бот читает и создаёт страницы в твоих базах Notion. CRM, задачи, базы знаний — всё в чате.</div>
+        </div>
+        <div class="mcp-how">Нужен API-ключ</div>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-icon">🐙</div>
+        <div class="mcp-info">
+          <div class="mcp-name">GitHub</div>
+          <div class="mcp-desc">Создаёт Issue, смотрит PR, ищет по коду. Управление репозиториями из Telegram.</div>
+        </div>
+        <div class="mcp-how">Нужен PAT-токен</div>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-icon">🎭</div>
+        <div class="mcp-info">
+          <div class="mcp-name">Playwright</div>
+          <div class="mcp-desc">Браузер через MCP — навигация, клики, скриншоты. Для автоматизации сайтов.</div>
+        </div>
+        <div class="mcp-how">Без ключа</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="block block-blue">
+      <div class="block-header">
+        <div class="block-icon">📦</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 1 · Установить uvx</div>
+          <div class="block-title">Пакетный менеджер для Python-MCP</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> Tavily — Python-пакет, для него нужен <code>uvx</code> — это быстрый запускатор от команды Astral. Стартует за 200мс, кеширует пакеты. Без него Tavily не запустится.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Установи uvx одной командой на VPS</div>
+            <div class="step-detail"><code>curl -LsSf https://astral.sh/uv/install.sh | sh</code> — потом переоткрой терминал.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Проверь что установилось</div>
+            <div class="step-detail"><code>uvx --version</code> должен вернуть номер версии.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block block-blue">
+      <div class="block-header">
+        <div class="block-icon">🔑</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 2 · Получить 3 API-ключа</div>
+          <div class="block-title">Tavily + Notion + GitHub</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> каждый сервис требует ключ — это как пропуск. Ключи хранятся в файле <code>.env</code> на VPS и никогда не попадают в конфиг открытым текстом.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Tavily — зарегистрируйся и возьми ключ</div>
+            <div class="step-detail"><a href="https://tavily.com" target="_blank">tavily.com</a> → Sign Up → API Keys. Free tier: 1 000 запросов/месяц. Ключ начинается с <code>tvly-</code></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Notion — создай Internal Integration</div>
+            <div class="step-detail">В Notion: Settings → Connections → Develop or manage integrations → New integration. Скопируй «Internal Integration Secret» — начинается с <code>secret_</code></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-action">GitHub — создай Personal Access Token (Classic)</div>
+            <div class="step-detail">GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate. Отметь scopes: <code>repo</code> и <code>workflow</code>. Ключ начинается с <code>ghp_</code></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-action">Добавь все три ключа в ~/.openclaw/.env</div>
+            <div class="step-detail">Три строки: <code>TAVILY_API_KEY=</code>, <code>NOTION_API_KEY=</code>, <code>GITHUB_PERSONAL_ACCESS_TOKEN=</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block block-blue">
+      <div class="block-header">
+        <div class="block-icon">🔌</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 3 · Подключить MCP-серверы</div>
+          <div class="block-title">openclaw mcp set × 4</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> команда <code>openclaw mcp set</code> регистрирует сервер — OpenClaw знает как его запустить и какие инструменты он даёт боту. Потом эти инструменты появляются в системном промпте автоматически.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Попроси агента подключить 4 MCP-сервера</div>
+            <div class="step-detail">Агент выполнит 4 команды <code>openclaw mcp set</code> по промпту. Playwright потребует отдельно: <code>npx playwright install chromium</code></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Для Notion — открой доступ к своим базам</div>
+            <div class="step-detail">В Notion: зайди в каждую базу → ··· → Connections → добавь свою интеграцию. Без этого бот не видит страницы.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-action">Проверь статус всех серверов</div>
+            <div class="step-detail"><code>openclaw mcp list</code> — все 4 должны быть в статусе <code>connected</code></div>
+          </div>
+        </div>
+      </div>
+      <div class="block-result">
+        <div class="block-result-label">Проверка</div>
+        <div class="block-result-text">Спроси бота: «найди через Tavily новости про MCP за май 2026». Если ответил с реальными ссылками — <strong>Tavily работает</strong>.</div>
+      </div>
+    </div>
+
+    <div class="notice danger">
+      <span class="ni">🚨</span>
+      <span><strong>Типичные ошибки с пакетами:</strong><br>
+      Нет такого пакета: <code>@microsoft/mcp-server-playwright</code><br>
+      Устарел (deprecated): <code>@modelcontextprotocol/server-github</code><br>
+      Правильно: <code>@playwright/mcp</code> · GitHub подключаем через URL без установки</span>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════ PANEL 5 — СКИЛЛЫ ══════════ -->
+  <div class="panel" id="panel-5">
+
+    <h2>Блок 04 · <span class="acc" style="color:var(--green)">Самопрограммирование</span></h2>
+    <p class="lede">Бот умеет создавать новые навыки сам — прямо в процессе разговора с тобой. Никакого кода.</p>
+
+    <div class="notice info">
+      <span class="ni">ℹ️</span>
+      <span><strong>Что такое скилл:</strong> это YAML-файл с инструкцией — что делать при определённом триггере. Агент сам пишет этот файл, file-watcher подхватывает его без перезапуска OpenClaw. Скилл работает сразу.</span>
+    </div>
+
+    <h3>Skill vs MCP — когда что</h3>
+    <div class="block">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num" style="color:var(--green);border-color:rgba(34,197,94,0.3)">S</div>
+          <div class="step-body">
+            <div class="step-action">Скилл — свой воркфлоу, нет готовой интеграции</div>
+            <div class="step-detail">Живёт в <code>~/.openclaw/skills/</code>. Пример: «собери стендап из git-лога и todo.md и пришли мне».</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="color:var(--blue);border-color:rgba(96,165,250,0.3)">M</div>
+          <div class="step-body">
+            <div class="step-action">MCP — есть готовый сервер для внешнего сервиса</div>
+            <div class="step-detail">Notion, GitHub, Tavily — всё уже написано, просто подключаешь. Не нужно изобретать.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="block block-green">
+      <div class="block-header">
+        <div class="block-icon">📦</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 1 · Установить плагин</div>
+          <div class="block-title">self-improving-agent</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> этот ClawHub-плагин даёт боту умение создавать и редактировать собственные скиллы. Без него агент понимает запрос «добавь себе навык», но не умеет его оформить в файл.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Установи плагин одной командой</div>
+            <div class="step-detail"><code>openclaw skills install self-improving-agent</code></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Проверь что установился</div>
+            <div class="step-detail"><code>openclaw skills list --installed</code> — плагин должен быть в списке со статусом active</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block block-green">
+      <div class="block-header">
+        <div class="block-icon">✨</div>
+        <div class="block-meta">
+          <div class="block-label">Шаг 2 · Создать первый кастомный скилл</div>
+          <div class="block-title">Просим бота напрограммировать себя</div>
+        </div>
+      </div>
+      <div class="block-why"><strong>Зачем:</strong> это момент, когда бот становится по-настоящему твоим. Ты описываешь нужное поведение словами — бот пишет YAML-файл, сохраняет и сразу может использовать новый навык.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-action">Попроси бота создать скилл «ежедневный стендап»</div>
+            <div class="step-detail">Опиши что должно происходить: читать git-лог за 24 часа + todo.md → сформировать стендап из 3 пунктов → прислать в Telegram.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-action">Убедись что файл создан</div>
+            <div class="step-detail">Проверь: <code>ls ~/.openclaw/skills/</code> — там должен появиться YAML-файл.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-action">Запусти скилл — напиши слово-триггер</div>
+            <div class="step-detail">Напиши боту то слово, которое ты попросил его использовать как триггер (например «стендап»). Скилл должен запуститься.</div>
+          </div>
+        </div>
+      </div>
+      <div class="block-result">
+        <div class="block-result-label">Проверка</div>
+        <div class="block-result-text">Файл скилла создан + бот реагирует на триггер + <code>openclaw skills list --installed</code> показывает новый скилл.</div>
+      </div>
+    </div>
+
+    <div class="notice tip">
+      <span class="ni">💡</span>
+      <span><strong>Идеи для своих скиллов:</strong> «когда пишу "погода" — покажи прогноз на сегодня» · «когда пишу "ревью" + путь — проверь файл на очевидные ошибки» · «когда пишу "идеи" — предложи 3 темы поста из артефактов недели»</span>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════ PANEL 6 — ИТОГ ══════════ -->
+  <div class="panel" id="panel-6">
+
+    <h2>Чеклист <span class="acc" style="color:var(--violet)">сдачи</span></h2>
+    <p class="lede">4 блока — 4 группы проверок. Пройди каждый пункт.</p>
+
+    <h3>Блок 01 · Интернет</h3>
+    <div class="checks">
+      <div class="check"><div class="check-box"></div><div>Команда <code>openclaw config show | jq '.tools.profile'</code> возвращает <strong>"coding"</strong></div></div>
+      <div class="check"><div class="check-box"></div><div>Спросил «найди новости про Anthropic» — бот вернул <strong>реальные ссылки</strong> (не галлюцинации)</div></div>
+      <div class="check"><div class="check-box"></div><div>Команда диагностики браузера прошла без ошибок</div></div>
+    </div>
+
+    <h3>Блок 02 · Проактивность</h3>
+    <div class="checks">
+      <div class="check"><div class="check-box"></div><div>HEARTBEAT.md лежит в папке профиля агента</div></div>
+      <div class="check"><div class="check-box"></div><div><code>openclaw cron list</code> показывает 4 задачи со статусом <strong>enabled: true</strong></div></div>
+      <div class="check"><div class="check-box"></div><div>Запустил <code>cron run morning-brief</code> вручную — в Telegram пришёл брифинг <strong>с реальными данными</strong></div></div>
+      <div class="check"><div class="check-box"></div><div style="color:var(--lime)">★ Завтра в 9:00 МСК брифинг пришёл сам — без команды от тебя</div></div>
+    </div>
+
+    <h3>Блок 03 · MCP-серверы</h3>
+    <div class="checks">
+      <div class="check"><div class="check-box"></div><div><code>openclaw mcp list</code> — 4 сервера в статусе <strong>connected</strong></div></div>
+      <div class="check"><div class="check-box"></div><div>Запрос про Tavily вернул реальные результаты поиска</div></div>
+      <div class="check"><div class="check-box"></div><div>Запрос «открой мою базу в Notion» — бот вернул содержимое (значит доступ расшарен)</div></div>
+    </div>
+
+    <h3>Блок 04 · Скиллы</h3>
+    <div class="checks">
+      <div class="check"><div class="check-box"></div><div>Плагин self-improving-agent установлен и активен</div></div>
+      <div class="check"><div class="check-box"></div><div>Бот создал кастомный скилл — YAML-файл существует в <code>~/.openclaw/skills/</code></div></div>
+      <div class="check"><div class="check-box"></div><div>Триггер-слово запускает скилл</div></div>
+    </div>
+
+    <hr class="divider">
+
+    <h3>Самодиагностика — попроси бота проверить себя</h3>
+    <div class="pb">
+      <div class="pbar"><span class="ptag">Промпт для самопроверки</span><button class="cbtn" onclick="copyBlock(this)">Copy</button></div>
+      <div class="pcode">Проведи самодиагностику по Воркшопу 3. Проверь и выдай таблицу:
+1. tools.profile в конфиге — ожидаем "coding"
+2. openclaw mcp list — сколько серверов connected
+3. openclaw cron list — сколько задач enabled
+4. openclaw skills list --installed — какие скиллы есть
+5. Сделай один тестовый web_search запрос про "OpenClaw changelog"
+Формат ответа: пункт | статус (✓ / ✗) | детали одной строкой.</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="final">
+      <div class="final-title">Бот <span class="acc">прокачан</span>.</div>
+      <p class="final-desc">Интернет · Проактивность · MCP · Самопрограммирование — бот теперь работает за тебя, а не только с тобой. Воркшоп 4 — мульти-агенты: несколько ботов параллельно на одну задачу.</p>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span>Воркшоп 3 · v1.0 · 15 мая 2026</span>
+    <span><a href="https://t.me/ai_comandos" target="_blank" rel="noopener">@ai_comandos</a></span>
+  </div>
+
+</div>
+
+<script>
+function goTab(n){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('[data-tab="'+n+'"]').classList.add('active');
+  document.getElementById('panel-'+n).classList.add('active');
+}
+function copyBlock(btn){
+  const code=btn.closest('.pb').querySelector('.pcode');
+  navigator.clipboard.writeText(code.textContent.trim()).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},1800);
+  });
+}
+</script>
+</body>
+</html>

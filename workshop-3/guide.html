@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Воркшоп 3 · Матёрый сотрудник · @ai_comandos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;1,700;1,800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0e0f; --card:#181a1b; --card2:#1f2122; --border:rgba(255,255,255,0.06);
+    --text:#f0f0f0; --muted:rgba(240,240,240,0.62); --subtle:rgba(240,240,240,0.4);
+    --lime:#c8ff00; --lime-dim:rgba(200,255,0,0.1); --lime-glow:rgba(200,255,0,0.35);
+    --green:#22c55e; --orange:#f97316; --blue:#60a5fa; --red:#ef4444; --violet:#a78bfa; --cyan:#06b6d4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.014) 0,rgba(255,255,255,0.014) 1px,transparent 1px,transparent 3px)}
+
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(13,14,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;height:54px;display:flex;align-items:center;gap:14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime-glow);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.85)}}
+  .topbar .brand{color:var(--text)} .topbar .sep{color:var(--subtle)} .topbar .crumb{color:var(--muted)}
+  .topbar .right{margin-left:auto;color:var(--lime)} .topbar .right a{color:var(--lime);text-decoration:none}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:40px 32px 100px}
+  .hero{margin-bottom:34px}
+  .hero-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--lime);border:1px solid rgba(200,255,0,0.25);padding:5px 14px;border-radius:3px;display:inline-block}
+  .hero h1{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:64px;line-height:0.96;letter-spacing:-0.005em;text-transform:uppercase;color:var(--text);margin:18px 0 14px}
+  .hero h1 .acc{color:var(--lime)}
+  .hero .lede{font-size:16px;color:var(--muted);max-width:780px;line-height:1.65;font-weight:300}
+  .hero .lede strong{color:var(--text);font-weight:500}
+  .hero-meta{display:flex;gap:30px;margin-top:24px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:18px}
+  .hero-meta .item{display:flex;flex-direction:column;gap:2px}
+  .hero-meta .lbl{font-size:11px;color:var(--subtle);text-transform:uppercase;letter-spacing:0.1em}
+  .hero-meta .val{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;font-size:24px;color:var(--text)}
+  .hero-meta .val.lime{color:var(--lime)}
+
+  h2{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:34px;line-height:1.05;text-transform:uppercase;color:var(--text);margin:32px 0 14px}
+  h2 .acc{color:var(--lime)}
+  h3{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;font-size:18px;letter-spacing:0.02em;text-transform:uppercase;color:var(--lime);margin:24px 0 10px}
+  .lede{font-size:15.5px;color:var(--muted);max-width:860px;line-height:1.65;font-weight:300;margin-bottom:20px}
+  .lede strong{color:var(--text);font-weight:500}
+
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 0}
+  .tab{background:transparent;border:1px solid transparent;border-radius:8px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;color:inherit;font-family:inherit;transition:all 0.2s}
+  .tab:hover{background:rgba(255,255,255,0.02);border-color:var(--border)}
+  .tab.active{background:rgba(255,255,255,0.03);border-color:var(--border)}
+  .tab-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--subtle);text-transform:uppercase}
+  .tab[data-tab="0"].active .tab-num{color:var(--cyan)}
+  .tab[data-tab="1"].active .tab-num{color:var(--lime)}
+  .tab[data-tab="2"].active .tab-num{color:var(--orange)}
+  .tab[data-tab="3"].active .tab-num{color:var(--red)}
+  .tab-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text);line-height:1.05;letter-spacing:0.01em}
+  .tab-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+  .panel{display:none}
+  .panel.active{display:block;animation:fadeIn 0.3s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+  .notice{display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:8px;margin-bottom:16px;font-size:13.5px;line-height:1.6}
+  .notice .ni{font-size:16px;line-height:1}
+  .notice.info{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.18);color:rgba(220,235,255,0.9)}
+  .notice.tip{background:rgba(200,255,0,0.04);border:1px solid rgba(200,255,0,0.2);color:rgba(240,255,200,0.9)}
+  .notice.wrn{background:rgba(249,115,22,0.05);border:1px solid rgba(249,115,22,0.22);color:rgba(255,230,200,0.9)}
+  .notice.danger{background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.22);color:rgba(255,210,210,0.9)}
+  .notice strong{color:var(--text)}
+  .notice code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:rgba(255,255,255,0.05);padding:1px 6px;border-radius:3px;color:var(--lime)}
+
+  .pcard{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:8px;padding:20px 22px;margin-bottom:16px;transition:border-color 0.2s}
+  .pcard:hover{border-color:rgba(200,255,0,0.18)}
+  .pcard-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:12px}
+  .pcard-badge{flex:0 0 44px;height:44px;border-radius:8px;background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.25);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:20px;color:var(--lime)}
+  .pcard-info{flex:1}
+  .pcard-tool{font-size:11px;color:var(--lime);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+  .pcard-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:22px;font-weight:700;color:var(--text);line-height:1.1}
+  .pcard-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:12px}
+  .pcard-desc strong{color:var(--text);font-weight:500}
+  .pcard-desc code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:rgba(255,255,255,0.05);padding:1px 6px;border-radius:3px;color:var(--lime)}
+
+  .pb{background:var(--card2);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+  .pbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase}
+  .ptag{color:var(--subtle)}
+  .cbtn{background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.25);color:var(--lime);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s}
+  .cbtn:hover{background:rgba(200,255,0,0.18)}
+  .cbtn.copied{background:rgba(34,197,94,0.18);border-color:rgba(34,197,94,0.4);color:var(--green)}
+  .pcode{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text);background:var(--card2);padding:14px 16px;line-height:1.6;white-space:pre-wrap;word-break:break-word;border:none;margin:0}
+
+  .rbox{background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.2);border-radius:6px;padding:10px 14px;margin-top:10px;font-size:13px;color:rgba(220,255,220,0.85);line-height:1.55}
+  .rtitle{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:4px}
+  .rrow{margin-bottom:3px}
+  .rrow code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:rgba(34,197,94,0.08);padding:1px 5px;border-radius:3px;color:rgba(220,255,220,0.95)}
+
+  .final{background:linear-gradient(135deg,rgba(200,255,0,0.06),rgba(13,14,15,1));border:1px solid rgba(200,255,0,0.25);border-radius:10px;padding:24px 28px;margin-top:24px}
+  .final-title{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:24px;text-transform:uppercase;color:var(--text);margin-bottom:8px}
+  .final-title .acc{color:var(--lime)}
+  .final-desc{font-size:14px;color:var(--muted);line-height:1.65}
+
+  .submit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+  .submit-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:8px;padding:14px}
+  .submit-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--red);text-transform:uppercase;margin-bottom:6px}
+  .submit-icon{font-size:20px;line-height:1;margin-bottom:6px}
+  .submit-title{font-size:13.5px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px}
+  .submit-from{font-size:11.5px;color:var(--subtle);line-height:1.45}
+
+  .verdict{background:#0d0e0f;border:1px solid var(--lime);border-radius:8px;padding:22px 26px;margin-top:14px}
+  .verdict-h{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:22px;color:var(--lime);text-transform:uppercase;margin-bottom:8px}
+  .verdict-h .em{font-style:normal;margin-right:6px}
+
+  .footer{margin-top:60px;padding:24px 0;border-top:1px solid var(--border);font-size:13px;color:var(--subtle);display:flex;gap:14px;justify-content:space-between;flex-wrap:wrap}
+  .footer a{color:var(--lime);text-decoration:none}
+
+  /* Подготовка panel */
+  .prep-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin-bottom:14px}
+  .prep-card h4{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:20px;font-weight:700;color:var(--text);margin-bottom:10px;text-transform:uppercase}
+  .prep-card h4 .num{display:inline-block;color:var(--cyan);font-weight:800;margin-right:8px}
+  .prep-card p{font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:8px}
+  .prep-card p strong{color:var(--text)}
+  .prep-card ol,.prep-card ul{margin:0 0 10px 22px;color:var(--muted);font-size:13.5px;line-height:1.75}
+  .prep-card li{margin-bottom:3px}
+  .prep-card code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:rgba(6,182,212,0.08);padding:1px 6px;border-radius:3px;color:var(--cyan)}
+
+  /* Audit panel */
+  .audit-copy{margin:20px 0;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .audit-copy .pbar{background:rgba(249,115,22,0.06);border-color:rgba(249,115,22,0.18)}
+  .audit-copy .ptag{color:var(--orange)}
+  .audit-copy .cbtn{background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.25);color:var(--orange)}
+  .audit-copy .pcode{background:#0a0b0c;font-size:11.5px;line-height:1.65;max-height:600px;overflow-y:auto}
+
+  @media(max-width:768px){
+    .tabs{grid-template-columns:repeat(2,1fr)}
+    .submit-grid{grid-template-columns:1fr}
+    .hero h1{font-size:42px}
+    .hero-meta{gap:18px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="dot"></span>
+  <span class="brand">COMANDOS AI</span>
+  <span class="sep">/</span>
+  <span class="crumb">Воркшоп 3 · Матёрый сотрудник</span>
+  <span class="right"><a href="https://t.me/ai_comandos" target="_blank">@ai_comandos</a></span>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="hero-tag">Воркшоп 3 · 15 мая 2026 · v3.0 финал</span>
+    <h1>Бот <span class="acc">видит мир</span>.<br>Бот <span class="acc">действует</span>.</h1>
+    <p class="lede">Из реактивного бота с памятью — в матёрого сотрудника. <strong>GPT-5 как primary через подписку ChatGPT Plus</strong>. <strong>Браузер с антидетектом</strong> — кликает, заполняет, не палится. <strong>Gmail + Calendar</strong> доступ через MCP. <strong>Сам себе ставит cron-задачи</strong> через диалог. 7 скиллов под разные типы задач. Источник истины — <code>standards/workshop-3-standard.md</code> в репо.</p>
+    <div class="hero-meta">
+      <div class="item"><span class="lbl">Длительность</span><span class="val">~120 минут</span></div>
+      <div class="item"><span class="lbl">Промптов</span><span class="val lime">8</span></div>
+      <div class="item"><span class="lbl">Доказательств сдачи</span><span class="val">6</span></div>
+      <div class="item"><span class="lbl">Доплата</span><span class="val">~$20–25 / мес</span></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="0" onclick="goTab(0)">
+      <span class="tab-num">00 · ДО старта</span>
+      <span class="tab-title">Подготовка</span>
+      <span class="tab-desc">25 мин накануне — ключи, подписки, ботовая почта</span>
+    </button>
+    <button class="tab" data-tab="1" onclick="goTab(1)">
+      <span class="tab-num">01 · AI-агент</span>
+      <span class="tab-title">Установка</span>
+      <span class="tab-desc">8 промптов: GPT-5, браузер, MCP, скиллы, cron</span>
+    </button>
+    <button class="tab" data-tab="2" onclick="goTab(2)">
+      <span class="tab-num">02 · Новый чат</span>
+      <span class="tab-title">Аудитор</span>
+      <span class="tab-desc">Один промпт — независимый вердикт по A–H</span>
+    </button>
+    <button class="tab" data-tab="3" onclick="goTab(3)">
+      <span class="tab-num">03 · Финал</span>
+      <span class="tab-title">Сдача · Домашка</span>
+      <span class="tab-desc">6 доказательств в спринт-бот @ai_comandos_bot</span>
+    </button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 0 — ПОДГОТОВКА                                              -->
+  <!-- ============================================================ -->
+  <div class="panel active" id="panel-0">
+
+    <div class="notice info"><div class="ni">🎒</div><span>Это <strong>домашка ДО воркшопа</strong>. Без неё на В3 зависнешь на 25 минут регистраций. Сделай за день — сэкономишь время на самом воркшопе.</span></div>
+
+    <h2>Собираем <span class="acc">6 вещей</span> заранее</h2>
+    <p class="lede">Подписка ChatGPT Plus, 2 API-ключа, отдельная Gmail для бота, OAuth-файл из Google Cloud Console. По шагам ниже — 25 минут суммарно.</p>
+
+    <!-- 1. Ботовая Gmail -->
+    <div class="prep-card">
+      <h4><span class="num">1</span> Отдельная ботовая Gmail (3 мин)</h4>
+      <p><strong>Почему отдельная.</strong> Боту даём доступ к почте и календарю. Если использовать личную — бот через ошибку может удалить важное письмо или отправить от твоего имени. Отдельный аккаунт = чистая граница.</p>
+      <ol>
+        <li>Открой <strong>инкогнито-окно</strong> в Chrome/Safari (важно: не мешать своему Google-аккаунту)</li>
+        <li><code>accounts.google.com</code> → «Create account» → «For my personal use»</li>
+        <li>Имя любое (например <em>Openclaw Bot</em>)</li>
+        <li>Username: <code>&lt;твоё-имя&gt;-openclaw@gmail.com</code></li>
+        <li>Пароль → 2FA по желанию</li>
+        <li><strong>Сохрани логин/пароль в менеджер паролей</strong> — без этого через месяц забудешь и потеряешь доступ к боту</li>
+      </ol>
+    </div>
+
+    <!-- 2. ChatGPT Plus -->
+    <div class="prep-card">
+      <h4><span class="num">2</span> Подписка ChatGPT Plus $20/мес (2 мин)</h4>
+      <p><strong>Зачем.</strong> В3 переходим на <strong>GPT-5</strong> как primary модель бота. Доступ через Codex CLI OAuth — официальный способ OpenAI. Подписка даёт безлимит на GPT-5 в боте.</p>
+      <ol>
+        <li><code>chat.openai.com</code> → залогинься</li>
+        <li>Профиль слева снизу → «Upgrade plan» → Plus → оплатить</li>
+      </ol>
+      <p>Если уже есть Plus — пропусти.</p>
+    </div>
+
+    <!-- 3. Brave API -->
+    <div class="prep-card">
+      <h4><span class="num">3</span> Brave Search API ключ (3 мин)</h4>
+      <p><strong>Зачем.</strong> Бесплатные 2000 поисковых запросов/мес. Это <code>web_search</code> для бота — когда нужно «загуглить».</p>
+      <ol>
+        <li><code>brave.com/search/api/</code> → «Get Started»</li>
+        <li>Зарегистрируйся (email)</li>
+        <li>Subscribe → «Free plan» 2000 queries/month → без карты</li>
+        <li>Dashboard → API Keys → скопируй ключ (формат <code>BSA...</code>)</li>
+        <li>Сохрани как <code>BRAVE_API_KEY=BSA...</code></li>
+      </ol>
+    </div>
+
+    <!-- 4. Tavily API -->
+    <div class="prep-card">
+      <h4><span class="num">4</span> Tavily API ключ (3 мин)</h4>
+      <p><strong>Зачем.</strong> Второй поисковик для <strong>глубокого ресёрча</strong>. Возвращает структурированные данные специально для AI-агентов (а не HTML как Brave). Free tier 1000 запросов/мес.</p>
+      <ol>
+        <li><code>tavily.com</code> → Sign up</li>
+        <li>Dashboard → копируй API key (<code>tvly-...</code>)</li>
+        <li>Сохрани как <code>TAVILY_API_KEY=tvly-...</code></li>
+      </ol>
+    </div>
+
+    <!-- 5. Google Cloud Console -->
+    <div class="prep-card" style="border-color:rgba(249,115,22,0.25)">
+      <h4 style="color:var(--orange)"><span class="num" style="color:var(--orange)">5</span> Google Cloud Console — самое сложное (12 мин)</h4>
+      <p><strong>Зачем.</strong> Чтобы бот мог читать Gmail и Calendar — нужен OAuth. Настраивается в Google Cloud Console. На выходе получишь файл <code>client_secret.json</code>.</p>
+      <p><strong style="color:var(--orange)">КРИТИЧНО:</strong> весь этот шаг делается <strong>под ботовой Gmail</strong> из шага 1, не под личным аккаунтом!</p>
+
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.1 — Создать проект</h5>
+      <ol>
+        <li>Инкогнито-окно → <code>console.cloud.google.com</code></li>
+        <li>Залогинься <strong>ботовой почтой</strong></li>
+        <li>Accept Terms (если первый раз)</li>
+        <li>Сверху dropdown «Select a project» → <strong>NEW PROJECT</strong></li>
+        <li>Name: <code>openclaw-bot</code>, Location: «No organization»</li>
+        <li>CREATE → ждёшь 30 сек → Switch to project</li>
+      </ol>
+
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.2 — Включить 2 API</h5>
+      <ol>
+        <li>Левое меню ☰ → APIs &amp; Services → Library</li>
+        <li>Поиск «Gmail API» → ENABLE</li>
+        <li>Назад в Library → «Google Calendar API» → ENABLE</li>
+      </ol>
+
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.3 — OAuth Consent Screen</h5>
+      <ol>
+        <li>☰ → APIs &amp; Services → OAuth consent screen</li>
+        <li>User Type: <strong>External</strong> → CREATE</li>
+        <li>App name: <code>openclaw-bot</code></li>
+        <li>User support email + Developer contact: твоя ботовая почта</li>
+        <li>Save and Continue</li>
+      </ol>
+
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.4 — Scopes</h5>
+      <ol>
+        <li>На странице Scopes → Add or Remove Scopes</li>
+        <li>В фильтре «gmail» → отметь чекбоксами:
+          <ul><li><code>.../auth/gmail.readonly</code></li><li><code>.../auth/gmail.send</code></li></ul>
+        </li>
+        <li>В фильтре «calendar» → отметь:
+          <ul><li><code>.../auth/calendar.events.readonly</code></li><li><code>.../auth/calendar.readonly</code></li></ul>
+        </li>
+        <li>Update → Save and Continue</li>
+      </ol>
+
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.5 — Test Users (без этого OAuth не сработает!)</h5>
+      <ol>
+        <li>На странице Test Users → Add Users</li>
+        <li>Введи свою <strong>ботовую почту</strong></li>
+        <li>ADD → Save and Continue → Back to Dashboard</li>
+      </ol>
+
+      <h5 style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:15px;text-transform:uppercase;color:var(--orange);margin:14px 0 6px">Часть 5.6 — Создать OAuth Client ID</h5>
+      <ol>
+        <li>☰ → APIs &amp; Services → Credentials</li>
+        <li>+ Create Credentials → OAuth client ID</li>
+        <li>Application type: <strong>Desktop app</strong></li>
+        <li>Name: <code>openclaw-bot-desktop</code> → CREATE</li>
+        <li>В модалке нажми <strong>Download JSON</strong> → файл <code>client_secret_XXXX.json</code> сохранится в Downloads</li>
+        <li>Открой файл в TextEdit и сохрани в заметках:
+          <ul>
+            <li><code>GOOGLE_OAUTH_CLIENT_ID=</code> (значение поля <code>client_id</code>)</li>
+            <li><code>GOOGLE_OAUTH_CLIENT_SECRET=</code> (значение поля <code>client_secret</code>)</li>
+          </ul>
+        </li>
+        <li><strong>Сам файл client_secret_XXXX.json НЕ удаляй</strong> — он понадобится на В3</li>
+      </ol>
+    </div>
+
+    <!-- 6. DataImpulse опц -->
+    <div class="prep-card" style="border-color:rgba(167,139,250,0.18);background:rgba(167,139,250,0.02)">
+      <h4 style="color:var(--violet)"><span class="num" style="color:var(--violet)">6</span> 💡 DataImpulse прокси — ОПЦ (5 мин)</h4>
+      <p><strong>Когда нужно:</strong> если работаешь с сайтами которые геоблокируют (booking.com) или агрессивно банят датацентровые IP (Cloudflare-защищённые).</p>
+      <p><strong>Когда НЕ нужно:</strong> простой поиск, чтение статей, бронирование — Patchright + Xvfb справятся без residential proxy.</p>
+      <ol>
+        <li><code>dataimpulse.com</code> → Sign Up</li>
+        <li>Top Up минимум $1 (1 GB трафика — на месяцы для бота)</li>
+        <li>Dashboard → Residential proxy → копируй Username и Password</li>
+        <li>Сохрани как <code>PROXY_USER=...</code> и <code>PROXY_PASS=...</code></li>
+      </ol>
+    </div>
+
+    <div class="final">
+      <div class="final-title">Готов? Открывай <span class="acc">Установку</span></div>
+      <div class="final-desc">После Подготовки в твоих заметках должно быть: ботовая почта, ChatGPT Plus подписка активна, BRAVE_API_KEY, TAVILY_API_KEY, GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, и файл <code>client_secret_XXXX.json</code> в Downloads. Если всё есть — переходи на Закладку 01.</div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1 — УСТАНОВКА (8 ПРОМПТОВ)                                  -->
+  <!-- ============================================================ -->
+  <div class="panel" id="panel-1">
+
+    <div class="notice info"><div class="ni">ℹ️</div><span>Скопируй <strong>Промпт #0</strong> один раз — это контекст. Затем по очереди — 8 промптов. После каждого жди от AI «готово / закрыл пункты X.Y». Между Блоком 4 (cron) и Блоком 5 (тесты) — обязательный <strong>чекпоинт-коммит</strong>.</span></div>
+
+    <div class="notice tip"><div class="ni">💡</div><span><strong>Где запускать:</strong> любой AI-чат который работает в папке проекта — Claude Code в VSCode / Antigravity / Cursor agent. AI сам выбирает метод по доступным инструментам. Промпт 1 (Codex OAuth) — единственный руками в Mac Terminal.</span></div>
+
+    <!-- ПРОМПТ #0 — КОНТЕКСТ -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">#0</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Один раз в начале</div>
+          <div class="pcard-title">Контекст + git pull свежего стандарта + версия OpenClaw</div>
+        </div>
+      </div>
+      <p class="pcard-desc">AI <strong>обновляет репо</strong> (там лежит стандарт В3 v1.0), читает его, проверяет версию OpenClaw на VPS. Только после этого даём Промпт 1.</p>
+      <div class="pb"><div class="pbar"><span class="ptag">AI-чат</span><button class="cbtn" onclick="cp(this,'p0')">📋 Копировать</button></div><pre class="pcode" id="p0">Помоги мне пройти Воркшоп 3 спринта по AI-сотруднику OpenClaw. В1+В2 пройдены: бот в Telegram отвечает, помнит между сессиями (Mem0+Qdrant), бэкап в GitHub работает. В3 = матёрый сотрудник: GPT-5 через ChatGPT Plus OAuth как primary, браузер с антидетектом, Gmail+Calendar через MCP, 7 named скиллов, бот сам ставит себе cron-задачи через диалог.
+
+⚠️ САМЫМ ПЕРВЫМ ШАГОМ — определи версию OpenClaw на VPS:
+  ssh -i ~/.ssh/clawd_ed25519 clawd@$VPS_IP "openclaw --version"
+Запиши версию. Если &lt;2026.5.0 — спроси меня, потому что некоторые команды W3 заточены под 2026.5+ (plugins install, mcp add HTTP transport).
+
+ПЕРЕД НАЧАЛОМ — обновить локальный репо проекта:
+1. cd в папку проекта (где .env)
+2. git pull origin main — там свежий standards/workshop-3-standard.md v1.0 (источник истины)
+3. Прочитай standards/workshop-3-standard.md ЦЕЛИКОМ — это твой чек-лист на В3. После каждого моего промпта отчитывайся какие критерии (A.1, C.5, D.7 и т.д.) ты закрыл.
+4. Прочитай standards/workshop-1-standard.md раздел C — это базовый каскад моделей. В В3 меняется только primary на GPT-5; остальное остаётся.
+5. Прочитай standards/workshop-2-standard.md — там C.17 Memory Search Protocol, E.15 autocommit whitelist, F.5 watchdog */15. Эти критерии должны продолжать работать после В3 (не сломать!).
+6. Прочитай .env — узнаешь VPS_IP, SSH-ключ, OPENROUTER_API_KEY, MINIMAX_API_KEY, и т.д.
+
+ТВОИ ИНСТРУМЕНТЫ — определи сам и используй всё что доступно:
+- Bash + ssh ~/.ssh/clawd_ed25519 clawd@$VPS_IP 'команда' — для one-shot SSH
+- Тяжёлые команды (apt/pip/npm) — `ssh ... 'nohup cmd > /tmp/log.log 2>&1 &'` чтобы сессия не разорвалась
+- Read/Edit/Write — для локальных файлов на Mac
+- Если SSH недоступен — давай команды для копипаста
+
+ПРАВИЛА (из workshop-3-standard.md):
+1. После любой правки openclaw.json: `openclaw doctor --fix && openclaw gateway restart && chmod 600 ~/.openclaw/openclaw.json` (баг #18866)
+2. Anthropic-моделей прямо НЕТ. Если нужен Claude — только через `openrouter/anthropic/...`
+3. На 2026.5.x Mem0 install через `openclaw plugins install --dangerously-force-unsafe-install` (issue #4645) — это известный compat-shift.
+4. Никаких `git add .` или `git add -A` — только explicit whitelist (W2 E.15).
+5. Codex CLI OAuth требует TTY — это единственный SSH-шаг руками для меня. Антагравити его не сделает.
+
+ПЕРВЫМ ДЕЛОМ:
+1. git pull origin main
+2. Прочитай standards/workshop-3-standard.md
+3. Проверь SSH + `openclaw --version` на VPS
+4. Отчитайся: какая версия OpenClaw, какие критерии В3 уже могут быть закрыты с В1+В2 (например A.5 fallback minimax — уже стоит), какие предстоит делать.
+
+После этого жди Промпт 1.</pre></div>
+      <div class="rbox"><div class="rtitle">Что должно произойти</div><div class="rrow">AI делает <code>git pull</code>, читает стандарт В3, проверяет SSH + версию OpenClaw, отчитывается о текущем состоянии</div></div>
+    </div>
+
+    <h2>8 промптов · <span class="acc">логические блоки</span></h2>
+
+    <!-- ПРОМПТ 1 — Codex CLI OAuth (РУКАМИ В ТЕРМИНАЛЕ) -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">1</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Codex CLI OAuth · РУКАМИ в Mac Terminal · 15 мин</div>
+          <div class="pcard-title">GPT-5 как primary через ChatGPT Plus</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Это <strong>единственный шаг руками</strong> на В3. Codex CLI требует интерактивный TTY для OAuth — Antigravity не справится. Делаешь в Mac Terminal через SSH. Дальше всё AI сам.</p>
+
+      <div class="notice wrn"><div class="ni">⚠️</div><span>Codex CLI — <strong>официальный продукт OpenAI</strong> (<code>github.com/openai/codex</code>). OAuth через ChatGPT Plus — поддерживаемый способ авторизации. Не пиратство.</span></div>
+
+      <p class="pcard-desc"><strong>Шаг A — SSH на VPS с флагом -t (для TTY):</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">Mac Terminal · в папке проекта</span><button class="cbtn" onclick="cp(this,'p1a')">📋 Копировать</button></div><pre class="pcode" id="p1a">set -a && source .env && set +a && ssh -t -i $SSH_KEY_PATH clawd@$VPS_IP</pre></div>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг B — Установить Codex CLI под clawd:</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1b')">📋 Копировать</button></div><pre class="pcode" id="p1b">npm i -g @openai/codex
+which codex
+codex --version</pre></div>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг C — OAuth flow:</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1c')">📋 Копировать</button></div><pre class="pcode" id="p1c">codex</pre></div>
+
+      <p class="pcard-desc" style="margin-top:10px;font-size:13px">Codex выдаст меню. Выбери стрелочками <strong>«Sign in with ChatGPT»</strong> → Enter. Появится URL вида <code>https://auth.openai.com/oauth/authorize?...</code>. Скопируй URL целиком.</p>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг D — Авторизуйся в браузере на Mac:</strong></p>
+      <ol class="pcard-desc" style="padding-left:22px;line-height:1.85">
+        <li>Открой Chrome/Safari на Mac, вставь URL из терминала</li>
+        <li>Залогинься своим ChatGPT Plus аккаунтом → «Continue»</li>
+        <li>Браузер редиректнёт на <code>http://localhost:1455/...</code> — страница покажет ошибку «не удалось подключиться». <strong>Это нормально.</strong></li>
+        <li><strong>Скопируй полный URL из адресной строки браузера</strong> (включая <code>?code=...&amp;state=...</code>)</li>
+        <li>Вернись в Terminal, вставь URL → Enter</li>
+      </ol>
+
+      <p class="pcard-desc" style="margin-top:10px;font-size:13px">Успешный результат в терминале:</p>
+      <div class="pb"><pre class="pcode" id="p1d">✓ Signed in as &lt;your-email@example.com&gt;
+Plan: ChatGPT Plus</pre></div>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Шаг E — Проверь токен и выйди из SSH:</strong></p>
+      <div class="pb"><div class="pbar"><span class="ptag">VPS · после ssh</span><button class="cbtn" onclick="cp(this,'p1e')">📋 Копировать</button></div><pre class="pcode" id="p1e">ls -la ~/.codex/auth.json
+chmod 600 ~/.codex/auth.json
+codex auth status
+exit</pre></div>
+
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">Что должно произойти</div><div class="rrow">Codex CLI установлен под clawd, OAuth-токен в <code>~/.codex/auth.json</code> с chmod 600, <code>codex auth status</code> → Plan: ChatGPT Plus. Закрывает A.1, A.2.</div></div>
+
+      <div class="notice tip" style="margin-top:14px"><div class="ni">⏱</div><span><strong>Срок жизни токена — 30 дней.</strong> Обновить — та же команда <code>codex</code> → Sign in with ChatGPT. Запиши себе reminder.</span></div>
+    </div>
+
+    <!-- ПРОМПТ 2 — РАСШИРИТЬ .env -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">2</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Antigravity · 5 мин</div>
+          <div class="pcard-title">Расширить .env под новые ключи</div>
+        </div>
+      </div>
+      <p class="pcard-desc">AI создаёт пустые поля в <code>.env</code> для всех ключей которые ты собрал в Подготовке. Затем ты заполняешь их вручную (значения никогда не печатаешь в чат AI).</p>
+      <div class="pb"><div class="pbar"><span class="ptag">AI-чат</span><button class="cbtn" onclick="cp(this,'p2')">📋 Копировать</button></div><pre class="pcode" id="p2">Промпт 2: Расширь мой локальный .env (на Mac, не на VPS) новыми полями для В3.
+
+Добавь в конец .env (если каких-то уже нет — создай, если есть — оставь как есть):
+
+# === Workshop 3 ===
+# Brave Search API (free 2000/мес)
+BRAVE_API_KEY=
+
+# Tavily MCP (free 1000/мес)
+TAVILY_API_KEY=
+
+# Google Cloud Console OAuth (для Gmail + Calendar MCP)
+GOOGLE_OAUTH_CLIENT_ID=
+GOOGLE_OAUTH_CLIENT_SECRET=
+
+# DataImpulse residential proxy (опц)
+PROXY_USER=
+PROXY_PASS=
+
+Покажи мне .env после правки. После моего «заполнил» — сохрани значения на VPS через scp ~/.openclaw/.env (под clawd, chmod 600).
+
+⚠️ КРИТИЧНО: значения ключей мне в чат НЕ показывай — только подтверждение что .env обновлён и значения переданы на VPS. Это базовая security-гигиена.</pre></div>
+      <div class="rbox"><div class="rtitle">Что должно произойти</div><div class="rrow">Локальный .env расширен 6 новыми полями. После моего «заполнил» — значения на VPS в <code>~/.openclaw/.env</code> с chmod 600. Ключи в чат AI НЕ попали.</div></div>
+    </div>
+
+    <!-- ПРОМПТ 3 — БОЛЬШОЙ INSTALL (всё разом) -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">3</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Antigravity · 35-40 мин AI работает</div>
+          <div class="pcard-title">Один большой установочный промпт — весь стек</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Один промпт делает ВСЁ за один заход: каскад моделей с GPT-5 primary, браузерный стек (Patchright + Xvfb + human-cursor + humanization + xdotool), 3 MCP-сервера, 7 скиллов, AGENTS.md обновление, HEARTBEAT.md, autocommit whitelist расширение, self-improving-agent. Закрывает разделы A.3-A.5, B, C, D стандарта.</p>
+
+      <div class="notice wrn"><div class="ni">⏱</div><span>На прогон AI этого промпта — <strong>35-40 минут</strong> (apt-deps, pip install, patchright chrome download, npm uvx, форк browser-use, конфиги). Иди заваривать чай. После — отчёт по 30+ критериям.</span></div>
+
+      <div class="pb"><div class="pbar"><span class="ptag">AI-чат</span><button class="cbtn" onclick="cp(this,'p3')">📋 Копировать</button></div><pre class="pcode" id="p3">Промпт 3: Установи весь стек В3 одним заходом. Закрой разделы A.3-A.5, B, C, D стандарта workshop-3-standard.md.
+
+ЭТАП 1 — Каскад моделей (A.3-A.5):
+- В ~/.openclaw/openclaw.json добавь auth profile `openai-codex` (использует токен из ~/.codex/auth.json который я уже создал в Промпте 1)
+- agents.defaults.model.primary = "openai/gpt-5"
+- agents.defaults.model.fallback = "minimax/MiniMax-M2.7" (был primary, теперь запасной)
+- Остальное (heartbeat gemini-flash-lite, subagents kimi-k2.6, premium alias deepseek-v4-pro, image gemini-flash-image) — оставь как было
+
+ЭТАП 2 — Веб-инструменты (B.1-B.7):
+- В .env на VPS уже есть BRAVE_API_KEY и TAVILY_API_KEY (Промпт 2). Используй их через ${VAR}.
+- В openclaw.json: tools.braveSearch.apiKey = "${BRAVE_API_KEY}"
+- MCP-сервер Tavily через HTTP: проверь актуальный синтаксис `openclaw mcp --help`. Если 2026.5.x — попробуй `openclaw mcp add --transport http tavily "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"`. Если не работает — настрой через openclaw.json вручную в mcp.servers.tavily.
+
+ЭТАП 3 — Браузерный стек с антидетектом (C.1-C.8):
+3.1. apt deps: xvfb, xdotool, python3.12, python3.12-venv. Проверь python3.12 — на Ubuntu 24.04 он дефолт; если у меня старее (22.04) — python3.11.
+3.2. Создай venv /home/clawd/browser-env, активируй, поставь uv:
+     python3.12 -m venv /home/clawd/browser-env
+     /home/clawd/browser-env/bin/pip install uv
+3.3. Через uv в venv поставь: browser-use[cli], patchright, pyvirtualdisplay, playwright-ghost-cursor, humanization-playwright
+     (Если humanization-playwright не находится на pypi — поищи альтернативу `humanize-playwright` или `playwright-stealth`. Документируй какую поставил.)
+3.4. patchright install chrome --with-deps (это качает Chrome ~150 МБ, минут 5 идёт)
+3.5. МЕТОДОЛОГИЯ МАКС-СТЕЛС: форкни browser-use на VPS, замени `from playwright` → `from patchright` в исходниках:
+     cd /home/clawd && git clone https://github.com/browser-use/browser-use browser-use-fork
+     cd browser-use-fork
+     grep -r "from playwright" . --include="*.py" -l | xargs sed -i 's/from playwright/from patchright/g'
+     /home/clawd/browser-env/bin/pip install -e .
+3.6. mkdir -p /home/clawd/.browser-profiles/default
+3.7. Xvfb systemd-user unit: ~/.config/systemd/user/xvfb.service с ExecStart=/usr/bin/Xvfb :99 -screen 0 1920x1080x24, Restart=always. systemctl --user enable xvfb && systemctl --user start xvfb.
+3.8. В openclaw.json mcp.servers.browser-use:
+{
+  "command": "/home/clawd/browser-env/bin/browser-use",
+  "args": ["--mcp"],
+  "env": {
+    "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
+    "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
+    "BROWSER_USE_LLM": "openrouter/google/gemini-2.5-flash-lite",
+    "DISPLAY": ":99",
+    "BROWSER_HEADLESS": "false",
+    "BROWSER_PROFILE_DIR": "/home/clawd/.browser-profiles/default"
+  }
+}
+3.9. tools.deny секция (C.9) — запрети боту редактировать openclaw.json, credentials/, secrets/:
+{
+  "tools": {
+    "deny": [
+      "~/.openclaw/openclaw.json",
+      "~/.openclaw/credentials/",
+      "~/.openclaw/secrets/"
+    ]
+  }
+}
+
+ЭТАП 4 — 7 скиллов (D.1-D.7):
+4.1. Создай папки workspace/skills/{web-quick,page-reader,deep-research,browser-agent,mail-handler,calendar-keeper}
+4.2. Для каждой создай SKILL.md по шаблону (читай актуальный синтаксис в файлах из W2: workspace/skills/) — frontmatter `name`, `description`, `version`, `metadata.openclaw.emoji`, потом body «когда использовать / когда НЕ / как формулировать задачу».
+4.3. Установи self-improving-agent из ClawHub: `openclaw skills install self-improving-agent` (на 2026.5+ может быть `openclaw plugins install --dangerously-force-unsafe-install self-improving-agent` — попробуй сначала skills install). Если ClawHub не доступен — git clone https://clawhub.ai/pskoett/self-improving-agent.
+4.4. Проверь: `openclaw skills list` — должны быть видны все 7.
+
+ЭТАП 5 — AGENTS.md обновление (B.7 + D.8) — incremental, НЕ перезатирать W2 Memory Search Protocol:
+В ~/.openclaw/workspace/AGENTS.md добавь СРАЗУ после Memory Search Protocol две новые секции:
+
+## Иерархия веб-инструментов
+1. web_search (Brave) → нужна информация, URL неизвестен
+2. web_fetch → URL известен, страница статичная
+3. browser-use → действие, динамичная страница, форма
+ПРАВИЛО: браузер только когда web_search и web_fetch не справятся. $0.03/задача.
+ЗАПРЕЩЕНО browser-use для: простого поиска (→ web_search), статичных страниц (→ web_fetch), фактов из памяти (→ memory_search).
+
+## Когда какой скилл вызывать
+- web-quick → быстрый факт, новость дня
+- page-reader → дан URL статьи, надо суммировать
+- deep-research → глубокий ресёрч с источниками (Tavily)
+- browser-agent → клик, форма, логин, динамичная страница
+- mail-handler → почта (Gmail через google-workspace MCP)
+- calendar-keeper → календарь (Google Calendar через google-workspace MCP)
+- self-improving-agent → срабатывает автоматически при ошибках/коррекциях
+
+ЭТАП 6 — HEARTBEAT.md (F.1-F.2):
+Замени содержимое ~/.openclaw/workspace/HEARTBEAT.md на:
+
+# Heartbeat Rules
+## Когда писать мне первым
+1. В memory/ есть файл с тегом [URGENT] → написать немедленно
+2. Клиент не отвечал >48ч И дедлайн <72ч → напомнить
+3. Нет активности по проекту >3 дней → спросить
+4. Сегодня день публикации (Вт/Чт/Сб) → предложить тему из memory/
+5. Прошло >7 дней без /usage check → напомнить про бюджет
+6. Ничего срочного → ответить ровно: HEARTBEAT_OK (без сообщения мне)
+
+## Что НИКОГДА НЕ делать в heartbeat
+- НЕ вызывать web_search, web_fetch, browser-use, sessions_spawn — это дорого и не нужно для фоновой проверки
+- Только memory_search и чтение файлов в memory/
+- Максимум 3 предложения если пишешь первым
+
+ЭТАП 7 — Autocommit whitelist расширение (H.1):
+В ~/.openclaw/scripts/openclaw-autocommit.sh обнови WHITELIST массив, добавь к существующему:
+- workspace/skills/web-quick/SKILL.md
+- workspace/skills/page-reader/SKILL.md
+- workspace/skills/deep-research/SKILL.md
+- workspace/skills/browser-agent/SKILL.md
+- workspace/skills/mail-handler/SKILL.md
+- workspace/skills/calendar-keeper/SKILL.md
+- REPORT-W3.md
+И добавь блок:
+git ls-files --others --modified -- '.learnings/*.md' 2>/dev/null | xargs -r git add
+
+ЭТАП 8 — Финал:
+openclaw doctor --fix && openclaw gateway restart && chmod 600 ~/.openclaw/openclaw.json
+
+Отчитайся: ✅/⚠️/❌ по каждому критерию A.3-A.5, B.1-B.7, C.1-C.9, D.1-D.9 с цитатой команды/файла. Жди моего «принял» прежде чем переходить к Google OAuth (Промпт 4).</pre></div>
+      <div class="rbox"><div class="rtitle">Что должно произойти</div><div class="rrow">GPT-5 как primary в openclaw.json, Patchright + browser-use в форке готов, 7 скиллов в workspace/skills/, AGENTS.md дополнен incremental, HEARTBEAT.md с 6 правилами, autocommit whitelist расширен, doctor → 0 critical</div></div>
+    </div>
+
+    <!-- ПРОМПТ 4 — GOOGLE OAUTH -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">4</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Antigravity · 10 мин (5 руками)</div>
+          <div class="pcard-title">Google Workspace OAuth (Gmail + Calendar)</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Закрывает раздел E стандарта. Antigravity заливает <code>client_secret.json</code> на VPS, запускает google-workspace-mcp с флагом авторизации, выдаёт тебе URL → ты в браузере на Mac логинишься <strong>ботовой почтой</strong> → токен сохраняется на VPS.</p>
+
+      <div class="pb"><div class="pbar"><span class="ptag">AI-чат</span><button class="cbtn" onclick="cp(this,'p4')">📋 Копировать</button></div><pre class="pcode" id="p4">Промпт 4: Закрой раздел E стандарта (Google Workspace OAuth).
+
+ШАГ A — Я сейчас открою client_secret_XXXX.json из Downloads в TextEdit и пришлю тебе содержимое в чат. ОБЕЩАЙ что после получения:
+1. Сохранишь содержимое на VPS в ~/.openclaw/secrets/google-oauth.json под clawd с chmod 600
+2. Очистишь файл из контекста чата (если возможно)
+3. НЕ покажешь содержимое мне обратно
+
+Скажи "готов принимать JSON" и жди.
+
+ШАГ B — После моего "JSON получен":
+1. Установи google-workspace-mcp под clawd:
+   /home/clawd/browser-env/bin/uvx install google-workspace-mcp
+   (Если не найдёт — попробуй: pipx install google-workspace-mcp)
+
+2. В openclaw.json добавь mcp.servers.google-workspace:
+{
+  "command": "/home/clawd/.local/bin/google-workspace-mcp",
+  "args": ["--credentials", "/home/clawd/.openclaw/secrets/google-oauth.json"],
+  "env": {
+    "GOOGLE_OAUTH_CLIENT_ID": "${GOOGLE_OAUTH_CLIENT_ID}",
+    "GOOGLE_OAUTH_CLIENT_SECRET": "${GOOGLE_OAUTH_CLIENT_SECRET}",
+    "WORKSPACE_SCOPES": "gmail.readonly,gmail.send,calendar.readonly,calendar.events.readonly"
+  }
+}
+
+3. Запусти OAuth flow для google-workspace-mcp:
+   /home/clawd/.local/bin/google-workspace-mcp --auth
+   MCP-сервер выведет URL вида https://accounts.google.com/o/oauth2/v2/auth?...
+
+4. ДАЙ МНЕ ЭТОТ URL. Я открою его в браузере на Mac, залогинюсь БОТОВОЙ почтой, разрешу scopes Gmail+Calendar.
+   После авторизации Google выдаст code — я скопирую и пришлю тебе.
+
+5. Передай code обратно в MCP — он сохранит refresh_token в ~/.openclaw/secrets/google-token.json (chmod 600).
+
+6. openclaw doctor --fix && openclaw gateway restart && chmod 600 ~/.openclaw/openclaw.json
+
+7. Тест Gmail (E.11):
+   Через бот в Telegram скажу: "напиши мне самому себе письмо на ботовую почту через mail-handler skill"
+   Жди подтверждения "письмо пришло".
+
+8. Тест Calendar (E.12):
+   Через бот в Telegram скажу: "что у меня в Google Calendar на завтра?" через calendar-keeper skill
+   Бот должен ответить с реальными событиями.
+
+Отчёт ✅/⚠️/❌ по E.1-E.12.</pre></div>
+      <div class="rbox"><div class="rtitle">Что должно произойти</div><div class="rrow">google-workspace MCP подключён, refresh_token на VPS, бот пишет письма и читает календарь. Закрывает E.6-E.12 (E.1-E.5 уже сделаны в Подготовке).</div></div>
+    </div>
+
+    <!-- ПРОМПТ 5 — БОТ ПЛАНИРУЕТ СЕБЕ CRON -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">5</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Telegram-бот напрямую · 15 мин</div>
+          <div class="pcard-title">Бот ставит себе 3 cron-задачи через диалог</div>
+        </div>
+      </div>
+      <p class="pcard-desc"><strong>Новая фишка В3:</strong> не команда <code>openclaw cron add</code>, а живой разговор с ботом. Бот через свой <code>exec</code>-tool редактирует системный <code>crontab</code> под clawd. Закрывает раздел F.</p>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Промпт 5.1 — Утренний брифинг</strong> (в Telegram твоему боту):</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'p5a')">📋 Копировать</button></div><pre class="pcode" id="p5a">Поставь себе задачу: каждое утро в 8:00 в Telegram присылай мне утренний брифинг.
+
+Что включить в брифинг:
+- Что сегодня в Google Calendar (через calendar-keeper skill)
+- Есть ли URGENT файлы в memory/ (через memory_search)
+- Одна ключевая задача на день
+
+Технические требования:
+- Модель: openrouter/google/gemini-2.5-flash-lite (дешёвая)
+- Изолированная сессия (isolated) — НЕ засоряй основной диалог
+- Канал доставки: Telegram
+
+Запиши задачу через свой exec-tool в системный crontab под clawd. Cron строка примерно:
+0 8 * * * curl -s -X POST http://127.0.0.1:18789/agents/main/run-prompt -H "Content-Type: application/json" -d '{"prompt":"...","model":"openrouter/google/gemini-2.5-flash-lite","isolated":true,"channel":"telegram"}' >> ~/.openclaw/logs/cron-briefing.log 2>&1
+
+(Подкорректируй curl-вызов под реальный API твоего gateway — посмотри в openclaw doctor --port).
+
+После добавления — покажи мне `crontab -l` под clawd. Должна быть строка с морнинг-брифингом.</pre></div>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Промпт 5.2 — Вечерний дайджест</strong>:</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'p5b')">📋 Копировать</button></div><pre class="pcode" id="p5b">Поставь вторую cron-задачу: каждый вечер в 21:00 присылай мне вечерний дайджест дня.
+
+Что включить:
+- Что важного попало в memory/ за сегодня (через memory_search)
+- 3 пункта максимум
+
+Технические требования:
+- Модель: openrouter/deepseek/deepseek-v4-flash
+- Изолированная сессия
+- Telegram
+
+Добавь в crontab. После — покажи `crontab -l`.</pre></div>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Промпт 5.3 — Контент-напоминание</strong> (опц):</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'p5c')">📋 Копировать</button></div><pre class="pcode" id="p5c">Поставь третью cron-задачу: по вторникам, четвергам и субботам в 9:00 — контент-напоминание.
+
+Что включить:
+- Сегодня день публикации (на @ai_comandos-канал)
+- Предложи одну тему для поста на основе последних записей в memory/
+
+Модель deepseek-v4-flash, isolated session, Telegram.
+
+После — покажи мне финальный `crontab -l` со всеми 3 задачами.</pre></div>
+
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">Что должно произойти</div><div class="rrow">Бот через exec-tool добавил 3 строки в системный crontab под clawd. <code>crontab -l</code> показывает все 3. Закрывает F.3-F.6.</div></div>
+
+      <div class="notice tip" style="margin-top:14px"><div class="ni">💡</div><span><strong>Fallback:</strong> если бот говорит «не могу — нет прав на crontab» или exec-tool не работает — попроси Antigravity сделать это вместо него через SSH. Логика та же: 3 строки в crontab под clawd.</span></div>
+    </div>
+
+    <!-- ЧЕКПОИНТ — Commit перед тестами -->
+    <div class="pcard" style="border-left-color:var(--violet)">
+      <div class="pcard-head">
+        <div class="pcard-badge" style="color:var(--violet);background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.25)">💾</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--violet)">Чекпоинт · 2 мин</div>
+          <div class="pcard-title">Commit прогресса В3 в GitHub перед тестами</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Точка отката перед тестами. Если что-то сломаем дальше — вернёмся сюда. Закрывает H.2-H.3.</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'pcheck')">📋 Копировать</button></div><pre class="pcode" id="pcheck">Зафиксируй текущее состояние В3 в GitHub. Через свой exec-tool:
+
+1. cd ~/.openclaw
+2. Запусти ~/.openclaw/scripts/openclaw-autocommit.sh — он использует whitelist который мы обновили в Промпте 3.
+3. Если autocommit ничего не зафиксировал (no changes) — сделай явный коммит:
+   bash ~/.openclaw/scripts/openclaw-autocommit.sh || true
+   git add workspace/skills/ workspace/AGENTS.md workspace/HEARTBEAT.md .learnings/
+   git commit -m "W3: setup complete $(date -Iseconds)"
+   git push origin auto/cron
+
+4. Покажи мне `git log auto/cron --oneline -5` — должен быть свежий коммит с W3-файлами.
+
+5. Также проверь что blocklist guard сработал бы если попало бы что-то секретное:
+   git diff --cached --name-only после staging НЕ содержит openclaw.json, auth-profiles.json, secrets/.</pre></div>
+      <div class="rbox" style="margin-top:10px"><div class="rtitle">Что должно произойти</div><div class="rrow"><code>git log auto/cron --oneline -3</code> показывает коммит «W3: setup complete». Все новые скиллы и .learnings/ в репо. Если что-то сломается дальше — откатимся на этот коммит.</div></div>
+    </div>
+
+    <!-- ПРОМПТ 6 — ТЕСТЫ -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">6</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Telegram-бот · 20 мин</div>
+          <div class="pcard-title">Тесты: антидетект + день из жизни</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Финальная проверка. Тесты выбора скилла + антидетект-проверка (CreepJS/Sannysoft/Browserscan) + комбо «день из жизни». Закрывает разделы G и D.10.</p>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Тест 6.1 — Выбор скилла</strong> (6 коротких запросов, каждый = разный скилл):</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'p6a')">📋 Копировать</button></div><pre class="pcode" id="p6a">Выполни 6 задач подряд. После каждой одной строкой: какой скилл использовал.
+
+1. Что нового в AI-агентах за неделю?
+2. Прочитай и сделай резюме: https://docs.openclaw.ai/start/showcase
+3. Сделай мне детальный отчёт по конкурентам в сфере AI-продуктивности для предпринимателей (нужны источники)
+4. Зайди на openrouter.ai/models и найди 3 самые дешёвые модели с контекстом >100К токенов — собери таблицу
+5. Что у меня в Google Calendar на завтра?
+6. Есть ли новые письма за сегодня в моей ботовой почте?</pre></div>
+      <p class="pcard-desc" style="margin-top:6px;font-size:13px">Ожидаемо: 1→<code>web-quick</code>, 2→<code>page-reader</code>, 3→<code>deep-research</code>, 4→<code>browser-agent</code>, 5→<code>calendar-keeper</code>, 6→<code>mail-handler</code>.</p>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Тест 6.2 — Антидетект-проверка</strong> (G.1-G.4):</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'p6b')">📋 Копировать</button></div><pre class="pcode" id="p6b">Используй browser-agent. Зайди по очереди на эти 4 сайта, на каждом сделай скриншот результата и пришли мне в Telegram:
+
+1. https://abrahamjuliot.github.io/creepjs/
+2. https://bot.sannysoft.com/
+3. https://browserscan.net/
+4. https://pixelscan.net/
+
+Подожди по 10 секунд на каждом чтобы прогрузилось. После каждого сайта одной строкой результат: «чисто» / «слабый детект» / «палится».
+
+Ожидаемо: на всех 4 сайтах большинство сигналов зелёные. Палиться может ТОЛЬКО IP (datacenter VPS виден на pixelscan) — это нормально без residential proxy. Остальные сигналы (webdriver, headless, движения мыши, canvas, WebGL, печать) должны быть human-like.</pre></div>
+
+      <p class="pcard-desc" style="margin-top:14px"><strong>Тест 6.3 — «День из жизни»</strong> (комбо, использует 4-5 скиллов):</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'p6c')">📋 Копировать</button></div><pre class="pcode" id="p6c">Подготовь мне сводку на завтра. После каждого пункта одной строкой какой скилл использовал.
+
+1. Что в Google Calendar на завтра?
+2. Найди последние новости об OpenClaw или AI-агентах за эту неделю.
+3. Зайди на openrouter.ai/models, найди самую дешёвую модель с контекстом >100К токенов.
+4. Есть ли в memory/ что-то с тегом [URGENT]?
+5. Есть ли непрочитанные письма за сегодня?
+
+Сводку — коротко, по сути, без воды.</pre></div>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">Что должно произойти</div><div class="rrow">Бот использует разные скиллы под задачи: calendar-keeper, web-quick/deep-research, browser-agent, memory_search, mail-handler. В одном ответе — комбо. Закрывает D.10, G.5.</div></div>
+    </div>
+
+    <!-- ПРОМПТ 7 — ФИНАЛЬНЫЙ САМООТЧЁТ -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge">7</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Antigravity · 5 мин</div>
+          <div class="pcard-title">REPORT-W3.md + финальный commit</div>
+        </div>
+      </div>
+      <p class="pcard-desc">AI создаёт самоотчёт по всем критериям A-H. Аудитор (Закладка 02) будет читать этот файл и независимо проверять. Закрывает раздел H.</p>
+      <div class="pb"><div class="pbar"><span class="ptag">AI-чат</span><button class="cbtn" onclick="cp(this,'p7')">📋 Копировать</button></div><pre class="pcode" id="p7">Промпт 7: Финальный самоотчёт + commit.
+
+ШАГ 1 — Создай ~/.openclaw/REPORT-W3.md:
+Пройдись по ВСЕМ критериям стандарта В3 (A.1-A.7, B.1-B.7, C.1-C.10, D.1-D.10, E.1-E.12, F.1-F.8, G.1-G.5, H.1-H.6). Для каждого ✅/⚠️/❌ с цитатой команды/файла/вывода.
+
+Подсчёт: сколько ❗ закрыто из всех ❗, сколько ⚠️ закрыто.
+
+ШАГ 2 — Финальный commit:
+git add workspace/skills/ workspace/AGENTS.md workspace/HEARTBEAT.md .learnings/ REPORT-W3.md RECOVERY.md
+git commit -m "W3: complete with REPORT-W3 $(date -Iseconds)"
+git push origin auto/cron
+git log auto/cron --oneline -3
+
+ШАГ 3 — Допиши в ~/.openclaw/RECOVERY.md секцию «W3 recovery»:
+- Codex CLI re-auth каждые 30 дней: ssh с -t, codex, Sign in with ChatGPT
+- Xvfb restart: systemctl --user restart xvfb
+- Google OAuth refresh: токен сам обновляется, но если 7 дней не было активности — повторный auth через google-workspace-mcp --auth
+- Browser-use vision-модель fallback: если gemini-2.5-flash-lite тормозит на сложных сайтах — переключи на openrouter/google/gemini-2.5-flash (full) в openclaw.json mcp.servers.browser-use.env.BROWSER_USE_LLM
+
+ШАГ 4 — Финальное сообщение:
+Скажи мне дословно: «Установка В3 завершена. REPORT-W3.md создан и закоммичен. Открывай Закладку „Аудитор" в гайде — независимая проверка в новом чате. После зелёного вердикта переходи на „Сдача · Домашка" — 6 доказательств в спринт-бот.»</pre></div>
+      <div class="rbox"><div class="rtitle">Что должно произойти</div><div class="rrow">REPORT-W3.md создан с проходом по всем критериям A.1-H.6. Финальный commit «W3: complete». RECOVERY.md дополнен. Закрывает H.4-H.5.</div></div>
+    </div>
+
+    <div class="final"><div class="final-title"><span class="acc">Установка завершена</span></div><div class="final-desc">Дальше — две закладки в этом гайде. <strong>«Аудитор»</strong> прогонит независимую проверку в новом чате AI. <strong>«Сдача · Домашка»</strong> — соберёшь 6 доказательств напрямую через Telegram-бота за 10 минут.</div></div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 2 — АУДИТОР                                                 -->
+  <!-- ============================================================ -->
+  <div class="panel" id="panel-2">
+
+    <div class="notice info"><div class="ni">🛡</div><span>Это <strong>независимая проверка</strong> другим AI в <strong>новом чате</strong> — без bias главного AI который тебе устанавливал. Аудитор сравнит твоё состояние со стандартом В3 v1.0 и выдаст вердикт.</span></div>
+
+    <h2>Один <span class="acc">большой промпт</span> аудитору</h2>
+    <p class="lede">Открой <strong>новый чат с любым AI</strong> в той же папке проекта. Скопируй промпт целиком. AI прочитает стандарт сам, проверит самоотчёт <code>~/.openclaw/REPORT-W3.md</code> и выдаст вердикт.</p>
+
+    <div class="audit-copy">
+      <div class="pbar"><span class="ptag">Новый чат AI · в папке проекта</span><button class="cbtn" onclick="cp(this,'audit')">📋 Копировать ВЕСЬ промпт</button></div>
+      <pre class="pcode" id="audit">Ты — независимый аудитор настройки OpenClaw после Воркшопа 3. Я только что прошёл воркшоп с другим AI-агентом, теперь хочу независимую проверку.
+
+ПОДГОТОВКА:
+1. cd в папку проекта (где .env)
+2. git pull origin main
+3. Прочитай standards/workshop-3-standard.md v1.0 — это твой источник истины (50+ критериев в разделах A–H).
+4. Прочитай ~/.openclaw/REPORT-W3.md — это самоотчёт основного AI который тебе устанавливал W3.
+5. Также прочитай standards/workshop-2-standard.md и workshop-1-standard.md — В3 надстройка над ними, базовые критерии (память Mem0, watchdog, SSH security) должны продолжать работать.
+6. Если есть SSH — запусти команды проверки самостоятельно. Если нет — давай мне команды для копипаста.
+
+ТВОЯ ЗАДАЧА:
+1. Пройдись по КАЖДОМУ критерию стандарта В3 (A.1...H.6) и определи статус:
+   ✅ Соответствует (с цитатой команды + вывода)
+   ⚠️ Частично/неясно
+   ❌ Не соответствует
+   ❓ Невозможно проверить (нет данных)
+
+2. Сделай таблицу: | Пункт | Уровень (❗⚠️💡) | Статус | Доказательство |
+
+3. Подсчитай: ❗ ✅ из всего ❗, ❗ ❌ из всего ❗, ⚠️ всего, 💡 всего.
+
+4. Для каждого ❌ или ⚠️ — конкретный план доделки.
+
+5. ВЕРДИКТ:
+   🎉 ВОРКШОП 3 ПРОЙДЕН — все ❗ A-H закрыты, бот реально использует GPT-5, браузер и Google Workspace
+   🟡 ПОЧТИ ГОТОВО — все ❗ закрыты но много ⚠️
+   ❌ ЕСТЬ КРИТИЧЕСКИЕ ПРОБЛЕМЫ — есть нерешённые ❗
+
+6. Рекомендация что доделать ДО Воркшопа 4.
+
+ВАЖНО — НЕ доверяй REPORT-W3.md на слово, проверяй реальным выводом команд:
+- A.4 model.primary = "openai/gpt-5" → cat ~/.openclaw/openclaw.json | jq .agents.defaults.model.primary
+- A.6 реальный ответ от GPT-5 → openclaw logs --plain --limit 30 | grep -i gpt-5 (если 0 — модель не используется реально, плохо)
+- C.4 browser-use форкнут с patchright → ls -la /home/clawd/browser-use-fork && grep -r "from patchright" /home/clawd/browser-use-fork/browser_use/ --include="*.py" -l | head
+- D.9 7 скиллов → openclaw skills list | wc -l ≥ 7
+- D.10 trajectory tool_call проверка → tail -200 ~/.openclaw/agents/main/sessions/$(ls -t ~/.openclaw/agents/main/sessions/ | head -1)/trajectory.jsonl | grep -cE "browser_navigate|web_search|gmail|calendar" — должно быть ≥4 разных tool вызова
+- E.9 Google OAuth refresh_token → ls -la ~/.openclaw/secrets/google-token.json (должен быть chmod 600)
+- F.6 3 cron-задачи → ssh ... "crontab -l" под clawd → 3 строки
+- F.7 утренний брифинг использует calendar — проверь логи cron-briefing.log за последний прогон
+- G.1-G.4 антидетект — есть ли в недавних session-логах скриншоты creepjs/sannysoft/browserscan/pixelscan? grep -i creepjs ~/.openclaw/agents/main/sessions/*.trajectory.jsonl | head
+- H.1 autocommit whitelist расширен → grep -E "workspace/skills|\.learnings" ~/.openclaw/scripts/openclaw-autocommit.sh
+- H.2-H.4 W3-коммиты в auto/cron → cd ~/.openclaw && git log auto/cron --oneline -10 | grep -i "W3" — должны быть «setup complete» и «complete»
+
+Также сверь что не сломано из В1+В2:
+- C.17 W2 Memory Search Protocol всё ещё в AGENTS.md → grep "Memory Search Protocol" ~/.openclaw/workspace/AGENTS.md
+- E.15 W2 autocommit whitelist всё ещё используется (НЕТ `git add .` в скрипте) → grep -E "git add (-A|\.|\*)" ~/.openclaw/scripts/openclaw-autocommit.sh — должно быть пусто
+- F.5 W2 watchdog */15 всё ещё в crontab → crontab -l | grep "permission-watchdog"
+- A.11-A.14 или A.15 W1 SSH-hardening — не сломали ли при установке (порт ≠ 22 ИЛИ Tailscale работает)
+
+Будь строг. Лучше ⚠️ сейчас чем сюрприз на В4. Готов? Делай аудит.</pre>
+    </div>
+
+    <h3>Так выглядит зелёный вердикт</h3>
+    <div class="verdict">
+      <div class="verdict-h"><span class="em">🎉</span>Воркшоп 3 пройден</div>
+      <p style="font-family:'Inter',sans-serif;font-size:13.5px;color:var(--muted);margin-bottom:8px">Все критичные A-H закрыты. GPT-5 primary, браузер с антидетектом, Gmail+Calendar подключены, 7 скиллов работают, утренний брифинг идёт сам.</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--green);margin-bottom:8px">❗ ✅: 40/40 · ⚠️ ✅: 18/20 · 💡: 1/4</p>
+      <div class="verdict-h" style="color:var(--lime);font-size:18px"><span class="em">🎉</span>ВЕРДИКТ: ВОРКШОП 3 ПРОЙДЕН</div>
+    </div>
+
+    <p class="lede" style="font-size:14px;margin-top:14px">Если не зелёный — иди в главный чат, доделай по плану аудитора, прогоняй заново до 🎉.</p>
+
+    <div class="rbox" style="margin-top:18px"><div class="rtitle">📸 Это будет Доказательство №6 для Сдачи</div><div class="rrow">Скриншот вердикта (с финальной строкой «🎉 ВОРКШОП 3 ПРОЙДЕН») — шестое из шести доказательств. Сдашь его в Telegram спринт-боту вместе с остальными пятью.</div></div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3 — СДАЧА · ДОМАШКА                                          -->
+  <!-- ============================================================ -->
+  <div class="panel" id="panel-3">
+
+    <div class="notice danger"><div class="ni">🎓</div><span><strong>Финал Воркшопа 3.</strong> 6 доказательств спринт-боту <strong>@ai_comandos_bot</strong>. 5 — через свой бот в Telegram. 1 — скриншот Аудитора. Время сдачи: <strong>~10 минут</strong>.</span></div>
+
+    <h2>6 <span class="acc">доказательств</span> сдачи</h2>
+    <p class="lede">5 из 6 — добываются прямо через свой Telegram-бот: ты пишешь запрос → бот выполняет → скриншот. Никакого SSH, никаких терминалов. Шестое — скрин Аудитора из Antigravity.</p>
+
+    <div class="submit-grid">
+      <div class="submit-card"><div class="submit-num">№ 1</div><div class="submit-icon">🤖</div><div class="submit-title">/model = openai/gpt-5</div><div class="submit-from">Скрин Telegram</div></div>
+      <div class="submit-card"><div class="submit-num">№ 2</div><div class="submit-icon">🌐</div><div class="submit-title">Браузерная задача с результатом</div><div class="submit-from">Скрин Telegram (browser-agent)</div></div>
+      <div class="submit-card"><div class="submit-num">№ 3</div><div class="submit-icon">🛡</div><div class="submit-title">Антидетект — 4 сайта зелёные</div><div class="submit-from">Скрин(ы) Telegram</div></div>
+      <div class="submit-card"><div class="submit-num">№ 4</div><div class="submit-icon">📅</div><div class="submit-title">Утренний брифинг с Calendar-событием</div><div class="submit-from">Скрин Telegram (cron сработал)</div></div>
+      <div class="submit-card"><div class="submit-num">№ 5</div><div class="submit-icon">⏰</div><div class="submit-title">crontab -l — 3 задачи</div><div class="submit-from">Скрин Telegram (бот сам показывает)</div></div>
+      <div class="submit-card" style="border-left-color:var(--lime)"><div class="submit-num" style="color:var(--lime)">№ 6 — финальный</div><div class="submit-icon">🎉</div><div class="submit-title">Вердикт «Воркшоп 3 пройден»</div><div class="submit-from">Скрин из Antigravity</div></div>
+    </div>
+
+    <h3 style="margin-top:34px;font-family:'Barlow Condensed',sans-serif;font-style:italic;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text)">Как собрать каждое <span class="acc">доказательство</span></h3>
+
+    <!-- 1. /model GPT-5 -->
+    <div class="pcard" style="margin-top:14px">
+      <div class="pcard-head">
+        <div class="pcard-badge">🤖</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Доказательство №1 · Telegram · 30 сек</div>
+          <div class="pcard-title">GPT-5 как primary активен</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Просто отправь команду боту:</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'sd1')">📋 Копировать</button></div><pre class="pcode" id="sd1">/model</pre></div>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">📸 Скриншот №1</div><div class="rrow">Ответ бота должен содержать <code>openai/gpt-5</code> в качестве текущей primary модели</div></div>
+    </div>
+
+    <!-- 2. Браузерная задача -->
+    <div class="pcard" style="margin-top:14px">
+      <div class="pcard-head">
+        <div class="pcard-badge">🌐</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Доказательство №2 · Telegram · ~3 мин</div>
+          <div class="pcard-title">Браузерная задача с реальным результатом</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Отправь боту:</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'sd2')">📋 Копировать</button></div><pre class="pcode" id="sd2">Используй browser-agent. Зайди на openrouter.ai/models, найди 3 самые дешёвые модели с контекстом >100К токенов. Верни таблицу: название, контекст, цена input $/1M, цена output $/1M.</pre></div>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">📸 Скриншот №2</div><div class="rrow">Ответ бота с готовой таблицей (3 модели с реальными ценами с openrouter.ai)</div></div>
+    </div>
+
+    <!-- 3. Антидетект -->
+    <div class="pcard" style="margin-top:14px">
+      <div class="pcard-head">
+        <div class="pcard-badge">🛡</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Доказательство №3 · Telegram · ~5 мин</div>
+          <div class="pcard-title">Антидетект — браузер не палится</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Отправь боту (он сам пройдёт 4 сайта проверки):</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'sd3')">📋 Копировать</button></div><pre class="pcode" id="sd3">Используй browser-agent. Зайди по очереди на 4 сайта-детектора, на каждом сделай скриншот результата и пришли мне в Telegram. Подожди по 10 секунд на каждом для прогрузки:
+
+1. https://abrahamjuliot.github.io/creepjs/
+2. https://bot.sannysoft.com/
+3. https://browserscan.net/
+4. https://pixelscan.net/
+
+После каждого сайта одной строкой: «чисто» / «слабый детект» / «палится». Если палится — что именно палится.</pre></div>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">📸 Скриншоты №3 (можно одним «коллажем»)</div><div class="rrow">— CreepJS Trust Score высокий, флагов automation нет</div><div class="rrow">— Sannysoft все Playwright-маркеры зелёные</div><div class="rrow">— Browserscan «Normal» / consistent</div><div class="rrow">— Pixelscan: «datacenter IP» допустимо (нет residential proxy), остальное consistent</div></div>
+    </div>
+
+    <!-- 4. Утренний брифинг -->
+    <div class="pcard" style="margin-top:14px">
+      <div class="pcard-head">
+        <div class="pcard-badge">📅</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Доказательство №4 · Telegram · ждать утра или триггер вручную</div>
+          <div class="pcard-title">Утренний брифинг с реальным календарём</div>
+        </div>
+      </div>
+      <p class="pcard-desc"><strong>Вариант A — естественный:</strong> подожди до 8:00 утра следующего дня — cron сработает сам, бот пришлёт брифинг в Telegram. Скриншот этого сообщения = доказательство.</p>
+      <p class="pcard-desc"><strong>Вариант B — ручной триггер (быстрее):</strong> попроси бота прямо сейчас:</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'sd4')">📋 Копировать</button></div><pre class="pcode" id="sd4">Запусти прямо сейчас утренний брифинг как cron-задача его делает. Используй calendar-keeper skill чтобы достать события на завтра, memory_search для URGENT, и выдай одну ключевую задачу. Изолированную сессию имитировать не надо.</pre></div>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">📸 Скриншот №4</div><div class="rrow">Брифинг с РЕАЛЬНЫМИ событиями из Google Calendar (не выдуманными). Если в календаре пусто — бот скажет «на завтра свободно».</div></div>
+    </div>
+
+    <!-- 5. crontab -l -->
+    <div class="pcard" style="margin-top:14px">
+      <div class="pcard-head">
+        <div class="pcard-badge">⏰</div>
+        <div class="pcard-info">
+          <div class="pcard-tool">Доказательство №5 · Telegram · 30 сек</div>
+          <div class="pcard-title">3 cron-задачи стоят</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Просто попроси бота показать свои cron-задачи:</p>
+      <div class="pb"><div class="pbar"><span class="ptag">в свой Telegram-бот</span><button class="cbtn" onclick="cp(this,'sd5')">📋 Копировать</button></div><pre class="pcode" id="sd5">Покажи мне свой crontab -l (системный, под clawd). Должны быть 3 cron-задачи которые ты сам себе поставил в Промпте 5: утренний брифинг, вечерний дайджест, контент-напоминание. Покажи также строки watchdog и autocommit из В1+В2 — они должны быть на месте.</pre></div>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">📸 Скриншот №5</div><div class="rrow">Ответ бота с выводом <code>crontab -l</code> — минимум 5 строк: 3 новые W3 + permission-watchdog (W2 F.5) + spend-watchdog (W1 F.1)</div></div>
+    </div>
+
+    <!-- 6. Аудитор -->
+    <div class="pcard" style="margin-top:14px;border-left-color:var(--lime)">
+      <div class="pcard-head">
+        <div class="pcard-badge" style="color:var(--lime);background:rgba(200,255,0,0.1);border-color:rgba(200,255,0,0.25)">🎉</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--lime)">Доказательство №6 · финальное · ~5 мин</div>
+          <div class="pcard-title">Вердикт от независимого Аудитора</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Это единственное доказательство которое делается <strong>не из Telegram</strong>, а из Antigravity:</p>
+      <ol class="pcard-desc" style="padding-left:22px;line-height:1.85">
+        <li>Открой закладку <strong>«Аудитор»</strong> в этом гайде</li>
+        <li>Скопируй один большой промпт</li>
+        <li>Открой <strong>новый чат</strong> в Antigravity (важно — новый, не тот где шла установка)</li>
+        <li>Вставь промпт → AI прочитает стандарт В3, проверит твоё состояние, выдаст вердикт</li>
+      </ol>
+      <div class="rbox" style="margin-top:14px"><div class="rtitle">📸 Скриншот №6</div><div class="rrow">Финальная строка вердикта: <strong>🎉 ВОРКШОП 3 ПРОЙДЕН</strong> (или 🟡 если есть ⚠️). Делается в Antigravity.</div></div>
+    </div>
+
+    <div class="final" style="margin-top:36px;background:linear-gradient(135deg,rgba(244,114,114,0.06),rgba(13,14,15,1));border-color:rgba(244,114,114,0.3)">
+      <div class="final-title">Куда отправлять <span class="acc" style="color:var(--red)">все 6 доказательств</span></div>
+      <div class="final-desc" style="line-height:1.7">Открой Telegram, найди спринт-бота <strong>@ai_comandos_bot</strong> и отправь <strong>6 сообщений подряд</strong>:<br><br>
+      <strong>Сообщение 1:</strong> скрин №1 (/model = gpt-5)<br>
+      <strong>Сообщение 2:</strong> скрин №2 (браузерная задача)<br>
+      <strong>Сообщение 3:</strong> скрин №3 (антидетект — можно одним коллажем)<br>
+      <strong>Сообщение 4:</strong> скрин №4 (утренний брифинг)<br>
+      <strong>Сообщение 5:</strong> скрин №5 (crontab -l)<br>
+      <strong>Сообщение 6:</strong> скрин №6 (вердикт Аудитора)<br><br>
+      На каждое сообщение спринт-бот ответит подтверждением. Если что-то не зачлось — он подскажет что переснять.</div>
+    </div>
+
+    <div class="final" style="margin-top:24px">
+      <div class="final-title">Это <span class="acc">матёрый сотрудник</span></div>
+      <div class="final-desc">У тебя бот, который <strong>работает на GPT-5</strong> через подписку, <strong>видит интернет</strong> через антидетект-браузер, <strong>читает почту и календарь</strong>, и <strong>сам себе ставит задачи</strong>. На Воркшопе 4 он научится <strong>работать командой</strong> — несколько именованных агентов (исследователь, контент-менеджер, менеджер клиентов) в отдельных Telegram-топиках, n8n интеграция, mission control dashboard.</div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span><strong>Дмитрий Попов</strong> · AI Бизнес Стратег</span>
+    <a href="https://t.me/ai_comandos" target="_blank">@ai_comandos</a>
+    <span>Воркшоп 3 · v3.0 · 8 промптов + 6 доказательств</span>
+  </div>
+
+</div>
+
+<script>
+function goTab(n){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.tab[data-tab="'+n+'"]').classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  window.scrollTo({top:document.querySelector('.tabs').offsetTop-20,behavior:'smooth'});
+}
+function cp(btn,id){
+  const el=document.getElementById(id);
+  const t=el.innerText;
+  navigator.clipboard.writeText(t).then(()=>{
+    btn.classList.add('copied');
+    const orig=btn.textContent;
+    btn.textContent='✓ Скопировано';
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent=orig;},1800);
+  });
+}
+</script>
+</body>
+</html>
