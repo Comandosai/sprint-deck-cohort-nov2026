@@ -131,10 +131,20 @@ echo "✓ ключ скопирован"
 
 ### 🛑 3.4a STOP-GATE 1 — проверка входа clawd ДО блокировки root
 
-Открой **новое окно Mac Terminal** (Cmd+T) рядом с текущим. **Не закрывай текущую root-сессию.** В новом окне выполни:
+⚠️ Эту команду выполняй с **локальной машины** (Mac), где лежит приватный ключ `~/.ssh/clawd_ed25519`. **Не** выполняй её внутри root-сессии на VPS — там нет твоего локального приватного ключа.
+
+Открой **новое окно Mac Terminal** (Cmd+T) рядом с текущим. **Текущую root-сессию на VPS НЕ закрывай** — это страховочный канал.
+
+В новом окне Mac:
 
 ```bash
-ssh -i ~/.ssh/clawd_ed25519 -o BatchMode=yes clawd@VPS_IP "whoami && sudo -n whoami"
+ssh -i ~/.ssh/clawd_ed25519 -o BatchMode=yes clawd@<VPS_IP> "whoami && sudo -n whoami"
+```
+
+Или через `.env` (если в текущей папке Mac лежит `.env` с `VPS_IP=...`):
+
+```bash
+set -a && source .env && set +a && ssh -i ~/.ssh/clawd_ed25519 -o BatchMode=yes clawd@$VPS_IP "whoami && sudo -n whoami"
 ```
 
 **Должно вывести строго:**
@@ -144,9 +154,13 @@ clawd
 root
 ```
 
-⛔ **Если вывод другой** (Permission denied, запрос пароля, sudo требует пароль) — СТОП. Не переходи к 3.5. Не включай ufw/fail2ban. Иначе после `PermitRootLogin no` потеряешь доступ к VPS навсегда.
+⛔ **Если вывод другой** (Permission denied, запрос пароля, sudo требует пароль) — СТОП. Нельзя:
+- закрывать root SSH (`PermitRootLogin no`);
+- включать fail2ban;
+- включать ufw;
+- продолжать hardening.
 
-Текущую root-сессию держи открытой до конца Этапа 3 — она твой страховочный канал.
+Разберись с ключом или sudo, пока root SSH ещё открыт. Текущую root-сессию на VPS держи открытой до конца Этапа 3.
 
 ### 3.5 Заблокировать root SSH
 
