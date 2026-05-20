@@ -153,6 +153,19 @@ VPS_IP и ROOT_PASSWORD читай из .env через
 4. Скопировать SSH-ключ из /root/.ssh/authorized_keys в /home/clawd/.ssh/
    (chmod 600, owner clawd:clawd)
 
+🛑 STOP-GATE 1 (обязательно ПЕРЕД шагом 5 — иначе можно потерять VPS).
+   Текущую root-сессию НЕ закрывай. Из неё запусти проверку входа clawd:
+
+     ssh -i ~/.ssh/clawd_ed25519 -o BatchMode=yes clawd@<VPS_IP> "whoami && sudo -n whoami"
+
+   Ожидаемый вывод СТРОГО:
+     clawd
+     root
+
+   Если вывод другой (ошибка ключа, запрос пароля, sudo требует пароль) — СТОП.
+   НЕ закрывай root SSH, НЕ включай ufw/fail2ban. Покажи мне вывод —
+   разберёмся с ключом или sudo до того, как трогать защиту.
+
 5. Заблокировать root SSH:
    PermitRootLogin no
    PasswordAuthentication no

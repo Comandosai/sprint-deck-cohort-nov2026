@@ -129,6 +129,25 @@ chmod 600 /home/clawd/.ssh/authorized_keys
 echo "✓ ключ скопирован"
 ```
 
+### 🛑 3.4a STOP-GATE 1 — проверка входа clawd ДО блокировки root
+
+Открой **новое окно Mac Terminal** (Cmd+T) рядом с текущим. **Не закрывай текущую root-сессию.** В новом окне выполни:
+
+```bash
+ssh -i ~/.ssh/clawd_ed25519 -o BatchMode=yes clawd@VPS_IP "whoami && sudo -n whoami"
+```
+
+**Должно вывести строго:**
+
+```
+clawd
+root
+```
+
+⛔ **Если вывод другой** (Permission denied, запрос пароля, sudo требует пароль) — СТОП. Не переходи к 3.5. Не включай ufw/fail2ban. Иначе после `PermitRootLogin no` потеряешь доступ к VPS навсегда.
+
+Текущую root-сессию держи открытой до конца Этапа 3 — она твой страховочный канал.
+
 ### 3.5 Заблокировать root SSH
 
 ```bash

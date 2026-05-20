@@ -975,6 +975,20 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
    Если нет — СТОП, скажи мне!
 
 4. Скопировать ключ из /root/.ssh/authorized_keys в /home/clawd/.ssh/
+
+🛑 STOP-GATE 1 (ПЕРЕД шагом 5 — иначе можно отрезать пользователя от VPS).
+   НЕ закрывай текущую root-сессию. Из неё проверь, что clawd реально входит по ключу и получает root без пароля:
+
+     ssh -i ~/.ssh/clawd_ed25519 -o BatchMode=yes clawd@<VPS_IP> "whoami && sudo -n whoami"
+
+   Ожидаемый вывод СТРОГО:
+     clawd
+     root
+
+   Если вывод другой (Permission denied, запрос пароля, sudo требует пароль) — СТОП.
+   НЕ переходи к шагу 5. НЕ включай ufw/fail2ban. НЕ меняй порт.
+   Покажи пользователю вывод и жди инструкций. Текущую root-сессию держи открытой.
+
 5. Заблокировать root SSH (PermitRootLogin no, PasswordAuthentication no)
 6. ufw: deny incoming, allow outgoing, enable. ПОКА allow 22/tcp limit — поменяем после шага 11.
 7. fail2ban: install, enable, start с bantime ≥ 86400 (24h), maxretry 3, findtime 600 в /etc/fail2ban/jail.local
@@ -988,9 +1002,21 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
     c. sudo sed -i "s/^#*Port 22/Port $NEW_PORT/" /etc/ssh/sshd_config
     d. echo "MaxStartups 5:30:10" | sudo tee -a /etc/ssh/sshd_config
     e. echo "MaxSessions 5" | sudo tee -a /etc/ssh/sshd_config
-    f. sudo sshd -t (проверка синтаксиса). sudo systemctl reload sshd.
-    g. СКАЖИ МНЕ СТОП. Я во втором терминале проверю ssh -p $NEW_PORT.
-    h. После моего «работает» — sudo ufw delete allow 22/tcp.
+    f. sudo sshd -t (проверка синтаксиса). Если ошибка — СТОП, НЕ перезапускай sshd. Если ОК — sudo systemctl reload sshd.
+
+    🛑 STOP-GATE 2 (ПЕРЕД шагом h — иначе закроешь себе доступ к VPS).
+    g. СКАЖИ МНЕ СТОП. Я в новом терминале (Cmd+T) запущу команду проверки:
+
+         ssh -p $NEW_PORT -i ~/.ssh/clawd_ed25519 -o BatchMode=yes clawd@<VPS_IP> "whoami && sudo -n whoami"
+
+       Ожидаемый вывод СТРОГО:
+         clawd
+         root
+
+       Текущую SSH-сессию (через старый порт 22) НЕ закрывай — это страховочный канал.
+       Если вывод другой — СТОП. НЕ удаляй allow 22/tcp. Покажи мне вывод и жди решения.
+
+    h. ТОЛЬКО после моего подтверждения «работает» — sudo ufw delete allow 22/tcp.
     i. Обнови .env: добавь SSH_PORT=$NEW_PORT. Скажи мне обновить Mac ~/.ssh/config: Port $NEW_PORT.
 
 После — обнови .env: VPS_USER=root → VPS_USER=clawd, SSH_PORT=$NEW_PORT.
