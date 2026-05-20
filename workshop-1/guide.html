@@ -996,8 +996,74 @@ VPS_IP и ROOT_PASSWORD читай из .env через `set -a; source .env; se
 После — обнови .env: VPS_USER=root → VPS_USER=clawd, SSH_PORT=$NEW_PORT.
 Покажи какие критерии A.1-A.14 закрыл (вывод grep -E "^Port|^Password|^MaxSt|^MaxSess" /etc/ssh/sshd_config + sudo fail2ban-client get sshd bantime).
 
+⚠️ После включения ufw limit и fail2ban НЕ запускай параллельные SSH-команды и не делай повторные проверки root-входа в цикле — сервер забанит твой IP или ufw отрежет соединения. Если SSH начал рваться с "kex_exchange_identification: Connection closed by remote host" — остановись и используй карточку «🚨 Если SSH отвалился» ниже через web-console/VNC провайдера.
+
 ⚠️ ЗАМЕТКА: A.11-A.14 это БАЗОВЫЙ минимум (security-by-obscurity + key auth + rate limit). НАСТОЯЩАЯ защита — A.15 Tailscale: закрывает порт 22 из публичного интернета полностью. После Промпта 11 (финал В1) → открой Закладку 06 «🩹 Патчи v1.3» → Промпт A.1 Tailscale (5 минут, $0, Win/Mac/Linux). Без A.15 атаки на SSH продолжатся, просто будет меньше шума.</div>
       </div>
+    </div>
+
+    <!-- Rescue: SSH отвалился после Промпта 4 -->
+    <div class="pcard">
+      <div class="pcard-head">
+        <div class="pcard-badge" style="color:var(--orange);">🚨</div>
+        <div class="pcard-info">
+          <div class="pcard-tool" style="color:var(--orange);">Rescue · Если SSH отвалился после Промпта 4</div>
+          <div class="pcard-title">kex_exchange_identification: Connection closed</div>
+        </div>
+      </div>
+      <p class="pcard-desc">Симптом — при попытке подключиться SSH сразу обрывается:</p>
+      <div class="cmd"><code>kex_exchange_identification: Connection closed by remote host<br>Connection closed by &lt;IP&gt; port 22</code></div>
+      <p class="pcard-desc" style="margin-top:14px;"><strong>Это обычно НЕ проблема SSH-ключа.</strong> Сервер закрыл соединение ещё до handshake. Частые причины:</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin:10px 0 14px;font-size:13.5px;color:var(--muted);line-height:1.6;">
+        <li>• <strong style="color:var(--text);">fail2ban</strong> забанил твой IP после серии попыток входа</li>
+        <li>• <strong style="color:var(--text);">ufw limit 22/tcp</strong> сработал из-за залпа SSH-команд (часто — агент циклил <code>su - clawd</code> или повторные проверки root SSH)</li>
+        <li>• Меняется внешний IP (VPN / мобильный интернет)</li>
+        <li>• <code>sshd</code> слушает другой порт или перезапущен с ошибкой</li>
+      </ul>
+      <div class="notice wrn"><div class="ni">⛔</div><strong>НЕ продолжай долбить SSH агентом.</strong> Каждая попытка усиливает бан. Иди диагностировать через <strong>web-console / VNC / console провайдера VPS</strong> (Beget / Hetzner / etc.).</div>
+
+      <p class="pcard-desc" style="margin-top:14px;"><strong>1. В web-console провайдера выполни:</strong></p>
+      <div class="pb">
+        <div class="pbar"><span class="plang">web-console VPS</span><button class="cbtn" onclick="cp(this,'rescue1')">📋 Копировать</button></div>
+        <pre class="pcode" id="rescue1">sudo systemctl status ssh --no-pager
+sudo journalctl -u ssh -n 80 --no-pager
+sudo fail2ban-client status sshd || true
+sudo ufw status numbered
+sudo ss -tlnp | grep ssh</pre>
+      </div>
+
+      <p class="pcard-desc" style="margin-top:14px;"><strong>2. На Mac узнай свой текущий внешний IP:</strong></p>
+      <div class="cmd"><code>curl -4 ifconfig.me</code></div>
+
+      <p class="pcard-desc" style="margin-top:14px;"><strong>3. Если IP в бане — разбань (в web-console VPS):</strong></p>
+      <div class="pb">
+        <div class="pbar"><span class="plang">web-console VPS</span><button class="cbtn" onclick="cp(this,'rescue2')">📋 Копировать</button></div>
+        <pre class="pcode" id="rescue2">sudo fail2ban-client set sshd unbanip &lt;ТВОЙ_IP&gt;
+sudo systemctl restart fail2ban</pre>
+      </div>
+
+      <p class="pcard-desc" style="margin-top:14px;"><strong>4. Проверь обычный SSH из терминала Mac (не через агента):</strong></p>
+      <div class="cmd"><code>ssh -vvv -i ~/.ssh/clawd_ed25519 clawd@&lt;VPS_IP&gt;</code></div>
+
+      <p class="pcard-desc" style="margin-top:14px;"><strong>5. Если снова рвёт — временно (только для диагностики) останови fail2ban:</strong></p>
+      <div class="pb">
+        <div class="pbar"><span class="plang">web-console VPS</span><button class="cbtn" onclick="cp(this,'rescue3')">📋 Копировать</button></div>
+        <pre class="pcode" id="rescue3">sudo systemctl stop fail2ban
+# после восстановления доступа — ОБЯЗАТЕЛЬНО включи обратно:
+sudo systemctl start fail2ban
+sudo systemctl is-active fail2ban</pre>
+      </div>
+
+      <div class="notice wrn" style="margin-top:14px;"><div class="ni">⚠️</div><div><strong>Чего НЕ делать:</strong>
+        <ul style="list-style:none;padding-left:0;margin:8px 0 0;display:flex;flex-direction:column;gap:4px;">
+          <li>• не добавлять IP участника в <code>ignoreip</code> по умолчанию</li>
+          <li>• не ограничивать SSH «только с моего IP» (мобильный/VPN меняют его)</li>
+          <li>• не пересоздавать SSH-ключ и не переустанавливать VPS — это редко настоящая причина</li>
+          <li>• не отключать fail2ban навсегда</li>
+          <li>• после включения fail2ban / ufw limit — не пускать параллельные SSH-команды и не циклить проверки root-входа</li>
+        </ul>
+        <p style="margin:10px 0 0;">Критерии стандарта <strong>A.5</strong> (ufw active с rate-limit) и <strong>A.6</strong> (fail2ban active) остаются обязательными — этот блок только про восстановление доступа, не про отключение защиты.</p>
+      </div></div>
     </div>
 
     <!-- Промпт 5: Node + OpenClaw -->

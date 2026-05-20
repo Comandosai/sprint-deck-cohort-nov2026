@@ -164,6 +164,78 @@ systemctl start fail2ban
 systemctl is-active fail2ban
 ```
 
+### 3.7a Если SSH отвалился после hardening (rescue)
+
+После включения `ufw limit` и `fail2ban` SSH может начать отваливаться с ошибкой:
+
+```
+kex_exchange_identification: Connection closed by remote host
+Connection closed by <IP> port 22
+```
+
+**Это обычно НЕ проблема SSH-ключа.** Сервер закрыл соединение ещё до handshake. Частые причины:
+
+- `fail2ban` забанил твой IP после серии попыток входа;
+- `ufw limit 22/tcp` сработал из-за залпа SSH-команд (например, AI-агент циклил `su - clawd` или повторные проверки root SSH);
+- ты используешь VPN / мобильный интернет, внешний IP сменился;
+- `sshd` слушает другой порт или перезапущен с ошибкой.
+
+**Что делать:**
+
+1. **Не долби SSH агентом.** Каждая попытка усиливает бан.
+2. Зайди в VPS через **web-console / VNC / console провайдера** (Beget, Hetzner, etc. — у всех есть кнопка в админке).
+3. В web-console выполни:
+
+```bash
+sudo systemctl status ssh --no-pager
+sudo journalctl -u ssh -n 80 --no-pager
+sudo fail2ban-client status sshd || true
+sudo ufw status numbered
+sudo ss -tlnp | grep ssh
+```
+
+4. На Mac узнай свой текущий внешний IP:
+
+```bash
+curl -4 ifconfig.me
+```
+
+5. Если IP в бане — разбань (в web-console VPS):
+
+```bash
+sudo fail2ban-client set sshd unbanip <ТВОЙ_IP>
+sudo systemctl restart fail2ban
+```
+
+6. Проверь обычный SSH из терминала Mac (не через агента):
+
+```bash
+ssh -vvv -i ~/.ssh/clawd_ed25519 clawd@<VPS_IP>
+```
+
+7. Если снова рвёт — временно (только для диагностики) останови fail2ban:
+
+```bash
+sudo systemctl stop fail2ban
+```
+
+После восстановления доступа **обязательно** включи обратно:
+
+```bash
+sudo systemctl start fail2ban
+sudo systemctl is-active fail2ban
+```
+
+**Чего НЕ делать:**
+
+- не добавлять IP участника в `ignoreip` по умолчанию;
+- не ограничивать SSH «только с моего IP» (мобильный/VPN меняют его);
+- не пересоздавать SSH-ключ и не переустанавливать VPS — это редко настоящая причина;
+- не отключать fail2ban навсегда;
+- после включения `fail2ban` / `ufw limit` — не пускать параллельные SSH-команды и не циклить проверки root-входа.
+
+Критерии стандарта **A.5** (ufw active с rate-limit) и **A.6** (fail2ban active) остаются обязательными — этот блок только про восстановление доступа, не про отключение защиты.
+
 ### 3.8 Swap 4GB
 
 ```bash

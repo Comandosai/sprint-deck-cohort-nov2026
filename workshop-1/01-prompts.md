@@ -171,7 +171,87 @@ VPS_IP и ROOT_PASSWORD читай из .env через
 После — обнови .env: VPS_USER=root → VPS_USER=clawd.
 
 Покажи какие критерии A.1-A.10 закрыл.
+
+⚠️ После включения ufw limit и fail2ban НЕ запускай параллельные SSH-команды
+и не делай повторные проверки root-входа в цикле — сервер забанит твой IP или
+ufw отрежет соединения. Если SSH начал рваться с "kex_exchange_identification:
+Connection closed by remote host" — остановись и используй раздел "🚨 Если SSH
+отвалился после hardening" через web-console/VNC провайдера.
 ```
+
+---
+
+### 🚨 Если SSH отвалился после Промпта 4 (rescue)
+
+**Симптом** — при попытке подключиться SSH сразу обрывается:
+
+```
+kex_exchange_identification: Connection closed by remote host
+Connection closed by <IP> port 22
+```
+
+**Это обычно НЕ проблема SSH-ключа.** Сервер закрыл соединение ещё до handshake. Частые причины:
+
+- `fail2ban` забанил твой IP после серии попыток входа;
+- `ufw limit 22/tcp` сработал из-за залпа SSH-команд (часто — агент циклил `su - clawd` или повторные проверки root SSH);
+- меняется внешний IP (VPN / мобильный интернет);
+- `sshd` слушает другой порт или перезапущен с ошибкой.
+
+**Что делать:**
+
+1. **Не долби SSH агентом.** Каждая попытка усиливает бан.
+2. Зайди в VPS через **web-console / VNC / console провайдера** (Beget / Hetzner / etc.).
+3. В web-console выполни:
+
+```bash
+sudo systemctl status ssh --no-pager
+sudo journalctl -u ssh -n 80 --no-pager
+sudo fail2ban-client status sshd || true
+sudo ufw status numbered
+sudo ss -tlnp | grep ssh
+```
+
+4. На Mac узнай свой текущий внешний IP:
+
+```bash
+curl -4 ifconfig.me
+```
+
+5. Если IP в бане — разбань (в web-console VPS):
+
+```bash
+sudo fail2ban-client set sshd unbanip <ТВОЙ_IP>
+sudo systemctl restart fail2ban
+```
+
+6. Проверь обычный SSH из терминала Mac (не через агента):
+
+```bash
+ssh -vvv -i ~/.ssh/clawd_ed25519 clawd@<VPS_IP>
+```
+
+7. Если снова рвёт — временно (только для диагностики) останови fail2ban:
+
+```bash
+sudo systemctl stop fail2ban
+```
+
+После восстановления доступа **обязательно** включи обратно:
+
+```bash
+sudo systemctl start fail2ban
+sudo systemctl is-active fail2ban
+```
+
+**Чего НЕ делать:**
+
+- не добавлять IP участника в `ignoreip` по умолчанию;
+- не ограничивать SSH «только с моего IP» (мобильный/VPN меняют его);
+- не пересоздавать SSH-ключ и не переустанавливать VPS — это редко настоящая причина;
+- не отключать fail2ban навсегда;
+- после включения `fail2ban` / `ufw limit` — не пускать параллельные SSH-команды и не циклить проверки root-входа.
+
+Критерии стандарта **A.5** (ufw active с rate-limit) и **A.6** (fail2ban active) остаются обязательными — этот раздел только про восстановление доступа, не про отключение защиты.
 
 ---
 
